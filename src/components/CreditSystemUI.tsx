@@ -18,7 +18,8 @@ import {
     Link,
     Palette,
     Bell,
-    Sparkles
+    Sparkles,
+    Plus
 } from 'lucide-react';
 
 // ==========================================
@@ -281,29 +282,44 @@ const TabButton = ({ id, icon: Icon, label, active, onClick, badge }: any) => {
 // --- V3 Plan & Credits Content (Lovable Style) ---
 const PlansAndCreditsContent = () => (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
-        <div className="flex justify-between items-start mb-8">
-            <div>
-                <h3 className="text-[28px] font-bold text-white mb-1 tracking-tight">Plans & credits</h3>
-                <p className="text-[#A1A1AA] text-sm">Manage your subscription plan and credit balance.</p>
-            </div>
-            <button className="text-sm font-medium text-white hover:underline flex items-center gap-1">
-                <AlertCircle size={14} /> Docs
-            </button>
+        <div className="mb-8">
+            <h3 className="text-[28px] font-bold text-white mb-1 tracking-tight">Plans & credits</h3>
+            <p className="text-[#A1A1AA] text-sm">Manage your subscription plan and credit balance.</p>
         </div>
 
         <div className="bg-[#18181b] border border-[#27272A] rounded-2xl p-6 mb-6">
-            <h4 className="text-xl font-bold text-white tracking-tight mb-4">You're on Free Plan</h4>
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+                <h4 className="text-xl font-bold text-white tracking-tight">You're on Free Plan</h4>
+                <button
+                    onClick={() => document.getElementById('pricing-cards')?.scrollIntoView({ behavior: 'smooth' })}
+                    className="px-5 py-2 bg-[#4F46E5] hover:bg-[#4338CA] text-white text-xs font-bold rounded-lg transition-colors shadow-sm whitespace-nowrap">
+                    Upgrade
+                </button>
+            </div>
 
             <div className="flex justify-between items-center mb-4">
                 <h4 className="text-sm font-bold text-white">Credits remaining</h4>
-                <span className="text-xs font-medium text-[#A1A1AA]">5 of 10</span>
+                <span className="text-xs font-medium text-[#A1A1AA]">5 / 10</span>
             </div>
 
-            {/* Progress Bar */}
-            <div className="h-3 w-full bg-[#121214] border border-[#27272A] rounded-full overflow-hidden mb-6 flex relative">
-                <motion.div initial={{ width: 0 }} animate={{ width: "40%" }} className="h-full bg-[#2563EB]" title="Daily (40%)" />
-                <motion.div initial={{ width: 0 }} animate={{ width: "0%" }} className="h-full bg-purple-500" title="Monthly (0%)" />
-                <motion.div initial={{ width: 0 }} animate={{ width: "20%" }} className="h-full bg-emerald-500" title="Top-Up (20%)" />
+            {/* Progress Bar with Integrated Add Credits Button */}
+            <div className="h-8 w-full bg-[#121214] border border-[#27272A] rounded-full flex items-center pr-1 overflow-hidden relative mb-6">
+
+                {/* Visual Bar Tracks */}
+                <div className="absolute inset-y-0 left-0 flex overflow-hidden rounded-l-full h-full flex-1" style={{ width: 'calc(100% - 100px)' }}>
+                    <motion.div initial={{ width: 0 }} animate={{ width: "40%" }} className="h-full bg-[#2563EB]" title="Daily (40%)" />
+                    <motion.div initial={{ width: 0 }} animate={{ width: "0%" }} className="h-full bg-purple-500" title="Monthly (0%)" />
+                    <motion.div initial={{ width: 0 }} animate={{ width: "20%" }} className="h-full bg-emerald-500" title="Top-Up (20%)" />
+                </div>
+
+                <div className="flex-1"></div>
+
+                {/* Add Credits Inline Button */}
+                <button
+                    onClick={() => document.getElementById('topup')?.scrollIntoView({ behavior: 'smooth' })}
+                    className="px-3 py-1 bg-[#18181b] hover:bg-[#27272A] rounded-full text-[11px] font-bold text-emerald-500 border border-[#27272A]/50 hover:border-[#3F3F46] shadow-sm transition-all z-10 flex items-center gap-1 shrink-0">
+                    <Plus size={12} strokeWidth={3} /> Add Credits
+                </button>
             </div>
 
             {/* Explanatory text */}
@@ -311,7 +327,7 @@ const PlansAndCreditsContent = () => (
                 <div className="flex items-start gap-2">
                     <div className="w-1.5 h-1.5 rounded-full bg-[#2563EB] mt-1.5 shrink-0" />
                     <div>
-                        <span className="text-xs text-[#E4E4E7] font-bold block mb-0.5">Daily credits</span>
+                        <span className="text-xs text-[#E4E4E7] font-bold block mb-0.5">Daily credits <span className="text-[#A1A1AA] font-normal">(valid for 24h)</span></span>
                         <span className="text-[11px] text-[#A1A1AA] block leading-tight">Used first.<br />Reset midnight UTC.<br />No rollover.</span>
                     </div>
                 </div>
@@ -335,7 +351,7 @@ const PlansAndCreditsContent = () => (
         </div>
 
         {/* Bottom Row: Pricing Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div id="pricing-cards" className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 pt-4">
             {/* FREE Card */}
             <PricingCard
                 tier="Free"
@@ -373,7 +389,7 @@ const PlansAndCreditsContent = () => (
             <p className="text-sm text-[#A1A1AA] mb-6">Extra credits never expire. Used only when Daily and Monthly allowances are depleted. (100 credits = $1)</p>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-stretch">
-                <div className="bg-[#121214] border border-[#27272A] hover:border-[#3F3F46] rounded-xl p-5 cursor-pointer transition-colors group flex flex-col">
+                <div className="bg-[#121214] border border-[#27272A] rounded-xl p-5 flex flex-col transition-colors">
                     <div className="flex justify-between mb-2 flex-1">
                         <div className="flex flex-col">
                             <span className="font-bold text-white text-lg">500 Credits</span>
@@ -382,10 +398,10 @@ const PlansAndCreditsContent = () => (
                         </div>
                         <span className="font-bold text-[#A1A1AA]">$5</span>
                     </div>
-                    <button className="w-full py-2 bg-[#27272A] group-hover:bg-[#3F3F46] text-white text-xs font-semibold rounded-lg transition-colors mt-auto">Purchase</button>
+                    <button className="w-full py-2 bg-[#27272A] hover:bg-[#3F3F46] text-white text-xs font-semibold rounded-lg transition-colors mt-auto">Purchase</button>
                 </div>
 
-                <div className="bg-[#121214] border border-[#4F46E5]/50 hover:border-[#4F46E5] rounded-xl p-5 cursor-pointer transition-colors relative group flex flex-col">
+                <div className="bg-[#121214] border border-[#4F46E5]/30 rounded-xl p-5 relative flex flex-col transition-colors">
                     <div className="absolute -top-2.5 right-4 bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] text-white text-[10px] uppercase font-bold px-2 py-0.5 rounded-full shadow-lg">Popular</div>
                     <div className="flex justify-between mb-2 flex-1">
                         <div className="flex flex-col">
@@ -397,7 +413,7 @@ const PlansAndCreditsContent = () => (
                     <button className="w-full py-2 bg-[#4F46E5] hover:bg-[#4338CA] text-white text-xs font-semibold rounded-lg transition-colors shadow-sm mt-auto">Purchase</button>
                 </div>
 
-                <div className="bg-[#121214] border border-[#27272A] hover:border-[#3F3F46] rounded-xl p-5 cursor-pointer transition-colors group flex flex-col">
+                <div className="bg-[#121214] border border-[#27272A] rounded-xl p-5 flex flex-col transition-colors">
                     <div className="flex justify-between mb-2 flex-1">
                         <div className="flex flex-col">
                             <span className="font-bold text-white text-lg">2,400 Credits</span>
@@ -405,8 +421,37 @@ const PlansAndCreditsContent = () => (
                         </div>
                         <span className="font-bold text-[#A1A1AA]">$20</span>
                     </div>
-                    <button className="w-full py-2 bg-[#27272A] group-hover:bg-[#3F3F46] text-white text-xs font-semibold rounded-lg transition-colors mt-auto">Purchase</button>
+                    <button className="w-full py-2 bg-[#27272A] hover:bg-[#3F3F46] text-white text-xs font-semibold rounded-lg transition-colors mt-auto">Purchase</button>
                 </div>
+            </div>
+
+            {/* Custom Amount */}
+            <div className="mt-4 bg-[#121214] border border-[#27272A] rounded-xl p-5 flex flex-col md:flex-row items-center justify-between gap-4">
+                <div className="flex flex-col">
+                    <span className="font-bold text-white text-sm">Custom Amount</span>
+                    <span className="text-xs text-[#A1A1AA]">Need a specific amount? (100 credits = $1.00)</span>
+                </div>
+                <div className="flex gap-2 w-full md:w-auto">
+                    <div className="relative flex-1 md:w-40">
+                        <input
+                            type="number"
+                            placeholder="e.g. 5000"
+                            className="w-full bg-[#18181b] border border-[#3F3F46] focus:border-[#4F46E5] outline-none text-white text-sm rounded-lg pl-3 pr-4 py-2 transition-colors"
+                            min="100"
+                            step="100"
+                        />
+                    </div>
+                    <button className="px-5 py-2 bg-[#27272A] hover:bg-[#3F3F46] text-white text-xs font-bold rounded-lg transition-colors shadow-sm whitespace-nowrap">
+                        Purchase
+                    </button>
+                </div>
+            </div>
+
+            {/* Documentation Link Relocated */}
+            <div className="mt-8 flex justify-center">
+                <button className="text-xs font-medium text-[#71717A] hover:text-[#A1A1AA] transition-colors flex items-center gap-1.5 cursor-pointer">
+                    <AlertCircle size={14} /> How do credits work?
+                </button>
             </div>
         </div>
     </div>
@@ -446,38 +491,71 @@ const PricingCard = ({ tier, desc, price, cta, featuresHeader, features, primary
 );
 
 
-const TransactionHistoryContent = () => (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
-        <div>
-            <h3 className="text-[28px] font-bold text-white mb-1 tracking-tight">Billing history</h3>
-            <p className="text-[#A1A1AA] text-sm">Review your credit transactions and invoices.</p>
-        </div>
+const TransactionHistoryContent = () => {
+    const [filter, setFilter] = useState<'all' | 'income' | 'expense'>('all');
 
-        <div className="border border-[#27272A] rounded-2xl overflow-hidden mt-6 bg-[#18181b]">
-            <div className="grid grid-cols-4 px-6 py-4 bg-[#121214] border-b border-[#27272A] text-xs font-bold text-[#71717A] tracking-wider uppercase">
-                <div className="col-span-2">Transaction</div>
-                <div>Date</div>
-                <div className="text-right">Amount</div>
-            </div>
-            {[
-                { type: 'AI Generation (Canvas)', amount: -3, date: 'Today, 14:02', income: false },
-                { type: 'Daily Reset', amount: '+10', date: 'Today, 00:00', income: true },
-                { type: 'Code Export Action', amount: -25, date: 'Mar 1st', income: false },
-            ].map((tr, i) => (
-                <div key={i} className="grid grid-cols-4 px-6 py-4 border-b border-[#27272A]/50 last:border-0 items-center text-sm hover:bg-[#27272A]/30 transition-colors">
-                    <div className="col-span-2 flex items-center gap-3">
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center ${tr.income ? 'bg-emerald-500/10 text-emerald-500' : 'bg-[#27272A] text-[#A1A1AA]'}`}>
-                            {tr.income ? <ArrowDownLeft size={14} /> : <Zap size={14} fill="currentColor" />}
-                        </div>
-                        <span className="text-[#E4E4E7] font-medium">{tr.type}</span>
-                    </div>
-                    <div className="text-[#71717A] text-xs flex items-center gap-1"><Clock size={12} />{tr.date}</div>
-                    <div className={`text-right font-bold ${tr.income ? 'text-emerald-400' : 'text-white'}`}>{tr.amount}</div>
+    const transactions = [
+        { type: 'AI Generation (Canvas)', amount: -3, date: 'Today, 14:02', income: false },
+        { type: 'Daily Reset', amount: '+10', date: 'Today, 00:00', income: true, expires: 'In 10 hours' },
+        { type: 'Code Export Action', amount: -25, date: 'Mar 1st', income: false },
+        { type: 'Top-up Purchase', amount: '+500', date: 'Feb 28th', income: true, expires: 'Never' },
+    ];
+
+    const filteredTransactions = transactions.filter(t => {
+        if (filter === 'income') return t.income;
+        if (filter === 'expense') return !t.income;
+        return true;
+    });
+
+    return (
+        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
+            <div className="flex justify-between items-end">
+                <div>
+                    <h3 className="text-[28px] font-bold text-white mb-1 tracking-tight">Billing history</h3>
+                    <p className="text-[#A1A1AA] text-sm">Review your credit transactions and invoices.</p>
                 </div>
-            ))}
+
+                {/* Filter Control */}
+                <div className="flex bg-[#121214] border border-[#27272A] rounded-lg p-1">
+                    {(['all', 'income', 'expense'] as const).map(type => (
+                        <button
+                            key={type}
+                            onClick={() => setFilter(type)}
+                            className={`px-4 py-1.5 text-xs font-semibold rounded-md capitalize transition-colors ${filter === type
+                                ? 'bg-[#27272A] text-white shadow-sm'
+                                : 'text-[#A1A1AA] hover:text-[#E4E4E7] hover:bg-[#18181b]'
+                                }`}
+                        >
+                            {type}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            <div className="border border-[#27272A] rounded-2xl overflow-hidden mt-6 bg-[#18181b]">
+                <div className="grid grid-cols-5 px-6 py-4 bg-[#121214] border-b border-[#27272A] text-xs font-bold text-[#71717A] tracking-wider uppercase">
+                    <div className="col-span-2">Transaction</div>
+                    <div>Date</div>
+                    <div>Expires</div>
+                    <div className="text-right">Amount</div>
+                </div>
+                {filteredTransactions.map((tr, i) => (
+                    <div key={i} className="grid grid-cols-5 px-6 py-4 border-b border-[#27272A]/50 last:border-0 items-center text-sm hover:bg-[#27272A]/30 transition-colors">
+                        <div className="col-span-2 flex items-center gap-3">
+                            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${tr.income ? 'bg-emerald-500/10 text-emerald-500' : 'bg-[#27272A] text-[#A1A1AA]'}`}>
+                                {tr.income ? <ArrowDownLeft size={14} /> : <Zap size={14} fill="currentColor" />}
+                            </div>
+                            <span className="text-[#E4E4E7] font-medium">{tr.type}</span>
+                        </div>
+                        <div className="text-[#71717A] text-xs flex items-center gap-1"><Clock size={12} />{tr.date}</div>
+                        <div className="text-[#71717A] text-xs">{tr.expires || <span className="text-[#3F3F46]">-</span>}</div>
+                        <div className={`text-right font-bold ${tr.income ? 'text-emerald-400' : 'text-white'}`}>{tr.amount}</div>
+                    </div>
+                ))}
+            </div>
         </div>
-    </div>
-);
+    );
+};
 
 const EarnFreeCreditsContent = () => (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
