@@ -297,29 +297,23 @@ const PlansAndCreditsContent = () => (
                 </button>
             </div>
 
-            <div className="flex justify-between items-center mb-4">
-                <h4 className="text-sm font-bold text-white">Credits remaining</h4>
-                <span className="text-xs font-medium text-[#A1A1AA]">5 / 10</span>
+            <div className="flex justify-between items-center mb-3">
+                <div className="flex items-center gap-3">
+                    <h4 className="text-sm font-bold text-white">5 credits remaining</h4>
+                    <button
+                        onClick={() => document.getElementById('topup')?.scrollIntoView({ behavior: 'smooth' })}
+                        className="px-2.5 py-1 bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] hover:border-[#3F3F46] rounded-full text-[11px] font-bold text-emerald-500 shadow-sm transition-all flex items-center gap-1"
+                    >
+                        <Plus size={12} strokeWidth={3} /> Add Credits
+                    </button>
+                </div>
             </div>
 
-            {/* Progress Bar with Integrated Add Credits Button */}
-            <div className="h-8 w-full bg-[#121214] border border-[#27272A] rounded-full flex items-center pr-1 overflow-hidden relative mb-6">
-
-                {/* Visual Bar Tracks */}
-                <div className="absolute inset-y-0 left-0 flex overflow-hidden rounded-l-full h-full flex-1" style={{ width: 'calc(100% - 100px)' }}>
-                    <motion.div initial={{ width: 0 }} animate={{ width: "40%" }} className="h-full bg-[#2563EB]" title="Daily (40%)" />
-                    <motion.div initial={{ width: 0 }} animate={{ width: "0%" }} className="h-full bg-purple-500" title="Monthly (0%)" />
-                    <motion.div initial={{ width: 0 }} animate={{ width: "20%" }} className="h-full bg-emerald-500" title="Top-Up (20%)" />
-                </div>
-
-                <div className="flex-1"></div>
-
-                {/* Add Credits Inline Button */}
-                <button
-                    onClick={() => document.getElementById('topup')?.scrollIntoView({ behavior: 'smooth' })}
-                    className="px-3 py-1 bg-[#18181b] hover:bg-[#27272A] rounded-full text-[11px] font-bold text-emerald-500 border border-[#27272A]/50 hover:border-[#3F3F46] shadow-sm transition-all z-10 flex items-center gap-1 shrink-0">
-                    <Plus size={12} strokeWidth={3} /> Add Credits
-                </button>
+            {/* Progress Bar */}
+            <div className="h-3 w-full bg-[#121214] border border-[#27272A] rounded-full overflow-hidden mb-6 flex relative">
+                <motion.div initial={{ width: 0 }} animate={{ width: "40%" }} className="h-full bg-[#2563EB]" title="Daily (40%)" />
+                <motion.div initial={{ width: 0 }} animate={{ width: "0%" }} className="h-full bg-purple-500" title="Monthly (0%)" />
+                <motion.div initial={{ width: 0 }} animate={{ width: "20%" }} className="h-full bg-emerald-500" title="Top-Up (20%)" />
             </div>
 
             {/* Explanatory text */}
