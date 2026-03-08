@@ -297,157 +297,168 @@ const CreditsAndHistoryContent = ({ navigateTo }: { navigateTo: (tabId: string) 
     });
 
     return (
-        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
-            <div className="mb-6">
+        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300 pb-10">
+            {/* Header */}
+            <div>
                 <h3 className="text-[28px] font-bold text-white mb-1 tracking-tight">Credits & history</h3>
                 <p className="text-[#A1A1AA] text-sm">Monitor your current credit balances and review past transactions.</p>
             </div>
 
-            {/* Restored Plan Status Banner */}
-            <div className="bg-[#18181b] border border-[#27272A] rounded-2xl p-6 flex justify-between items-center shadow-sm">
-                <div>
-                    <h4 className="text-lg font-bold text-white tracking-tight mb-0.5">You're on Free Plan</h4>
-                    <p className="text-sm text-[#A1A1AA]">Upgrade for higher daily limits and Pro features.</p>
+            {/* Integrated Premium Hero Section */}
+            <div className="bg-[#121214] border border-[#27272A] rounded-2xl overflow-hidden shadow-lg ring-1 ring-white/5 relative">
+                {/* Subtle top glare/gradient */}
+                <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+
+                {/* Top Half: Plan Status */}
+                <div className="px-8 py-5 flex justify-between items-center bg-[#18181b]/50">
+                    <div>
+                        <h4 className="text-base font-bold text-white tracking-tight flex items-center gap-2">
+                            You're on Free Plan
+                        </h4>
+                        <p className="text-xs text-[#A1A1AA] mt-0.5">Upgrade for higher daily limits and Pro features.</p>
+                    </div>
+                    <button
+                        onClick={() => navigateTo('plans')}
+                        className="px-5 py-2 bg-[#4F46E5] hover:bg-[#4338CA] text-white text-xs font-bold rounded-lg transition-colors shadow-sm whitespace-nowrap active:scale-[0.98]">
+                        Upgrade
+                    </button>
                 </div>
-                <button
-                    onClick={() => navigateTo('plans')}
-                    className="px-5 py-2 min-w-[100px] bg-[#4F46E5] hover:bg-[#4338CA] text-white text-xs font-bold rounded-lg transition-colors shadow-sm whitespace-nowrap">
-                    Upgrade
-                </button>
+
+                <div className="h-px w-full bg-[#27272A]/60" />
+
+                {/* Bottom Half: Total Balance */}
+                <div className="px-8 py-8 flex flex-col md:flex-row justify-between items-start md:items-center relative">
+                    <div className="absolute bottom-0 right-10 w-48 h-48 bg-blue-500/5 rounded-full blur-3xl -z-10 pointer-events-none" />
+
+                    <div className="flex flex-col mb-4 md:mb-0">
+                        <span className="text-xs font-bold text-[#71717A] uppercase tracking-widest mb-2">Total Balance</span>
+                        <div className="flex items-baseline gap-2">
+                            <span className="text-5xl font-extrabold text-white tracking-tight">1,409</span>
+                            <span className="text-base font-medium text-[#71717A]">credits</span>
+                        </div>
+                        <span className="text-xs text-[#71717A] mt-2">Available across all active credit pools.</span>
+                    </div>
+
+                    <button
+                        onClick={() => navigateTo('plans')}
+                        className="px-6 py-2.5 bg-white hover:bg-[#F4F4F5] text-black text-sm font-bold rounded-xl transition-all shadow-sm active:scale-[0.98] whitespace-nowrap flex items-center gap-2">
+                        <Plus size={16} strokeWidth={2.5} /> Add Credits
+                    </button>
+                </div>
             </div>
 
-            {/* Total Balance Hero */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center bg-gradient-to-br from-[#1E1E24] to-[#121214] border border-[#27272A] rounded-2xl p-8 relative overflow-hidden ring-1 ring-inset ring-white/5 my-8">
-                {/* Background Pattern graphic */}
-                <div className="absolute top-0 right-0 w-64 h-full bg-blue-500/5 rounded-bl-[100px] -z-10" />
-                <div className="absolute bottom-0 right-20 w-32 h-32 bg-purple-500/5 rounded-t-full -z-10 blur-xl" />
-
-                <div className="flex flex-col mb-4 md:mb-0">
-                    <span className="text-sm font-semibold text-[#A1A1AA] uppercase tracking-wider mb-2">Total Balance</span>
-                    <div className="flex items-baseline gap-2">
-                        <span className="text-5xl font-extrabold text-white tracking-tight">1,409</span>
-                        <span className="text-lg font-medium text-[#71717A]">credits</span>
-                    </div>
-                    <span className="text-xs text-[#71717A] mt-2">Available across all active credit pools.</span>
+            {/* Allocation Breakdown */}
+            <div>
+                <div className="flex items-center gap-3 mb-5">
+                    <h4 className="text-sm font-bold text-white tracking-tight">Allocation Breakdown</h4>
+                    <div className="h-px flex-1 bg-gradient-to-r from-[#27272A] to-transparent"></div>
                 </div>
 
-                <button
-                    onClick={() => navigateTo('plans')}
-                    className="px-6 py-3 bg-[#E4E4E7] hover:bg-white text-black text-sm font-bold rounded-xl transition-all shadow-[0_0_15px_rgba(255,255,255,0.1)] active:scale-[0.98] whitespace-nowrap flex items-center gap-2">
-                    <Plus size={16} strokeWidth={3} /> Add Credits
-                </button>
-            </div>
-
-            {/* Breakdown row: 3 normalized cards */}
-            <div className="flex items-center gap-2 mb-4">
-                <h4 className="text-sm font-bold text-white tracking-tight">Allocation Breakdown</h4>
-                <div className="h-px flex-1 bg-gradient-to-r from-[#27272A] to-transparent ml-2"></div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                {/* 1. Daily Credits */}
-                <div className="bg-[#121214] border border-[#27272A] rounded-xl p-5 relative overflow-hidden flex flex-col justify-between h-36">
-                    <div className="absolute top-0 right-0 w-16 h-16 bg-blue-500/10 rounded-bl-full -z-10 blur-md" />
-                    <div>
-                        <div className="flex justify-between items-center mb-1">
-                            <span className="text-xs font-bold text-blue-400 uppercase tracking-widest">Daily Limit</span>
-                            <span className="text-xs font-semibold text-white">4 / 10</span>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {/* 1. Daily Credits */}
+                    <div className="bg-[#121214] border border-[#27272A] rounded-xl p-6 relative overflow-hidden flex flex-col justify-between h-40 group hover:border-[#3F3F46] hover:bg-[#18181b] transition-all">
+                        <div>
+                            <div className="flex justify-between items-center mb-1.5">
+                                <span className="text-xs font-bold text-blue-400 uppercase tracking-widest">Daily Limit</span>
+                                <span className="text-xs font-bold text-white">4 / <span className="text-[#a1a1aa]">10</span></span>
+                            </div>
+                            <span className="text-[11px] text-[#71717A]">Resets in 8 hrs (UTC)</span>
                         </div>
-                        <span className="text-[10px] text-[#71717A]">Resets in 8 hrs (UTC)</span>
-                    </div>
 
-                    <div className="mt-auto">
-                        <div className="h-1.5 w-full bg-[#18181b] border border-[#27272A]/50 rounded-full overflow-hidden flex">
-                            <motion.div initial={{ width: 0 }} animate={{ width: "40%" }} className="h-full bg-blue-500 rounded-full" />
+                        <div className="mt-auto">
+                            <div className="h-1.5 w-full bg-[#27272A] rounded-full overflow-hidden flex">
+                                <motion.div initial={{ width: 0 }} animate={{ width: "40%" }} className="h-full bg-blue-500 rounded-full" />
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                {/* 2. Monthly Credits */}
-                <div className="bg-[#121214] border border-[#27272A] rounded-xl p-5 relative overflow-hidden flex flex-col justify-between h-36 opacity-60">
-                    <div className="absolute top-0 right-0 w-16 h-16 bg-purple-500/10 rounded-bl-full -z-10 blur-md" />
-                    <div>
-                        <div className="flex justify-between items-center mb-1">
-                            <span className="text-xs font-bold text-purple-400 uppercase tracking-widest">Monthly Limit</span>
-                            <span className="text-xs font-semibold text-[#A1A1AA]">0 / 0</span>
+                    {/* 2. Monthly Credits */}
+                    <div className="bg-[#121214] border border-[#27272A] rounded-xl p-6 relative overflow-hidden flex flex-col justify-between h-40 opacity-70 grayscale group hover:grayscale-0 hover:opacity-100 hover:border-[#3F3F46] transition-all">
+                        <div>
+                            <div className="flex justify-between items-center mb-1.5">
+                                <span className="text-xs font-bold text-purple-400 uppercase tracking-widest">Monthly Limit</span>
+                                <span className="text-xs font-bold text-[#A1A1AA]">0 / 0</span>
+                            </div>
+                            <span className="text-[11px] text-[#71717A]">Requires Pro plan</span>
                         </div>
-                        <span className="text-[10px] text-[#71717A]">Requires Pro plan</span>
+
+                        <div className="mt-auto">
+                            <div className="h-1.5 w-full bg-[#27272A] rounded-full overflow-hidden flex">
+                                <motion.div initial={{ width: 0 }} animate={{ width: "0%" }} className="h-full bg-purple-500 rounded-full" />
+                            </div>
+                        </div>
                     </div>
 
-                    <div className="mt-auto">
-                        <div className="h-1.5 w-full bg-[#18181b] border border-[#27272A]/50 rounded-full overflow-hidden flex">
-                            <motion.div initial={{ width: 0 }} animate={{ width: "0%" }} className="h-full bg-purple-500 rounded-full" />
+                    {/* 3. Top-Up Credits */}
+                    <div className="bg-[#121214] border border-[#27272A] rounded-xl p-6 relative overflow-hidden flex flex-col justify-between h-40 group hover:border-[#3F3F46] hover:bg-[#18181b] transition-all">
+                        <div>
+                            <div className="flex justify-between items-start mb-1.5">
+                                <span className="text-xs font-bold text-emerald-400 uppercase tracking-widest">Top-up</span>
+                                <div className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[9px] font-bold px-1.5 py-0.5 rounded tracking-wider">Never expire</div>
+                            </div>
+                            <span className="text-[11px] text-[#71717A]">Standalone reserve</span>
                         </div>
-                    </div>
-                </div>
 
-                {/* 3. Top-Up Credits (Normalized Design) */}
-                <div className="bg-[#121214] border border-[#27272A] rounded-xl p-5 relative overflow-hidden flex flex-col justify-between h-36">
-                    <div className="absolute top-0 right-0 w-16 h-16 bg-emerald-500/10 rounded-bl-full -z-10 blur-md" />
-                    <div>
-                        <div className="flex justify-between items-start mb-1">
-                            <span className="text-xs font-bold text-emerald-400 uppercase tracking-widest">Top-up</span>
-                            <div className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[9px] font-bold px-1.5 py-0.5 rounded tracking-wider">Never expire</div>
+                        <div className="mt-auto flex items-baseline gap-1.5 relative -bottom-1">
+                            <span className="text-[28px] font-bold text-white tracking-tight leading-none">1,405</span>
+                            <span className="text-[11px] font-medium text-[#71717A]">remaining</span>
                         </div>
-                        <span className="text-[10px] text-[#71717A]">Standalone reserve</span>
-                    </div>
-
-                    {/* Numeric Value replacing progress bar visually but matching footprint bounds */}
-                    <div className="mt-auto flex items-baseline gap-1.5 relative -bottom-1">
-                        <span className="text-2xl font-bold text-white">1,405</span>
-                        <span className="text-[10px] font-medium text-[#71717A]">remaining</span>
                     </div>
                 </div>
             </div>
 
             {/* Transaction History Section */}
-            <div className="flex justify-between items-end mt-4">
-                <h4 className="text-lg font-bold text-white tracking-tight">Transaction log</h4>
+            <div className="pt-2">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+                    <h4 className="text-lg font-bold text-white tracking-tight">Transaction log</h4>
 
-                {/* Filter Control */}
-                <div className="flex bg-[#121214] border border-[#27272A] rounded-lg p-1">
-                    {(['all', 'income', 'expense'] as const).map(type => (
-                        <button
-                            key={type}
-                            onClick={() => setFilter(type)}
-                            className={`px-4 py-1.5 text-xs font-semibold rounded-md capitalize transition-colors ${filter === type
-                                ? 'bg-[#27272A] text-white shadow-sm'
-                                : 'text-[#A1A1AA] hover:text-[#E4E4E7] hover:bg-[#18181b]'
-                                }`}
-                        >
-                            {type}
-                        </button>
-                    ))}
-                </div>
-            </div>
-
-            <div className="border border-[#27272A] rounded-2xl overflow-hidden mt-2 bg-[#18181b]">
-                <div className="grid grid-cols-5 px-6 py-4 bg-[#121214] border-b border-[#27272A] text-xs font-bold text-[#71717A] tracking-wider uppercase">
-                    <div className="col-span-2">Transaction</div>
-                    <div>Date</div>
-                    <div>Expires</div>
-                    <div className="text-right">Amount</div>
-                </div>
-                {filteredTransactions.map((tr, i) => (
-                    <div key={i} className="grid grid-cols-5 px-6 py-4 border-b border-[#27272A]/50 last:border-0 items-center text-sm hover:bg-[#27272A]/30 transition-colors">
-                        <div className="col-span-2 flex items-center gap-3">
-                            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${tr.income ? 'bg-emerald-500/10 text-emerald-500' : 'bg-[#27272A] text-[#A1A1AA]'}`}>
-                                {tr.income ? <ArrowDownLeft size={14} /> : <Zap size={14} fill="currentColor" />}
-                            </div>
-                            <span className="text-[#E4E4E7] font-medium">{tr.type}</span>
-                        </div>
-                        <div className="text-[#71717A] text-xs flex items-center gap-1"><Clock size={12} />{tr.date}</div>
-                        <div className="text-[#71717A] text-xs">{tr.expires || <span className="text-[#3F3F46]">-</span>}</div>
-                        <div className={`text-right font-bold ${tr.income ? 'text-emerald-400' : 'text-white'}`}>{tr.amount}</div>
+                    {/* Integrated Sleek Segmented Control */}
+                    <div className="flex bg-[#121214] border border-[#27272A] rounded-lg p-1">
+                        {(['all', 'income', 'expense'] as const).map(type => (
+                            <button
+                                key={type}
+                                onClick={() => setFilter(type)}
+                                className={`px-4 py-1.5 text-[11px] uppercase tracking-wider font-bold rounded-md transition-all ${filter === type
+                                    ? 'bg-[#27272A] text-white shadow-sm'
+                                    : 'text-[#71717A] hover:text-[#A1A1AA] hover:bg-[#18181b]'
+                                    }`}
+                            >
+                                {type}
+                            </button>
+                        ))}
                     </div>
-                ))}
-            </div>
+                </div>
 
-            {/* Documentation Link Relocated */}
-            <div className="mt-8 flex justify-center pb-4">
-                <button className="text-xs font-medium text-[#71717A] hover:text-[#A1A1AA] transition-colors flex items-center gap-1.5 cursor-pointer">
-                    <AlertCircle size={14} /> How do credits work?
-                </button>
+                <div className="border border-[#27272A] rounded-2xl overflow-hidden bg-[#121214]">
+                    <div className="grid grid-cols-5 px-6 py-4 border-b border-[#27272A] text-[10px] font-bold text-[#71717A] tracking-widest uppercase bg-[#0A0A0B]/50">
+                        <div className="col-span-2">Transaction</div>
+                        <div>Date</div>
+                        <div>Expires</div>
+                        <div className="text-right">Amount</div>
+                    </div>
+                    <div className="divide-y divide-[#27272A]/50">
+                        {filteredTransactions.map((tr, i) => (
+                            <div key={i} className="grid grid-cols-5 px-6 py-4 items-center text-sm hover:bg-[#18181b] transition-colors group">
+                                <div className="col-span-2 flex items-center gap-3">
+                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${tr.income ? 'bg-emerald-500/10 text-emerald-500 group-hover:bg-emerald-500/20' : 'bg-[#27272A] text-[#A1A1AA] group-hover:bg-[#3F3F46]'}`}>
+                                        {tr.income ? <ArrowDownLeft size={14} /> : <Zap size={14} fill="currentColor" />}
+                                    </div>
+                                    <span className="text-[#E4E4E7] font-medium text-sm">{tr.type}</span>
+                                </div>
+                                <div className="text-[#71717A] text-xs flex items-center gap-1.5 font-medium"><Clock size={12} className="opacity-70" />{tr.date}</div>
+                                <div className="text-[#71717A] text-xs font-medium">{tr.expires || <span className="text-[#3F3F46] font-normal">-</span>}</div>
+                                <div className={`text-right font-bold text-sm ${tr.income ? 'text-emerald-400' : 'text-white'}`}>{tr.amount}</div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Documentation Link Relocated */}
+                <div className="mt-8 flex justify-center">
+                    <button className="text-[11px] font-semibold uppercase tracking-wider text-[#71717A] hover:text-[#A1A1AA] transition-colors flex items-center gap-1.5 cursor-pointer">
+                        <AlertCircle size={14} /> How do credits work?
+                    </button>
+                </div>
             </div>
         </div>
     );
