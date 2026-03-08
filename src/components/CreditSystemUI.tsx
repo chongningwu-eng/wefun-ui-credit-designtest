@@ -18,8 +18,7 @@ import {
     Link,
     Palette,
     Bell,
-    Sparkles,
-    Plus
+    Sparkles
 } from 'lucide-react';
 
 // ==========================================
@@ -174,7 +173,7 @@ export const InboxDropdown = ({ isOpen, onClose, onNavigateToTab }: any) => {
 // ==========================================
 // 2. V3 Unified Settings Modal (Comprehensive Taxonomy)
 // ==========================================
-export const UnifiedSettingsModal = ({ isOpen, onClose, initialTab = 'plans' }: any) => {
+export const UnifiedSettingsModal = ({ isOpen, onClose, initialTab = 'credits' }: any) => {
     const [activeTab, setActiveTab] = useState(initialTab);
 
     useEffect(() => {
@@ -206,8 +205,8 @@ export const UnifiedSettingsModal = ({ isOpen, onClose, initialTab = 'plans' }: 
                                 <div>
                                     <div className="text-xs font-semibold text-[#71717A] mb-2 px-2 uppercase tracking-wider">Billing & Credits</div>
                                     <div className="flex flex-col gap-1">
-                                        <TabButton id="plans" icon={Briefcase} label="Plans & credits" active={activeTab} onClick={setActiveTab} />
-                                        <TabButton id="history" icon={History} label="Billing history" active={activeTab} onClick={setActiveTab} />
+                                        <TabButton id="credits" icon={History} label="Credits & history" active={activeTab} onClick={setActiveTab} />
+                                        <TabButton id="plans" icon={Briefcase} label="Plans & top-up" active={activeTab} onClick={setActiveTab} />
                                         <TabButton id="earn" icon={Gift} label="Earn Free Credits" active={activeTab} onClick={setActiveTab} />
                                     </div>
                                 </div>
@@ -239,8 +238,8 @@ export const UnifiedSettingsModal = ({ isOpen, onClose, initialTab = 'plans' }: 
                             </button>
 
                             <div className="max-w-4xl">
-                                {activeTab === 'plans' && <PlansAndCreditsContent />}
-                                {activeTab === 'history' && <TransactionHistoryContent />}
+                                {activeTab === 'credits' && <CreditsAndHistoryContent />}
+                                {activeTab === 'plans' && <PlansAndTopupContent />}
                                 {activeTab === 'earn' && <EarnFreeCreditsContent />}
                                 {activeTab === 'profile' && <ProfileContent />}
                                 {activeTab === 'preferences' && <PreferencesContent />}
@@ -279,69 +278,153 @@ const TabButton = ({ id, icon: Icon, label, active, onClick, badge }: any) => {
 };
 
 
-// --- V3 Plan & Credits Content (Lovable Style) ---
-const PlansAndCreditsContent = () => (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
-        <div className="mb-8">
-            <h3 className="text-[28px] font-bold text-white mb-1 tracking-tight">Plans & credits</h3>
-            <p className="text-[#A1A1AA] text-sm">Manage your subscription plan and credit balance.</p>
-        </div>
+// --- V3 Credits & History Content ---
+const CreditsAndHistoryContent = () => {
+    const [filter, setFilter] = useState<'all' | 'income' | 'expense'>('all');
 
-        <div className="bg-[#18181b] border border-[#27272A] rounded-2xl p-6 mb-6">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
-                <h4 className="text-xl font-bold text-white tracking-tight">You're on Free Plan</h4>
-                <button
-                    onClick={() => document.getElementById('pricing-cards')?.scrollIntoView({ behavior: 'smooth' })}
-                    className="px-5 py-2 bg-[#4F46E5] hover:bg-[#4338CA] text-white text-xs font-bold rounded-lg transition-colors shadow-sm whitespace-nowrap">
-                    Upgrade
+    const transactions = [
+        { type: 'AI Generation (Canvas)', amount: -3, date: 'Today, 14:02', income: false },
+        { type: 'Daily Reset', amount: '+10', date: 'Today, 00:00', income: true, expires: 'In 10 hours' },
+        { type: 'Code Export Action', amount: -25, date: 'Mar 1st', income: false },
+        { type: 'Top-up Purchase', amount: '+500', date: 'Feb 28th', income: true, expires: 'Never' },
+    ];
+
+    const filteredTransactions = transactions.filter(t => {
+        if (filter === 'income') return t.income;
+        if (filter === 'expense') return !t.income;
+        return true;
+    });
+
+    return (
+        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
+            <div className="mb-4">
+                <h3 className="text-[28px] font-bold text-white mb-1 tracking-tight">Credits & history</h3>
+                <p className="text-[#A1A1AA] text-sm">Monitor your current credit balances and review past transactions.</p>
+            </div>
+
+            {/* Balances Section: 3 Split Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                {/* 1. Daily Credits (Progess Bar) */}
+                <div className="bg-[#18181b] border border-[#27272A] rounded-2xl p-5 relative overflow-hidden flex flex-col justify-between">
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/5 rounded-bl-full -z-10" />
+                    <div>
+                        <div className="flex justify-between items-center mb-1">
+                            <span className="text-xs font-bold text-white uppercase tracking-wider">Daily Credits</span>
+                            <span className="text-xs font-medium text-[#A1A1AA]">4 / 10</span>
+                        </div>
+                        <span className="text-[11px] text-[#A1A1AA]">Resets at midnight UTC <span className="text-blue-400 font-medium">(in 8 hrs)</span></span>
+                    </div>
+
+                    <div className="mt-5 h-2 w-full bg-[#121214] border border-[#27272A] rounded-full overflow-hidden flex">
+                        <motion.div initial={{ width: 0 }} animate={{ width: "40%" }} className="h-full bg-blue-500 rounded-full" />
+                    </div>
+                </div>
+
+                {/* 2. Monthly Credits (Progess Bar) */}
+                <div className="bg-[#18181b] border border-[#27272A] rounded-2xl p-5 relative overflow-hidden flex flex-col justify-between opacity-50 grayscale">
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-purple-500/5 rounded-bl-full -z-10" />
+                    <div>
+                        <div className="flex justify-between items-center mb-1">
+                            <span className="text-xs font-bold text-white uppercase tracking-wider">Monthly Credits</span>
+                            <span className="text-xs font-medium text-[#A1A1AA]">0 / 0</span>
+                        </div>
+                        <span className="text-[11px] text-[#A1A1AA]">Requires Pro plan to activate</span>
+                    </div>
+
+                    <div className="mt-5 h-2 w-full bg-[#121214] border border-[#27272A] rounded-full overflow-hidden flex">
+                        <motion.div initial={{ width: 0 }} animate={{ width: "0%" }} className="h-full bg-purple-500 rounded-full" />
+                    </div>
+                </div>
+
+                {/* 3. Top-Up Credits (Raw Number, No Cap) */}
+                <div className="bg-[#18181b] border border-[#27272A] rounded-2xl p-5 relative overflow-hidden flex flex-col justify-between border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.05)]">
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-bl-full -z-10" />
+                    <div>
+                        <div className="flex justify-between items-start mb-1">
+                            <span className="text-xs font-bold text-emerald-500 uppercase tracking-wider">Top-up Credits</span>
+                            <div className="bg-emerald-500/10 text-emerald-400 text-[9px] font-bold px-1.5 py-0.5 rounded uppercase tracking-widest">Never expire</div>
+                        </div>
+                        <span className="text-[11px] text-[#A1A1AA]">Used when daily runs out</span>
+                    </div>
+
+                    <div className="mt-4 flex items-baseline gap-1.5">
+                        <span className="text-3xl font-extrabold text-white tracking-tight">1,405</span>
+                        <span className="text-xs font-medium text-[#71717A]">credits</span>
+                    </div>
+                </div>
+            </div>
+
+            {/* Transaction History Section */}
+            <div className="flex justify-between items-end mt-4">
+                <h4 className="text-lg font-bold text-white tracking-tight">Transaction log</h4>
+
+                {/* Filter Control */}
+                <div className="flex bg-[#121214] border border-[#27272A] rounded-lg p-1">
+                    {(['all', 'income', 'expense'] as const).map(type => (
+                        <button
+                            key={type}
+                            onClick={() => setFilter(type)}
+                            className={`px-4 py-1.5 text-xs font-semibold rounded-md capitalize transition-colors ${filter === type
+                                ? 'bg-[#27272A] text-white shadow-sm'
+                                : 'text-[#A1A1AA] hover:text-[#E4E4E7] hover:bg-[#18181b]'
+                                }`}
+                        >
+                            {type}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            <div className="border border-[#27272A] rounded-2xl overflow-hidden mt-2 bg-[#18181b]">
+                <div className="grid grid-cols-5 px-6 py-4 bg-[#121214] border-b border-[#27272A] text-xs font-bold text-[#71717A] tracking-wider uppercase">
+                    <div className="col-span-2">Transaction</div>
+                    <div>Date</div>
+                    <div>Expires</div>
+                    <div className="text-right">Amount</div>
+                </div>
+                {filteredTransactions.map((tr, i) => (
+                    <div key={i} className="grid grid-cols-5 px-6 py-4 border-b border-[#27272A]/50 last:border-0 items-center text-sm hover:bg-[#27272A]/30 transition-colors">
+                        <div className="col-span-2 flex items-center gap-3">
+                            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${tr.income ? 'bg-emerald-500/10 text-emerald-500' : 'bg-[#27272A] text-[#A1A1AA]'}`}>
+                                {tr.income ? <ArrowDownLeft size={14} /> : <Zap size={14} fill="currentColor" />}
+                            </div>
+                            <span className="text-[#E4E4E7] font-medium">{tr.type}</span>
+                        </div>
+                        <div className="text-[#71717A] text-xs flex items-center gap-1"><Clock size={12} />{tr.date}</div>
+                        <div className="text-[#71717A] text-xs">{tr.expires || <span className="text-[#3F3F46]">-</span>}</div>
+                        <div className={`text-right font-bold ${tr.income ? 'text-emerald-400' : 'text-white'}`}>{tr.amount}</div>
+                    </div>
+                ))}
+            </div>
+
+            {/* Documentation Link Relocated */}
+            <div className="mt-8 flex justify-center pb-4">
+                <button className="text-xs font-medium text-[#71717A] hover:text-[#A1A1AA] transition-colors flex items-center gap-1.5 cursor-pointer">
+                    <AlertCircle size={14} /> How do credits work?
                 </button>
             </div>
+        </div>
+    );
+};
 
-            <div className="flex justify-between items-center mb-3">
-                <div className="flex items-center gap-3">
-                    <h4 className="text-sm font-bold text-white">5 credits remaining</h4>
-                    <button
-                        onClick={() => document.getElementById('topup')?.scrollIntoView({ behavior: 'smooth' })}
-                        className="px-2.5 py-1 bg-[#18181B] hover:bg-[#27272A] border border-[#27272A] hover:border-[#3F3F46] rounded-full text-[11px] font-bold text-emerald-500 shadow-sm transition-all flex items-center gap-1"
-                    >
-                        <Plus size={12} strokeWidth={3} /> Add Credits
-                    </button>
-                </div>
+// --- V3 Plans & Topup Content ---
+const PlansAndTopupContent = () => (
+    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
+        <div className="mb-6">
+            <h3 className="text-[28px] font-bold text-white mb-1 tracking-tight">Plans & top-up</h3>
+            <p className="text-[#A1A1AA] text-sm">Upgrade your tier or purchase extra standalone credits.</p>
+        </div>
+
+        <div className="bg-[#18181b] border border-[#27272A] rounded-2xl p-6 mb-6 flex justify-between items-center">
+            <div>
+                <h4 className="text-xl font-bold text-white tracking-tight mb-1">You're on Free Plan</h4>
+                <p className="text-sm text-[#A1A1AA]">Limited to 10 daily credits with sequential generation speeds.</p>
             </div>
-
-            {/* Progress Bar */}
-            <div className="h-3 w-full bg-[#121214] border border-[#27272A] rounded-full overflow-hidden mb-6 flex relative">
-                <motion.div initial={{ width: 0 }} animate={{ width: "40%" }} className="h-full bg-[#2563EB]" title="Daily (40%)" />
-                <motion.div initial={{ width: 0 }} animate={{ width: "0%" }} className="h-full bg-purple-500" title="Monthly (0%)" />
-                <motion.div initial={{ width: 0 }} animate={{ width: "20%" }} className="h-full bg-emerald-500" title="Top-Up (20%)" />
-            </div>
-
-            {/* Explanatory text */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-y-4 gap-x-8 pt-2">
-                <div className="flex items-start gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-[#2563EB] mt-1.5 shrink-0" />
-                    <div>
-                        <span className="text-xs text-[#E4E4E7] font-bold block mb-0.5">Daily credits <span className="text-[#A1A1AA] font-normal">(valid for 24h)</span></span>
-                        <span className="text-[11px] text-[#A1A1AA] block leading-tight">Used first.<br />Reset midnight UTC.<br />No rollover.</span>
-                    </div>
-                </div>
-
-                <div className="flex items-start gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-purple-500 mt-1.5 shrink-0" />
-                    <div>
-                        <span className="text-xs text-[#E4E4E7] font-bold block mb-0.5">Monthly credits</span>
-                        <span className="text-[11px] text-[#A1A1AA] block leading-tight">Included in Pro.<br />Resets tracking billing.</span>
-                    </div>
-                </div>
-
-                <div className="flex items-start gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1.5 shrink-0" />
-                    <div>
-                        <span className="text-xs text-[#E4E4E7] font-bold block mb-0.5">Top-up credits</span>
-                        <span className="text-[11px] text-[#A1A1AA] block leading-tight">Never expire.<br />Used when daily/monthly deplete.</span>
-                    </div>
-                </div>
-            </div>
+            <button
+                onClick={() => document.getElementById('pricing-cards')?.scrollIntoView({ behavior: 'smooth' })}
+                className="px-5 py-2 bg-[#4F46E5] hover:bg-[#4338CA] text-white text-xs font-bold rounded-lg transition-colors shadow-sm whitespace-nowrap">
+                Upgrade
+            </button>
         </div>
 
         {/* Bottom Row: Pricing Cards */}
@@ -441,12 +524,6 @@ const PlansAndCreditsContent = () => (
                 </div>
             </div>
 
-            {/* Documentation Link Relocated */}
-            <div className="mt-8 flex justify-center">
-                <button className="text-xs font-medium text-[#71717A] hover:text-[#A1A1AA] transition-colors flex items-center gap-1.5 cursor-pointer">
-                    <AlertCircle size={14} /> How do credits work?
-                </button>
-            </div>
         </div>
     </div>
 );
@@ -485,71 +562,9 @@ const PricingCard = ({ tier, desc, price, cta, featuresHeader, features, primary
 );
 
 
-const TransactionHistoryContent = () => {
-    const [filter, setFilter] = useState<'all' | 'income' | 'expense'>('all');
 
-    const transactions = [
-        { type: 'AI Generation (Canvas)', amount: -3, date: 'Today, 14:02', income: false },
-        { type: 'Daily Reset', amount: '+10', date: 'Today, 00:00', income: true, expires: 'In 10 hours' },
-        { type: 'Code Export Action', amount: -25, date: 'Mar 1st', income: false },
-        { type: 'Top-up Purchase', amount: '+500', date: 'Feb 28th', income: true, expires: 'Never' },
-    ];
 
-    const filteredTransactions = transactions.filter(t => {
-        if (filter === 'income') return t.income;
-        if (filter === 'expense') return !t.income;
-        return true;
-    });
 
-    return (
-        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
-            <div className="flex justify-between items-end">
-                <div>
-                    <h3 className="text-[28px] font-bold text-white mb-1 tracking-tight">Billing history</h3>
-                    <p className="text-[#A1A1AA] text-sm">Review your credit transactions and invoices.</p>
-                </div>
-
-                {/* Filter Control */}
-                <div className="flex bg-[#121214] border border-[#27272A] rounded-lg p-1">
-                    {(['all', 'income', 'expense'] as const).map(type => (
-                        <button
-                            key={type}
-                            onClick={() => setFilter(type)}
-                            className={`px-4 py-1.5 text-xs font-semibold rounded-md capitalize transition-colors ${filter === type
-                                ? 'bg-[#27272A] text-white shadow-sm'
-                                : 'text-[#A1A1AA] hover:text-[#E4E4E7] hover:bg-[#18181b]'
-                                }`}
-                        >
-                            {type}
-                        </button>
-                    ))}
-                </div>
-            </div>
-
-            <div className="border border-[#27272A] rounded-2xl overflow-hidden mt-6 bg-[#18181b]">
-                <div className="grid grid-cols-5 px-6 py-4 bg-[#121214] border-b border-[#27272A] text-xs font-bold text-[#71717A] tracking-wider uppercase">
-                    <div className="col-span-2">Transaction</div>
-                    <div>Date</div>
-                    <div>Expires</div>
-                    <div className="text-right">Amount</div>
-                </div>
-                {filteredTransactions.map((tr, i) => (
-                    <div key={i} className="grid grid-cols-5 px-6 py-4 border-b border-[#27272A]/50 last:border-0 items-center text-sm hover:bg-[#27272A]/30 transition-colors">
-                        <div className="col-span-2 flex items-center gap-3">
-                            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${tr.income ? 'bg-emerald-500/10 text-emerald-500' : 'bg-[#27272A] text-[#A1A1AA]'}`}>
-                                {tr.income ? <ArrowDownLeft size={14} /> : <Zap size={14} fill="currentColor" />}
-                            </div>
-                            <span className="text-[#E4E4E7] font-medium">{tr.type}</span>
-                        </div>
-                        <div className="text-[#71717A] text-xs flex items-center gap-1"><Clock size={12} />{tr.date}</div>
-                        <div className="text-[#71717A] text-xs">{tr.expires || <span className="text-[#3F3F46]">-</span>}</div>
-                        <div className={`text-right font-bold ${tr.income ? 'text-emerald-400' : 'text-white'}`}>{tr.amount}</div>
-                    </div>
-                ))}
-            </div>
-        </div>
-    );
-};
 
 const EarnFreeCreditsContent = () => (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
