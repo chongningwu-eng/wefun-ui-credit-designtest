@@ -279,7 +279,7 @@ const TabButton = ({ id, icon: Icon, label, active, onClick, badge }: any) => {
 };
 
 
-// --- V3 Credits & History Content (Round 22) ---
+// --- V3 Credits & History Content (Round 23) ---
 const CreditsAndHistoryContent = ({ navigateTo }: { navigateTo: (tabId: string) => void }) => {
     const [filter, setFilter] = useState<'all' | 'income' | 'expense'>('all');
 
@@ -298,115 +298,110 @@ const CreditsAndHistoryContent = ({ navigateTo }: { navigateTo: (tabId: string) 
 
     return (
         <div className="space-y-10 animate-in fade-in slide-in-from-bottom-2 duration-300 pb-10">
-            {/* Header with separated Plan Status Logic */}
-            <div className="flex justify-between items-start">
+            {/* Header / Page Title */}
+            <div>
+                <h3 className="text-[28px] font-bold text-white mb-2 tracking-tight">
+                    Credits & history
+                </h3>
+                <p className="text-[#A1A1AA] text-sm">Monitor your current credit balances and review past transactions.</p>
+            </div>
+
+            {/* Plan Banner (Restored Figure 1 Style) */}
+            <div className="bg-[#18181b]/80 border border-white/5 rounded-2xl p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h3 className="text-[28px] font-bold text-white mb-2 tracking-tight flex items-center gap-3">
-                        Credits & history
-                        <span className="bg-white/10 text-white text-[11px] font-semibold px-2.5 py-1 rounded-full border border-white/5 tracking-wide">
-                            Free Plan
-                        </span>
-                    </h3>
-                    <p className="text-[#A1A1AA] text-sm">Monitor your current credit balances and review past transactions.</p>
+                    <h4 className="text-xl font-bold text-white tracking-tight mb-1">You're on Free Plan</h4>
+                    <p className="text-sm text-[#A1A1AA]">Limited to 10 daily credits with sequential generation speeds.</p>
                 </div>
                 <button
                     onClick={() => navigateTo('plans')}
-                    className="px-5 py-2 min-w-[100px] bg-[#27272A] hover:bg-[#3F3F46] text-white text-xs font-bold rounded-lg transition-colors ring-1 ring-white/10 whitespace-nowrap active:scale-[0.98]">
-                    Upgrade Plan
+                    className="px-6 py-2.5 bg-[#4F46E5] hover:bg-[#4338CA] text-white text-sm font-bold rounded-xl transition-colors shadow-sm whitespace-nowrap active:scale-[0.98]">
+                    Upgrade
                 </button>
             </div>
 
-            {/* Mega Progress Bar & Total Balance */}
-            <div className="relative">
-                <div className="flex justify-between items-end mb-4">
-                    <div className="flex flex-col">
-                        <span className="text-base font-bold text-white mb-0.5 tracking-tight">Credits remaining</span>
-                        <div className="flex items-baseline gap-1.5 flex-col lg:flex-row lg:items-center">
-                            <span className="text-5xl font-extrabold text-white tracking-tight">1,409</span>
-                            <span className="text-sm font-medium text-[#71717A] hidden lg:inline-block">available</span>
+            {/* Asymmetric Resource Grid (Left Two / Right One) */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+                {/* Left Column (Daily & Monthly Stacked) */}
+                <div className="lg:col-span-2 flex flex-col gap-6">
+                    {/* 1. Daily Credits with Thick Bar */}
+                    <div className="bg-white/[0.02] ring-1 ring-white/5 rounded-3xl p-7 relative overflow-hidden flex flex-col hover:bg-white/[0.04] transition-all">
+                        <div className="flex justify-between items-start mb-6">
+                            <div>
+                                <span className="text-sm font-bold text-blue-400 uppercase tracking-widest block mb-1">Daily Limit</span>
+                                <span className="text-xs text-[#71717A]">Resets in 8 hrs (UTC)</span>
+                            </div>
+                            <span className="text-sm font-bold text-white">4 / <span className="text-[#a1a1aa]">10</span></span>
+                        </div>
+
+                        <div className="mt-auto">
+                            <div className="h-4 w-full bg-black/40 rounded-full overflow-hidden flex ring-1 ring-inset ring-black/50 border border-white/5">
+                                <motion.div initial={{ width: 0 }} animate={{ width: "40%" }} className="h-full bg-blue-500 rounded-full" />
+                            </div>
                         </div>
                     </div>
 
-                    <button
-                        onClick={() => navigateTo('plans')}
-                        className="px-6 py-2.5 bg-white hover:bg-[#F4F4F5] text-black text-sm font-bold rounded-xl transition-all shadow-sm active:scale-[0.98] whitespace-nowrap flex items-center gap-2 mb-1">
-                        <Plus size={16} strokeWidth={2.5} /> Buy Credit
-                    </button>
+                    {/* 2. Monthly Credits with Thick Bar */}
+                    <div className="bg-white/[0.02] ring-1 ring-white/5 rounded-3xl p-7 relative overflow-hidden flex flex-col opacity-70 grayscale hover:grayscale-0 hover:opacity-100 transition-all">
+                        <div className="flex justify-between items-start mb-6">
+                            <div>
+                                <span className="text-sm font-bold text-purple-400 uppercase tracking-widest block mb-1">Monthly Limit</span>
+                                <span className="text-xs text-[#71717A]">Requires Pro plan</span>
+                            </div>
+                            <span className="text-sm font-bold text-[#A1A1AA]">0 / 0</span>
+                        </div>
+
+                        <div className="mt-auto">
+                            <div className="h-4 w-full bg-black/40 rounded-full overflow-hidden flex ring-1 ring-inset ring-black/50 border border-white/5">
+                                <motion.div initial={{ width: 0 }} animate={{ width: "0%" }} className="h-full bg-purple-500 rounded-full" />
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                {/* Thick Modern Progress Bar integrating all pools purely visually */}
-                <div className="h-6 w-full bg-[#18181b] rounded-md overflow-hidden flex ring-1 ring-inset ring-black/50 border border-white/5">
-                    {/* Simulated visual split: Daily (Blue 40%) | Monthly (Purple 0%) | Topup (Green 60%) */}
-                    <motion.div initial={{ width: 0 }} animate={{ width: "35%" }} className="h-full bg-blue-500 rounded-l-md border-r-2 border-[#121214]" />
-                    {/* Monthly is empty so width is 0 */}
-                    <motion.div initial={{ width: 0 }} animate={{ width: "65%" }} className="h-full bg-emerald-500 rounded-r-md" />
+                {/* Right Column (Top-up Repository & CTA) */}
+                <div className="lg:col-span-1 bg-white/[0.02] ring-1 ring-white/5 rounded-3xl p-7 relative overflow-hidden flex flex-col justify-between hover:bg-white/[0.04] transition-all group min-h-[300px]">
+                    {/* Absolute giant background glow for the right card */}
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 rounded-full blur-3xl -z-10 group-hover:bg-emerald-500/10 transition-colors pointer-events-none" />
+
+                    <div>
+                        <div className="flex justify-between items-start mb-4">
+                            <span className="text-sm font-bold text-emerald-400 uppercase tracking-widest">Top-up Repo</span>
+                            <div className="bg-emerald-500/10 text-emerald-400 text-[10px] font-bold px-2 py-1 rounded tracking-wider">Never expire</div>
+                        </div>
+
+                        <div className="flex flex-col mt-4">
+                            <span className="text-[42px] font-extrabold text-white tracking-tight leading-none mb-1">1,405</span>
+                            <span className="text-sm font-medium text-[#71717A]">credits available</span>
+                        </div>
+                    </div>
+
+                    <div className="mt-8 pt-6 border-t border-white/5">
+                        <button
+                            onClick={() => navigateTo('plans')}
+                            className="w-full py-3.5 bg-white hover:bg-[#F4F4F5] text-black text-sm font-bold rounded-xl transition-all shadow-sm active:scale-[0.98] flex items-center justify-center gap-2">
+                            <Plus size={18} strokeWidth={2.5} /> Buy Credit
+                        </button>
+                    </div>
                 </div>
-                <div className="flex justify-between mt-2 text-[11px] font-medium text-[#71717A] px-1">
-                    <span>Usage overview</span>
-                    <span className="flex items-center gap-4">
-                        <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-blue-500"></span>Daily</span>
-                        <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-emerald-500"></span>Top-up</span>
-                    </span>
-                </div>
+
             </div>
 
-            {/* Allocation Breakdown (Borderless/Glassmorphic structure) */}
-            <div>
-                <h4 className="text-sm font-bold text-white tracking-tight mb-4 px-1">Allocation Details</h4>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {/* 1. Daily Credits */}
-                    <div className="bg-white/[0.02] ring-1 ring-white/5 rounded-2xl p-6 relative overflow-hidden flex flex-col justify-between h-36 group hover:bg-white/[0.04] hover:ring-white/10 transition-all">
-                        <div>
-                            <div className="flex justify-between items-center mb-1.5">
-                                <span className="text-xs font-bold text-blue-400 uppercase tracking-widest">Daily Limit</span>
-                                <span className="text-xs font-bold text-white">4 / <span className="text-[#a1a1aa]">10</span></span>
-                            </div>
-                            <span className="text-[11px] text-[#71717A]">Resets in 8 hrs (UTC)</span>
-                        </div>
+            {/* Transaction History Section (Polished Hierarchy) */}
+            <div className="pt-8">
+                <div className="bg-[#18181b]/50 rounded-t-2xl p-5 border-b border-white/5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div>
+                        <h4 className="text-lg font-bold text-white tracking-tight">Transaction log</h4>
+                        <p className="text-xs text-[#71717A] mt-1">Review your recent activity and credit usage.</p>
                     </div>
-
-                    {/* 2. Monthly Credits */}
-                    <div className="bg-white/[0.02] ring-1 ring-white/5 rounded-2xl p-6 relative overflow-hidden flex flex-col justify-between h-36 opacity-70 grayscale group hover:grayscale-0 hover:opacity-100 transition-all">
-                        <div>
-                            <div className="flex justify-between items-center mb-1.5">
-                                <span className="text-xs font-bold text-purple-400 uppercase tracking-widest">Monthly Limit</span>
-                                <span className="text-xs font-bold text-[#A1A1AA]">0 / 0</span>
-                            </div>
-                            <span className="text-[11px] text-[#71717A]">Requires Pro plan</span>
-                        </div>
-                    </div>
-
-                    {/* 3. Top-Up Credits */}
-                    <div className="bg-white/[0.02] ring-1 ring-white/5 rounded-2xl p-6 relative overflow-hidden flex flex-col justify-between h-36 group hover:bg-white/[0.04] hover:ring-white/10 transition-all">
-                        <div>
-                            <div className="flex justify-between items-start mb-1.5">
-                                <span className="text-xs font-bold text-emerald-400 uppercase tracking-widest">Top-up</span>
-                                <div className="bg-emerald-500/10 text-emerald-400 text-[10px] font-bold px-1.5 py-0.5 rounded tracking-wider">Never expire</div>
-                            </div>
-                            <span className="text-[11px] text-[#71717A]">Standalone reserve</span>
-                        </div>
-
-                        <div className="mt-auto flex items-baseline gap-1.5 relative -bottom-1">
-                            <span className="text-[28px] font-bold text-white tracking-tight leading-none">1,405</span>
-                            <span className="text-[11px] font-medium text-[#71717A]">remaining</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Transaction History Section (Borderless) */}
-            <div className="pt-4">
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4 px-1">
-                    <h4 className="text-base font-bold text-white tracking-tight">Transaction log</h4>
 
                     {/* Integrated Sleek Segmented Control */}
-                    <div className="flex bg-[#18181b] rounded-lg p-1 ring-1 ring-white/5">
+                    <div className="flex bg-[#0A0A0B] rounded-lg p-1.5 ring-1 ring-white/5">
                         {(['all', 'income', 'expense'] as const).map(type => (
                             <button
                                 key={type}
                                 onClick={() => setFilter(type)}
-                                className={`px-4 py-1.5 text-[11px] uppercase tracking-wider font-bold rounded-md transition-all ${filter === type
+                                className={`px-5 py-2 text-xs uppercase tracking-wider font-bold rounded-md transition-all ${filter === type
                                     ? 'bg-[#27272A] text-white shadow-sm ring-1 ring-white/10'
                                     : 'text-[#71717A] hover:text-[#A1A1AA] hover:bg-[#27272A]/50'
                                     }`}
@@ -417,8 +412,8 @@ const CreditsAndHistoryContent = ({ navigateTo }: { navigateTo: (tabId: string) 
                     </div>
                 </div>
 
-                <div className="rounded-2xl overflow-hidden bg-white/[0.02] ring-1 ring-white/5">
-                    <div className="grid grid-cols-5 px-6 py-4 border-b border-white/5 text-[10px] font-bold text-[#71717A] tracking-widest uppercase mb-1">
+                <div className="rounded-b-2xl overflow-hidden bg-white/[0.02]">
+                    <div className="grid grid-cols-5 px-6 py-4 border-b border-white/5 text-[11px] font-bold text-[#71717A] tracking-widest uppercase bg-black/20">
                         <div className="col-span-2">Transaction</div>
                         <div>Date</div>
                         <div>Expires</div>
@@ -426,16 +421,16 @@ const CreditsAndHistoryContent = ({ navigateTo }: { navigateTo: (tabId: string) 
                     </div>
                     <div>
                         {filteredTransactions.map((tr, i) => (
-                            <div key={i} className="grid grid-cols-5 px-6 py-4 items-center text-sm hover:bg-white/[0.04] transition-colors group cursor-default">
-                                <div className="col-span-2 flex items-center gap-3">
-                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${tr.income ? 'bg-emerald-500/10 text-emerald-500 group-hover:bg-emerald-500/20' : 'bg-[#27272A] text-[#A1A1AA] group-hover:bg-[#3F3F46]'}`}>
-                                        {tr.income ? <ArrowDownLeft size={14} /> : <Zap size={14} fill="currentColor" />}
+                            <div key={i} className={`grid grid-cols-5 px-6 py-4 items-center text-sm transition-colors group cursor-default ${i !== filteredTransactions.length - 1 ? 'border-b border-white/5' : ''} hover:bg-white/[0.04]`}>
+                                <div className="col-span-2 flex items-center gap-4">
+                                    <div className={`w-9 h-9 rounded-full flex items-center justify-center transition-colors ${tr.income ? 'bg-emerald-500/10 text-emerald-500 group-hover:bg-emerald-500/20' : 'bg-[#27272A] text-[#A1A1AA] group-hover:bg-[#3F3F46]'}`}>
+                                        {tr.income ? <ArrowDownLeft size={14} strokeWidth={2.5} /> : <Zap size={14} fill="currentColor" />}
                                     </div>
-                                    <span className="text-[#E4E4E7] font-medium text-sm">{tr.type}</span>
+                                    <span className="text-[#E4E4E7] font-semibold text-sm">{tr.type}</span>
                                 </div>
                                 <div className="text-[#71717A] text-xs flex items-center gap-1.5 font-medium"><Clock size={12} className="opacity-70" />{tr.date}</div>
                                 <div className="text-[#71717A] text-xs font-medium">{tr.expires || <span className="text-[#3F3F46] font-normal">-</span>}</div>
-                                <div className={`text-right font-bold text-sm ${tr.income ? 'text-emerald-400' : 'text-white'}`}>{tr.amount}</div>
+                                <div className={`text-right font-bold text-[15px] ${tr.income ? 'text-emerald-400' : 'text-white'}`}>{tr.amount}</div>
                             </div>
                         ))}
                     </div>
@@ -443,8 +438,8 @@ const CreditsAndHistoryContent = ({ navigateTo }: { navigateTo: (tabId: string) 
 
                 {/* Documentation Link Relocated */}
                 <div className="mt-8 flex justify-center">
-                    <button className="text-[11px] font-semibold uppercase tracking-wider text-[#71717A] hover:text-[#A1A1AA] transition-colors flex items-center gap-1.5 cursor-pointer">
-                        <AlertCircle size={14} /> How do credits work?
+                    <button className="text-[12px] font-bold uppercase tracking-wider text-[#71717A] hover:text-white transition-colors flex items-center gap-1.5 cursor-pointer">
+                        <AlertCircle size={14} strokeWidth={2.5} /> How do credits work?
                     </button>
                 </div>
             </div>
