@@ -18,7 +18,8 @@ import {
     Link,
     Palette,
     Bell,
-    Sparkles
+    Sparkles,
+    Plus
 } from 'lucide-react';
 
 // ==========================================
@@ -238,7 +239,7 @@ export const UnifiedSettingsModal = ({ isOpen, onClose, initialTab = 'credits' }
                             </button>
 
                             <div className="max-w-4xl">
-                                {activeTab === 'credits' && <CreditsAndHistoryContent />}
+                                {activeTab === 'credits' && <CreditsAndHistoryContent navigateTo={setActiveTab} />}
                                 {activeTab === 'plans' && <PlansAndTopupContent />}
                                 {activeTab === 'earn' && <EarnFreeCreditsContent />}
                                 {activeTab === 'profile' && <ProfileContent />}
@@ -279,7 +280,7 @@ const TabButton = ({ id, icon: Icon, label, active, onClick, badge }: any) => {
 
 
 // --- V3 Credits & History Content ---
-const CreditsAndHistoryContent = () => {
+const CreditsAndHistoryContent = ({ navigateTo }: { navigateTo: (tabId: string) => void }) => {
     const [filter, setFilter] = useState<'all' | 'income' | 'expense'>('all');
 
     const transactions = [
@@ -297,59 +298,104 @@ const CreditsAndHistoryContent = () => {
 
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
-            <div className="mb-4">
+            <div className="mb-6">
                 <h3 className="text-[28px] font-bold text-white mb-1 tracking-tight">Credits & history</h3>
                 <p className="text-[#A1A1AA] text-sm">Monitor your current credit balances and review past transactions.</p>
             </div>
 
-            {/* Balances Section: 3 Split Cards */}
+            {/* Restored Plan Status Banner */}
+            <div className="bg-[#18181b] border border-[#27272A] rounded-2xl p-6 flex justify-between items-center shadow-sm">
+                <div>
+                    <h4 className="text-lg font-bold text-white tracking-tight mb-0.5">You're on Free Plan</h4>
+                    <p className="text-sm text-[#A1A1AA]">Upgrade for higher daily limits and Pro features.</p>
+                </div>
+                <button
+                    onClick={() => navigateTo('plans')}
+                    className="px-5 py-2 min-w-[100px] bg-[#4F46E5] hover:bg-[#4338CA] text-white text-xs font-bold rounded-lg transition-colors shadow-sm whitespace-nowrap">
+                    Upgrade
+                </button>
+            </div>
+
+            {/* Total Balance Hero */}
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center bg-gradient-to-br from-[#1E1E24] to-[#121214] border border-[#27272A] rounded-2xl p-8 relative overflow-hidden ring-1 ring-inset ring-white/5 my-8">
+                {/* Background Pattern graphic */}
+                <div className="absolute top-0 right-0 w-64 h-full bg-blue-500/5 rounded-bl-[100px] -z-10" />
+                <div className="absolute bottom-0 right-20 w-32 h-32 bg-purple-500/5 rounded-t-full -z-10 blur-xl" />
+
+                <div className="flex flex-col mb-4 md:mb-0">
+                    <span className="text-sm font-semibold text-[#A1A1AA] uppercase tracking-wider mb-2">Total Balance</span>
+                    <div className="flex items-baseline gap-2">
+                        <span className="text-5xl font-extrabold text-white tracking-tight">1,409</span>
+                        <span className="text-lg font-medium text-[#71717A]">credits</span>
+                    </div>
+                    <span className="text-xs text-[#71717A] mt-2">Available across all active credit pools.</span>
+                </div>
+
+                <button
+                    onClick={() => navigateTo('plans')}
+                    className="px-6 py-3 bg-[#E4E4E7] hover:bg-white text-black text-sm font-bold rounded-xl transition-all shadow-[0_0_15px_rgba(255,255,255,0.1)] active:scale-[0.98] whitespace-nowrap flex items-center gap-2">
+                    <Plus size={16} strokeWidth={3} /> Add Credits
+                </button>
+            </div>
+
+            {/* Breakdown row: 3 normalized cards */}
+            <div className="flex items-center gap-2 mb-4">
+                <h4 className="text-sm font-bold text-white tracking-tight">Allocation Breakdown</h4>
+                <div className="h-px flex-1 bg-gradient-to-r from-[#27272A] to-transparent ml-2"></div>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                {/* 1. Daily Credits (Progess Bar) */}
-                <div className="bg-[#18181b] border border-[#27272A] rounded-2xl p-5 relative overflow-hidden flex flex-col justify-between">
-                    <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/5 rounded-bl-full -z-10" />
+                {/* 1. Daily Credits */}
+                <div className="bg-[#121214] border border-[#27272A] rounded-xl p-5 relative overflow-hidden flex flex-col justify-between h-36">
+                    <div className="absolute top-0 right-0 w-16 h-16 bg-blue-500/10 rounded-bl-full -z-10 blur-md" />
                     <div>
                         <div className="flex justify-between items-center mb-1">
-                            <span className="text-xs font-bold text-white uppercase tracking-wider">Daily Credits</span>
-                            <span className="text-xs font-medium text-[#A1A1AA]">4 / 10</span>
+                            <span className="text-xs font-bold text-blue-400 uppercase tracking-widest">Daily Limit</span>
+                            <span className="text-xs font-semibold text-white">4 / 10</span>
                         </div>
-                        <span className="text-[11px] text-[#A1A1AA]">Resets at midnight UTC <span className="text-blue-400 font-medium">(in 8 hrs)</span></span>
+                        <span className="text-[10px] text-[#71717A]">Resets in 8 hrs (UTC)</span>
                     </div>
 
-                    <div className="mt-5 h-2 w-full bg-[#121214] border border-[#27272A] rounded-full overflow-hidden flex">
-                        <motion.div initial={{ width: 0 }} animate={{ width: "40%" }} className="h-full bg-blue-500 rounded-full" />
+                    <div className="mt-auto">
+                        <div className="h-1.5 w-full bg-[#18181b] border border-[#27272A]/50 rounded-full overflow-hidden flex">
+                            <motion.div initial={{ width: 0 }} animate={{ width: "40%" }} className="h-full bg-blue-500 rounded-full" />
+                        </div>
                     </div>
                 </div>
 
-                {/* 2. Monthly Credits (Progess Bar) */}
-                <div className="bg-[#18181b] border border-[#27272A] rounded-2xl p-5 relative overflow-hidden flex flex-col justify-between opacity-50 grayscale">
-                    <div className="absolute top-0 right-0 w-24 h-24 bg-purple-500/5 rounded-bl-full -z-10" />
+                {/* 2. Monthly Credits */}
+                <div className="bg-[#121214] border border-[#27272A] rounded-xl p-5 relative overflow-hidden flex flex-col justify-between h-36 opacity-60">
+                    <div className="absolute top-0 right-0 w-16 h-16 bg-purple-500/10 rounded-bl-full -z-10 blur-md" />
                     <div>
                         <div className="flex justify-between items-center mb-1">
-                            <span className="text-xs font-bold text-white uppercase tracking-wider">Monthly Credits</span>
-                            <span className="text-xs font-medium text-[#A1A1AA]">0 / 0</span>
+                            <span className="text-xs font-bold text-purple-400 uppercase tracking-widest">Monthly Limit</span>
+                            <span className="text-xs font-semibold text-[#A1A1AA]">0 / 0</span>
                         </div>
-                        <span className="text-[11px] text-[#A1A1AA]">Requires Pro plan to activate</span>
+                        <span className="text-[10px] text-[#71717A]">Requires Pro plan</span>
                     </div>
 
-                    <div className="mt-5 h-2 w-full bg-[#121214] border border-[#27272A] rounded-full overflow-hidden flex">
-                        <motion.div initial={{ width: 0 }} animate={{ width: "0%" }} className="h-full bg-purple-500 rounded-full" />
+                    <div className="mt-auto">
+                        <div className="h-1.5 w-full bg-[#18181b] border border-[#27272A]/50 rounded-full overflow-hidden flex">
+                            <motion.div initial={{ width: 0 }} animate={{ width: "0%" }} className="h-full bg-purple-500 rounded-full" />
+                        </div>
                     </div>
                 </div>
 
-                {/* 3. Top-Up Credits (Raw Number, No Cap) */}
-                <div className="bg-[#18181b] border border-[#27272A] rounded-2xl p-5 relative overflow-hidden flex flex-col justify-between border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.05)]">
-                    <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-bl-full -z-10" />
+                {/* 3. Top-Up Credits (Normalized Design) */}
+                <div className="bg-[#121214] border border-[#27272A] rounded-xl p-5 relative overflow-hidden flex flex-col justify-between h-36">
+                    <div className="absolute top-0 right-0 w-16 h-16 bg-emerald-500/10 rounded-bl-full -z-10 blur-md" />
                     <div>
                         <div className="flex justify-between items-start mb-1">
-                            <span className="text-xs font-bold text-emerald-500 uppercase tracking-wider">Top-up Credits</span>
-                            <div className="bg-emerald-500/10 text-emerald-400 text-[9px] font-bold px-1.5 py-0.5 rounded uppercase tracking-widest">Never expire</div>
+                            <span className="text-xs font-bold text-emerald-400 uppercase tracking-widest">Top-up</span>
+                            <div className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[9px] font-bold px-1.5 py-0.5 rounded tracking-wider">Never expire</div>
                         </div>
-                        <span className="text-[11px] text-[#A1A1AA]">Used when daily runs out</span>
+                        <span className="text-[10px] text-[#71717A]">Standalone reserve</span>
                     </div>
 
-                    <div className="mt-4 flex items-baseline gap-1.5">
-                        <span className="text-3xl font-extrabold text-white tracking-tight">1,405</span>
-                        <span className="text-xs font-medium text-[#71717A]">credits</span>
+                    {/* Numeric Value replacing progress bar visually but matching footprint bounds */}
+                    <div className="mt-auto flex items-baseline gap-1.5 relative -bottom-1">
+                        <span className="text-2xl font-bold text-white">1,405</span>
+                        <span className="text-[10px] font-medium text-[#71717A]">remaining</span>
                     </div>
                 </div>
             </div>
