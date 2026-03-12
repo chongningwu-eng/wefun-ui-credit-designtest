@@ -911,10 +911,10 @@ const EarnFreeCreditsContent = () => {
                                 <Users size={22} strokeWidth={1.5} />
                             </div>
                             <div>
-                                <h4 className="text-base font-bold text-white mb-0.5">Invite Teammates <span className="text-[#71717A] text-sm font-normal ml-1">({totalInvited}/10)</span></h4>
+                                <h4 className="text-base font-bold text-white mb-0.5">Invite Teammates <span className="text-[#71717A] text-sm font-normal ml-1">({Math.min(totalInvited, 10)}/10)</span></h4>
                                 <p className="text-sm text-[#A1A1AA] font-sans">Points for every friend who signs up.</p>
                                 <div className="mt-2 text-[10px] font-bold text-[#71717A] font-heading uppercase tracking-tighter flex items-center gap-2">
-                                    <span><span className={colors.purple}>{totalInvited}</span> Total Invited</span>
+                                    <span><span className={colors.purple}>{Math.min(totalInvited, 10)}</span> Total Invited</span>
                                     {unclaimedInvites > 0 && (
                                         <>
                                             <span className="w-1 h-1 rounded-full bg-[#3F3F46]" />
