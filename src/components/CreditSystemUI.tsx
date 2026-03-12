@@ -328,12 +328,7 @@ const CreditsAndHistoryContent = ({ navigateTo }: { navigateTo: (tabId: string) 
                         </div>
                     </div>
                     <button
-                        onClick={() => {
-                            navigateTo('plans');
-                            setTimeout(() => {
-                                document.getElementById('top-up-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                            }, 50);
-                        }}
+                        onClick={() => navigateTo('plans')}
                         className="px-6 py-2.5 bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] hover:from-[#4338CA] hover:to-[#6D28D9] text-white text-sm font-bold rounded-lg transition-all shadow-[0_4px_20px_-4px_rgba(79,70,229,0.4)] hover:shadow-[0_8px_25px_-4px_rgba(79,70,229,0.5)] active:scale-95 whitespace-nowrap w-full md:w-auto mt-2 md:mt-0">
                         Upgrade
                     </button>
@@ -366,7 +361,12 @@ const CreditsAndHistoryContent = ({ navigateTo }: { navigateTo: (tabId: string) 
                             Earn
                         </button>
                         <button
-                            onClick={() => navigateTo('plans')}
+                            onClick={() => {
+                                navigateTo('plans');
+                                setTimeout(() => {
+                                    document.getElementById('top-up-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                }, 50);
+                            }}
                             className="flex-1 sm:flex-none px-4 py-2 bg-[#E4E4E7] hover:bg-white text-black text-sm font-semibold rounded-lg transition-colors shadow-sm active:scale-[0.98]">
                             Buy credits
                         </button>
