@@ -318,7 +318,7 @@ const CreditsAndHistoryContent = ({ navigateTo }: { navigateTo: (tabId: string) 
             </div>
 
             {/* Plan Status Card (Full width) */}
-            <div className="bg-[#18181b] border border-[#27272A] rounded-xl p-6 flex flex-col justify-center hover:border-[#3F3F46] transition-colors shadow-sm">
+            <div className="bg-[#18181b] border border-[#27272A] rounded-xl p-6 flex flex-col justify-center transition-colors shadow-sm">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-5">
                     <div className="flex items-center gap-4">
                         <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-400 via-pink-500 to-purple-600 flex-shrink-0 shadow-inner" />
@@ -328,8 +328,13 @@ const CreditsAndHistoryContent = ({ navigateTo }: { navigateTo: (tabId: string) 
                         </div>
                     </div>
                     <button
-                        onClick={() => navigateTo('plans')}
-                        className="px-6 py-2.5 bg-white hover:bg-[#F4F4F5] text-black text-sm font-semibold rounded-lg transition-colors shadow-sm active:scale-[0.98] whitespace-nowrap w-full md:w-auto mt-2 md:mt-0">
+                        onClick={() => {
+                            navigateTo('plans');
+                            setTimeout(() => {
+                                document.getElementById('top-up-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            }, 50);
+                        }}
+                        className="px-6 py-2.5 bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] hover:from-[#4338CA] hover:to-[#6D28D9] text-white text-sm font-bold rounded-lg transition-all shadow-[0_4px_20px_-4px_rgba(79,70,229,0.4)] hover:shadow-[0_8px_25px_-4px_rgba(79,70,229,0.5)] active:scale-95 whitespace-nowrap w-full md:w-auto mt-2 md:mt-0">
                         Upgrade
                     </button>
                 </div>
@@ -342,7 +347,7 @@ const CreditsAndHistoryContent = ({ navigateTo }: { navigateTo: (tabId: string) 
             </div>
 
             {/* Credit Details Layout */}
-            <div className="bg-[#18181b] border border-[#27272A] rounded-xl p-6 flex flex-col hover:border-[#3F3F46] transition-colors shadow-sm">
+            <div className="bg-[#18181b] border border-[#27272A] rounded-xl p-6 flex flex-col transition-colors shadow-sm">
                 
                 {/* Header Row */}
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
@@ -362,7 +367,7 @@ const CreditsAndHistoryContent = ({ navigateTo }: { navigateTo: (tabId: string) 
                         </button>
                         <button
                             onClick={() => navigateTo('plans')}
-                            className="flex-1 sm:flex-none px-4 py-2 bg-[#4F46E5] hover:bg-[#4338CA] text-white text-sm font-semibold rounded-lg transition-colors shadow-sm active:scale-[0.98]">
+                            className="flex-1 sm:flex-none px-4 py-2 bg-[#E4E4E7] hover:bg-white text-black text-sm font-semibold rounded-lg transition-colors shadow-sm active:scale-[0.98]">
                             Buy credits
                         </button>
                     </div>
@@ -372,7 +377,7 @@ const CreditsAndHistoryContent = ({ navigateTo }: { navigateTo: (tabId: string) 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-0 lg:divide-x divide-y lg:divide-y-0 divide-[#27272A] border border-[#27272A] rounded-lg bg-[#121214]">
                     
                     {/* 1. Daily Credits */}
-                    <div className="p-5 flex flex-col justify-between h-36 border-t border-transparent hover:bg-[#18181B] transition-colors">
+                    <div className="p-5 flex flex-col justify-between h-36 border-t border-transparent transition-colors">
                         <div className="flex justify-between items-start mb-2">
                             <div className="flex items-center gap-2">
                                 <span className="text-sm font-semibold text-white">Daily</span>
@@ -397,7 +402,7 @@ const CreditsAndHistoryContent = ({ navigateTo }: { navigateTo: (tabId: string) 
                     </div>
 
                     {/* 2. Monthly Credits */}
-                    <div className="p-5 flex flex-col justify-between h-36 border-t border-transparent hover:bg-[#18181B] transition-colors">
+                    <div className="p-5 flex flex-col justify-between h-36 border-t border-transparent transition-colors">
                         <div className="flex justify-between items-start mb-2">
                             <div className="flex items-center gap-2">
                                 <span className="text-sm font-semibold text-white">Monthly</span>
@@ -422,7 +427,7 @@ const CreditsAndHistoryContent = ({ navigateTo }: { navigateTo: (tabId: string) 
                     </div>
 
                     {/* 3. Top-up Credits */}
-                    <div className="p-5 flex flex-col justify-between h-36 border-t border-transparent hover:bg-[#18181B] transition-colors">
+                    <div className="p-5 flex flex-col justify-between h-36 border-t border-transparent transition-colors">
                         <div className="flex justify-between items-start mb-2">
                             <span className="text-sm font-semibold text-white">Top-up</span>
                             <span className="text-sm font-medium text-white">1,401</span>
@@ -568,7 +573,7 @@ const PlansAndTopupContent = () => (
         </div>
 
         {/* Top-Up Section (Non-Subscription Credit Packs) */}
-        <div className="border-t border-[#27272A] pt-8 pb-4">
+        <div id="top-up-section" className="border-t border-[#27272A] pt-8 pb-4 scroll-mt-6">
             <h4 className="text-base font-bold text-white mb-2">Buy extra credits (Top-up)</h4>
             <p className="text-sm text-[#A1A1AA] mb-6">Extra credits never expire. Used only when Daily and Monthly allowances are depleted. (100 credits = $1)</p>
 
@@ -638,8 +643,8 @@ const PlansAndTopupContent = () => (
 const PricingCard = ({ tier, desc, price, cta, featuresHeader, features, primary = false }: any) => (
     <div className={`relative bg-[#18181b] p-8 rounded-xl flex flex-col h-full transition-all ${
         primary 
-            ? 'border-2 border-[#10B981] shadow-[0_0_25px_-5px_rgba(16,185,129,0.3)] hover:shadow-[0_0_35px_-5px_rgba(16,185,129,0.5)] z-10'
-            : 'border border-[#27272A] ring-1 ring-inset ring-white/5 hover:border-[#3F3F46]'
+            ? 'border-2 border-[#10B981] shadow-[0_0_25px_-5px_rgba(16,185,129,0.3)] hover:shadow-[0_0_25px_-5px_rgba(16,185,129,0.3)] z-10'
+            : 'border border-[#27272A] ring-1 ring-inset ring-white/5'
     }`}>
         {primary && (
              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#FCD34D] text-[#121214] text-[10px] font-bold px-3 py-1 rounded-md shadow-md whitespace-nowrap uppercase tracking-widest border border-[#F59E0B]">
@@ -745,7 +750,6 @@ const ReferralListModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () =
                                             </div>
                                             <div>
                                                 <h4 className="text-sm font-bold text-white">{ref.name}</h4>
-                                                <p className="text-xs text-[#71717A] mt-0.5">{ref.email}</p>
                                             </div>
                                         </div>
                                         
@@ -780,7 +784,17 @@ const ReferralListModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () =
 const EarnFreeCreditsContent = () => {
     const [checkInDay, setCheckInDay] = useState(3);
     const [isCheckInClaimed, setIsCheckInClaimed] = useState(true);
+    
+    // Growth Task Stats
     const totalInvited = 12;
+    const [unclaimedInvites, setUnclaimedInvites] = useState(3);
+    
+    // Conversion Task Stats
+    const totalConverted = 5;
+    const [unclaimedConversions, setUnclaimedConversions] = useState(1);
+    
+    // Exploration Task States
+    const [communityState, setCommunityState] = useState<'join' | 'claim' | 'claimed'>('join');
 
     const [isReferralModalOpen, setIsReferralModalOpen] = useState(false);
 
@@ -831,7 +845,7 @@ const EarnFreeCreditsContent = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {/* Check-in Card (Daily) */}
-                    <div className="bg-[#18181b] border border-[#27272A] rounded-xl p-5 hover:border-[#3F3F46] transition-all group flex flex-col justify-between h-44">
+                    <div className="bg-[#18181b] border border-[#27272A] rounded-xl p-5 transition-all group flex flex-col justify-between h-44">
                         <div className="flex justify-between items-start">
                             <div>
                                 <h4 className="text-base font-bold text-white mb-1">Daily Check-in</h4>
@@ -861,7 +875,7 @@ const EarnFreeCreditsContent = () => {
                     </div>
 
                     {/* Public Post Card (Daily) */}
-                    <div className="bg-[#18181b] border border-[#27272A] rounded-xl p-5 hover:border-[#3F3F46] transition-all group flex flex-col h-44">
+                    <div className="bg-[#18181b] border border-[#27272A] rounded-xl p-5 transition-all group flex flex-col h-44">
                         <div className="flex justify-between items-start mb-2">
                             <div>
                                 <h4 className="text-base font-bold text-white mb-1">Community First</h4>
@@ -891,7 +905,7 @@ const EarnFreeCreditsContent = () => {
                 <div className="space-y-4">
 
                     {/* Invite Registration */}
-                    <div className="bg-[#18181b] border border-[#27272A] rounded-xl p-5 flex items-center justify-between group hover:border-[#3F3F46] transition-colors relative overflow-hidden">
+                    <div className="bg-[#18181b] border border-[#27272A] rounded-xl p-5 flex items-center justify-between group transition-colors relative overflow-hidden">
                         <div className="flex gap-5 items-center">
                             <div className={`w-12 h-12 rounded-xl bg-transparent flex items-center justify-center shrink-0 border border-white/10 text-[#A1A1AA] group-hover:text-white group-hover:border-white/20 transition-colors`}>
                                 <Users size={22} strokeWidth={1.5} />
@@ -901,21 +915,37 @@ const EarnFreeCreditsContent = () => {
                                 <p className="text-sm text-[#A1A1AA] font-sans">Points for every friend who signs up.</p>
                                 <div className="mt-2 text-[10px] font-bold text-[#71717A] font-heading uppercase tracking-tighter flex items-center gap-2">
                                     <span><span className={colors.purple}>{totalInvited}</span> Total Invited</span>
+                                    {unclaimedInvites > 0 && (
+                                        <>
+                                            <span className="w-1 h-1 rounded-full bg-[#3F3F46]" />
+                                            <span className="text-amber-500/70">{unclaimedInvites} Unclaimed</span>
+                                        </>
+                                    )}
                                 </div>
                             </div>
                         </div>
                         <div className="flex items-center gap-5">
                             <span className={`text-sm font-heading font-bold ${colors.emerald}`}>+10<span className="text-[10px] opacity-60 ml-0.5">/each</span></span>
                             <div className="w-[100px] flex justify-end">
-                                <button className="px-0 py-2 w-full bg-white/5 hover:bg-white/10 text-white text-sm font-bold rounded-lg transition-all border border-white/10 active:scale-[0.98]">
-                                    Copy Link
+                                <button 
+                                    onClick={() => {
+                                        if (unclaimedInvites > 0) {
+                                            setUnclaimedInvites(0);
+                                        }
+                                    }}
+                                    className={`px-0 py-2 w-full text-sm font-bold rounded-lg transition-all border active:scale-[0.98] ${
+                                        unclaimedInvites > 0 
+                                        ? 'bg-[#5FA08E] hover:bg-[#4d8675] text-white border-[#5FA08E]/20 shadow-lg shadow-[#5FA08E]/10' 
+                                        : 'bg-white/5 hover:bg-white/10 text-white border-white/10'
+                                    }`}>
+                                    {unclaimedInvites > 0 ? 'Claim' : 'Copy Link'}
                                 </button>
                             </div>
                         </div>
                     </div>
 
                     {/* Invite Subscription */}
-                    <div className="bg-[#18181b] border border-[#27272A] rounded-xl p-5 flex items-center justify-between group hover:border-[#3F3F46] transition-colors">
+                    <div className="bg-[#18181b] border border-[#27272A] rounded-xl p-5 flex items-center justify-between group transition-colors">
                         <div className="flex gap-5 items-center">
                             <div className={`w-12 h-12 rounded-xl bg-transparent flex items-center justify-center shrink-0 border border-white/10 text-[#A1A1AA] group-hover:text-white group-hover:border-white/20 transition-colors`}>
                                 <CreditCard size={22} strokeWidth={1.5} />
@@ -924,7 +954,13 @@ const EarnFreeCreditsContent = () => {
                                 <h4 className="text-base font-bold text-white mb-0.5">Success Conversion</h4>
                                 <p className="text-sm text-[#A1A1AA] font-sans">Bonus when friends subscribe to Pro.</p>
                                 <div className="mt-2 text-[10px] font-bold text-[#71717A] font-heading uppercase tracking-tighter flex items-center gap-2">
-                                    <span><span className={colors.orange}>5</span> Total Converted</span>
+                                    <span><span className={colors.orange}>{totalConverted}</span> Total Converted</span>
+                                    {unclaimedConversions > 0 && (
+                                        <>
+                                            <span className="w-1 h-1 rounded-full bg-[#3F3F46]" />
+                                            <span className="text-amber-500/70">{unclaimedConversions} Unclaimed</span>
+                                        </>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -932,10 +968,20 @@ const EarnFreeCreditsContent = () => {
                             <span className={`text-sm font-heading font-bold ${colors.emerald}`}>+500</span>
                             <div className="w-[100px] flex justify-end">
                                 <button 
-                                    onClick={() => setIsReferralModalOpen(true)}
-                                    className="px-0 py-2 w-full bg-white/5 hover:bg-white/10 text-white text-sm font-bold rounded-lg transition-colors border border-white/10 active:scale-[0.98]"
+                                    onClick={() => {
+                                        if (unclaimedConversions > 0) {
+                                            setUnclaimedConversions(0);
+                                        } else {
+                                            setIsReferralModalOpen(true);
+                                        }
+                                    }}
+                                    className={`px-0 py-2 w-full text-sm font-bold rounded-lg transition-all border active:scale-[0.98] ${
+                                        unclaimedConversions > 0 
+                                        ? 'bg-[#5FA08E] hover:bg-[#4d8675] text-white border-[#5FA08E]/20 shadow-lg shadow-[#5FA08E]/10' 
+                                        : 'bg-white/5 hover:bg-white/10 text-white border-white/10'
+                                    }`}
                                 >
-                                    View
+                                    {unclaimedConversions > 0 ? 'Claim' : 'View'}
                                 </button>
                             </div>
                         </div>
@@ -954,7 +1000,7 @@ const EarnFreeCreditsContent = () => {
 
                 <div className="space-y-4">
                     {/* Join Community Task */}
-                    <div className="bg-[#18181b] border border-[#27272A] rounded-xl p-5 flex items-center justify-between group hover:border-[#3F3F46] transition-colors">
+                    <div className="bg-[#18181b] border border-[#27272A] rounded-xl p-5 flex items-center justify-between group transition-colors">
                         <div className="flex gap-5 items-center">
                             <div className={`w-12 h-12 rounded-xl bg-transparent flex items-center justify-center shrink-0 border border-white/10 text-[#A1A1AA] group-hover:text-white group-hover:border-white/20 transition-colors`}>
                                 <MessageSquare size={22} strokeWidth={1.5} />
@@ -967,8 +1013,19 @@ const EarnFreeCreditsContent = () => {
                         <div className="flex items-center gap-5">
                             <span className={`text-sm font-heading font-bold ${colors.emerald}`}>+50</span>
                             <div className="w-[100px] flex justify-end">
-                                <button className="px-0 py-2 w-full bg-white/5 hover:bg-white/10 text-white text-sm font-bold rounded-lg transition-colors border border-white/10 active:scale-[0.98]">
-                                    Go
+                                <button 
+                                    onClick={() => {
+                                        if (communityState === 'join') setCommunityState('claim');
+                                        else if (communityState === 'claim') setCommunityState('claimed');
+                                    }}
+                                    className={`px-0 py-2 w-full text-sm font-bold rounded-lg transition-all border active:scale-[0.98] ${
+                                        communityState === 'claim' 
+                                        ? 'bg-[#5FA08E] hover:bg-[#4d8675] text-white border-[#5FA08E]/20 shadow-lg shadow-[#5FA08E]/10' 
+                                        : communityState === 'claimed'
+                                        ? 'bg-[#27272A] text-[#71717A] border-[#3F3F46]'
+                                        : 'bg-white/5 hover:bg-white/10 text-white border-white/10'
+                                    }`}>
+                                    {communityState === 'join' ? 'Join' : communityState === 'claim' ? 'Claim' : 'Claimed'}
                                 </button>
                             </div>
                         </div>
