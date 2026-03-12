@@ -5,7 +5,13 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+        mono: ['"Source Code Pro"', 'monospace'],
+        heading: ['"Source Code Pro"', 'monospace'],
+      }
+    },
   },
   plugins: [],
 }

@@ -6,20 +6,20 @@ import {
     Gift,
     X,
     ChevronRight,
-    Clock,
     ArrowDownLeft,
     CheckCircle2,
     AlertCircle,
     Settings,
     Briefcase,
     History,
-    Twitter,
     MessageSquare,
-    Link,
-    Palette,
     Bell,
     Sparkles,
-    Plus
+    Calendar,
+    Clock,
+    Users,
+    CreditCard,
+    Palette
 } from 'lucide-react';
 
 // ==========================================
@@ -196,10 +196,10 @@ export const UnifiedSettingsModal = ({ isOpen, onClose, initialTab = 'credits' }
                         animate={{ scale: 1, opacity: 1, y: 0 }}
                         exit={{ scale: 0.98, opacity: 0, y: 10 }}
                         transition={{ type: "spring", damping: 25, stiffness: 300 }}
-                        className="relative w-full max-w-[1200px] h-[85vh] bg-[#0E0E10] border border-[#27272A] rounded-2xl shadow-2xl flex overflow-hidden flex-row"
+                        className="relative w-full h-full bg-[#0E0E10] flex overflow-hidden flex-row"
                     >
                         {/* V3 Sidebar Taxonomy */}
-                        <div className="w-64 bg-[#121214] border-r border-[#27272A] py-8 px-4 flex flex-col h-full overflow-y-auto">
+                        <div className="w-64 bg-[#121214] border-r border-[#27272A] py-8 px-4 flex flex-col h-full overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
 
                             <div className="space-y-6">
                                 {/* Section 1: Billing & Credits */}
@@ -233,12 +233,12 @@ export const UnifiedSettingsModal = ({ isOpen, onClose, initialTab = 'credits' }
                         </div>
 
                         {/* Content Area */}
-                        <div className="flex-1 bg-[#0A0A0B] overflow-y-auto relative py-10 px-12">
-                            <button onClick={onClose} className="absolute top-4 right-4 p-2 text-[#71717A] bg-[#18181B] border border-[#27272A] hover:bg-[#27272A] hover:text-white hover:border-[#3F3F46] rounded-full transition-all z-10 shadow-md flex items-center justify-center group">
-                                <X size={18} className="transition-transform group-hover:rotate-90" />
+                        <div className="flex-1 bg-[#0A0A0B] overflow-y-auto relative py-10 px-12 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                            <button onClick={onClose} className="absolute top-8 right-12 px-4 py-2 text-[#A1A1AA] hover:text-white bg-[#18181B] border border-[#27272A] hover:bg-[#27272A] hover:border-[#3F3F46] rounded-lg transition-all z-10 shadow-sm flex items-center justify-center gap-2 group text-sm font-semibold">
+                                <ArrowDownLeft size={16} className="rotate-90 group-hover:-translate-x-0.5 transition-transform" /> Go Back
                             </button>
 
-                            <div className="max-w-4xl">
+                            <div className="max-w-4xl mx-auto flex flex-col justify-start w-full">
                                 {activeTab === 'credits' && <CreditsAndHistoryContent navigateTo={setActiveTab} />}
                                 {activeTab === 'plans' && <PlansAndTopupContent />}
                                 {activeTab === 'earn' && <EarnFreeCreditsContent />}
@@ -279,15 +279,20 @@ const TabButton = ({ id, icon: Icon, label, active, onClick, badge }: any) => {
 };
 
 
-// --- V3 Credits & History Content (Round 23) ---
+// --- V3 Credits & History Content (Round 24) ---
 const CreditsAndHistoryContent = ({ navigateTo }: { navigateTo: (tabId: string) => void }) => {
     const [filter, setFilter] = useState<'all' | 'income' | 'expense'>('all');
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 5;
 
     const transactions = [
-        { type: 'AI Generation (Canvas)', amount: -3, date: 'Today, 14:02', income: false },
-        { type: 'Daily Reset', amount: '+10', date: 'Today, 00:00', income: true, expires: 'In 10 hours' },
-        { type: 'Code Export Action', amount: -25, date: 'Mar 1st', income: false },
-        { type: 'Top-up Purchase', amount: '+500', date: 'Feb 28th', income: true, expires: 'Never' },
+        { id: 1, type: 'AI Generation (Canvas)', amount: -3, date: 'Today, 14:02', income: false },
+        { id: 2, type: 'Daily Reset', amount: '+10', date: 'Today, 00:00', income: true, expires: 'In 10 hours' },
+        { id: 3, type: 'Code Export Action', amount: -25, date: 'Mar 1st', income: false },
+        { id: 4, type: 'Top-up Purchase', amount: '+500', date: 'Feb 28th', income: true, expires: 'Never' },
+        { id: 5, type: 'Design Generation', amount: -12, date: 'Feb 25th', income: false },
+        { id: 6, type: 'Community Reward', amount: '+50', date: 'Feb 20th', income: true, expires: 'Never' },
+        { id: 7, type: 'AI Generation (Chat)', amount: -2, date: 'Feb 19th', income: false },
     ];
 
     const filteredTransactions = transactions.filter(t => {
@@ -296,114 +301,158 @@ const CreditsAndHistoryContent = ({ navigateTo }: { navigateTo: (tabId: string) 
         return true;
     });
 
+    const totalPages = Math.ceil(filteredTransactions.length / itemsPerPage);
+    const currentTransactions = filteredTransactions.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
+
     return (
-        <div className="space-y-10 animate-in fade-in slide-in-from-bottom-2 duration-300 pb-10">
+        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300 pb-10">
             {/* Header / Page Title */}
             <div>
-                <h3 className="text-[28px] font-bold text-white mb-2 tracking-tight">
+                <h3 className="text-2xl font-semibold text-white mb-2">
                     Credits & history
                 </h3>
                 <p className="text-[#A1A1AA] text-sm">Monitor your current credit balances and review past transactions.</p>
             </div>
 
-            {/* Plan Banner (Restored Figure 1 Style) */}
-            <div className="bg-[#18181b]/80 border border-white/5 rounded-2xl p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <div>
-                    <h4 className="text-xl font-bold text-white tracking-tight mb-1">You're on Free Plan</h4>
-                    <p className="text-sm text-[#A1A1AA]">Limited to 10 daily credits with sequential generation speeds.</p>
+            {/* Plan Status Card (Full width) */}
+            <div className="bg-[#18181b] border border-[#27272A] rounded-xl p-6 flex flex-col justify-center hover:border-[#3F3F46] transition-colors shadow-sm">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-5">
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-400 via-pink-500 to-purple-600 flex-shrink-0 shadow-inner" />
+                        <div>
+                            <h4 className="text-base font-semibold text-white mb-0.5">You're on Free Plan</h4>
+                            <p className="text-sm text-[#A1A1AA]">Upgrade anytime to unlock higher limits.</p>
+                        </div>
+                    </div>
+                    <button
+                        onClick={() => navigateTo('plans')}
+                        className="px-6 py-2.5 bg-white hover:bg-[#F4F4F5] text-black text-sm font-semibold rounded-lg transition-colors shadow-sm active:scale-[0.98] whitespace-nowrap w-full md:w-auto mt-2 md:mt-0">
+                        Upgrade
+                    </button>
                 </div>
-                <button
-                    onClick={() => navigateTo('plans')}
-                    className="px-6 py-2.5 bg-[#4F46E5] hover:bg-[#4338CA] text-white text-sm font-bold rounded-xl transition-colors shadow-sm whitespace-nowrap active:scale-[0.98]">
-                    Upgrade
-                </button>
+                <div className="mt-6 pt-5 border-t border-[#27272A] flex items-center gap-2">
+                    <Zap size={16} className="text-amber-500" fill="currentColor" />
+                    <p className="text-sm font-medium text-[#A1A1AA]">
+                        You currently receive <span className="text-white font-bold">10 free credits</span> daily.
+                    </p>
+                </div>
             </div>
 
-            {/* Asymmetric Resource Grid (Left Two / Right One) */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-                {/* Left Column (Daily & Monthly Stacked) */}
-                <div className="lg:col-span-2 flex flex-col gap-6">
-                    {/* 1. Daily Credits with Thick Bar */}
-                    <div className="bg-white/[0.02] ring-1 ring-white/5 rounded-3xl p-7 relative overflow-hidden flex flex-col hover:bg-white/[0.04] transition-all">
-                        <div className="flex justify-between items-start mb-6">
-                            <div>
-                                <span className="text-sm font-bold text-blue-400 uppercase tracking-widest block mb-1">Daily Limit</span>
-                                <span className="text-xs text-[#71717A]">Resets in 8 hrs (UTC)</span>
-                            </div>
-                            <span className="text-sm font-bold text-white">4 / <span className="text-[#a1a1aa]">10</span></span>
-                        </div>
-
-                        <div className="mt-auto">
-                            <div className="h-4 w-full bg-black/40 rounded-full overflow-hidden flex ring-1 ring-inset ring-black/50 border border-white/5">
-                                <motion.div initial={{ width: 0 }} animate={{ width: "40%" }} className="h-full bg-blue-500 rounded-full" />
-                            </div>
+            {/* Credit Details Layout */}
+            <div className="bg-[#18181b] border border-[#27272A] rounded-xl p-6 flex flex-col hover:border-[#3F3F46] transition-colors shadow-sm">
+                
+                {/* Header Row */}
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                    <div className="flex items-center gap-4">
+                        <h4 className="text-lg font-bold text-white tracking-tight">Credit Details</h4>
+                        <div className="flex items-center gap-2 px-3 py-1.5 bg-[#4F46E5]/10 border border-[#4F46E5]/20 rounded-lg">
+                            <Zap size={16} className="text-[#4F46E5]" fill="currentColor" />
+                            <span className="text-sm font-bold text-[#E4E4E7]">Total: <span className="text-white text-base">1,405</span></span>
                         </div>
                     </div>
-
-                    {/* 2. Monthly Credits with Thick Bar */}
-                    <div className="bg-white/[0.02] ring-1 ring-white/5 rounded-3xl p-7 relative overflow-hidden flex flex-col opacity-70 grayscale hover:grayscale-0 hover:opacity-100 transition-all">
-                        <div className="flex justify-between items-start mb-6">
-                            <div>
-                                <span className="text-sm font-bold text-purple-400 uppercase tracking-widest block mb-1">Monthly Limit</span>
-                                <span className="text-xs text-[#71717A]">Requires Pro plan</span>
-                            </div>
-                            <span className="text-sm font-bold text-[#A1A1AA]">0 / 0</span>
-                        </div>
-
-                        <div className="mt-auto">
-                            <div className="h-4 w-full bg-black/40 rounded-full overflow-hidden flex ring-1 ring-inset ring-black/50 border border-white/5">
-                                <motion.div initial={{ width: 0 }} animate={{ width: "0%" }} className="h-full bg-purple-500 rounded-full" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Right Column (Top-up Repository & CTA) */}
-                <div className="lg:col-span-1 bg-white/[0.02] ring-1 ring-white/5 rounded-3xl p-7 relative overflow-hidden flex flex-col justify-between hover:bg-white/[0.04] transition-all group min-h-[300px]">
-                    {/* Absolute giant background glow for the right card */}
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 rounded-full blur-3xl -z-10 group-hover:bg-emerald-500/10 transition-colors pointer-events-none" />
-
-                    <div>
-                        <div className="flex justify-between items-start mb-4">
-                            <span className="text-sm font-bold text-emerald-400 uppercase tracking-widest">Top-up Repo</span>
-                            <div className="bg-emerald-500/10 text-emerald-400 text-[10px] font-bold px-2 py-1 rounded tracking-wider">Never expire</div>
-                        </div>
-
-                        <div className="flex flex-col mt-4">
-                            <span className="text-[42px] font-extrabold text-white tracking-tight leading-none mb-1">1,405</span>
-                            <span className="text-sm font-medium text-[#71717A]">credits available</span>
-                        </div>
-                    </div>
-
-                    <div className="mt-8 pt-6 border-t border-white/5">
+                    
+                    <div className="flex gap-2 w-full sm:w-auto">
+                        <button
+                            onClick={() => navigateTo('earn')}
+                            className="flex-1 sm:flex-none px-4 py-2 bg-[#27272A] hover:bg-[#3F3F46] text-white text-sm font-semibold rounded-lg transition-colors border border-[#3F3F46] shadow-sm active:scale-[0.98]">
+                            Earn
+                        </button>
                         <button
                             onClick={() => navigateTo('plans')}
-                            className="w-full py-3.5 bg-white hover:bg-[#F4F4F5] text-black text-sm font-bold rounded-xl transition-all shadow-sm active:scale-[0.98] flex items-center justify-center gap-2">
-                            <Plus size={18} strokeWidth={2.5} /> Buy Credit
+                            className="flex-1 sm:flex-none px-4 py-2 bg-[#4F46E5] hover:bg-[#4338CA] text-white text-sm font-semibold rounded-lg transition-colors shadow-sm active:scale-[0.98]">
+                            Buy credits
                         </button>
                     </div>
                 </div>
 
-            </div>
-
-            {/* Transaction History Section (Polished Hierarchy) */}
-            <div className="pt-8">
-                <div className="bg-[#18181b]/50 rounded-t-2xl p-5 border-b border-white/5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                    <div>
-                        <h4 className="text-lg font-bold text-white tracking-tight">Transaction log</h4>
-                        <p className="text-xs text-[#71717A] mt-1">Review your recent activity and credit usage.</p>
+                {/* Sub-cards Grid */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-0 lg:divide-x divide-y lg:divide-y-0 divide-[#27272A] border border-[#27272A] rounded-lg bg-[#121214]">
+                    
+                    {/* 1. Daily Credits */}
+                    <div className="p-5 flex flex-col justify-between h-36 border-t border-transparent hover:bg-[#18181B] transition-colors">
+                        <div className="flex justify-between items-start mb-2">
+                            <div className="flex items-center gap-2">
+                                <span className="text-sm font-semibold text-white">Daily</span>
+                                <div className="group relative cursor-help">
+                                    <div className="w-3.5 h-3.5 rounded-full border border-[#3F3F46] text-[#A1A1AA] flex items-center justify-center text-[9px] hover:bg-[#27272A] hover:text-white transition-colors">
+                                        ?
+                                    </div>
+                                    <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-48 bg-[#27272A] border border-[#3F3F46] rounded-lg p-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10 shadow-xl pointer-events-none">
+                                        <ul className="space-y-1.5 text-xs text-[#A1A1AA] text-left">
+                                            <li className="flex items-start gap-1.5"><span className="text-white">•</span> consumed first</li>
+                                            <li className="flex items-start gap-1.5"><span className="text-white">•</span> Reset daily (UTC 0)</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <span className="text-sm font-medium text-white">4 <span className="text-[#A1A1AA]">/ 10</span></span>
+                        </div>
+                        <span className="text-xs text-[#71717A] mb-4">Resets daily at UTC 0.</span>
+                        <div className="h-4 w-full bg-[#27272A] rounded-full overflow-hidden mt-auto shadow-inner">
+                            <motion.div initial={{ width: 0 }} animate={{ width: "40%" }} className="h-full bg-blue-500 rounded-full" />
+                        </div>
                     </div>
 
-                    {/* Integrated Sleek Segmented Control */}
-                    <div className="flex bg-[#0A0A0B] rounded-lg p-1.5 ring-1 ring-white/5">
+                    {/* 2. Monthly Credits */}
+                    <div className="p-5 flex flex-col justify-between h-36 border-t border-transparent hover:bg-[#18181B] transition-colors">
+                        <div className="flex justify-between items-start mb-2">
+                            <div className="flex items-center gap-2">
+                                <span className="text-sm font-semibold text-white">Monthly</span>
+                                <div className="group relative cursor-help">
+                                    <div className="w-3.5 h-3.5 rounded-full border border-[#3F3F46] text-[#A1A1AA] flex items-center justify-center text-[9px] hover:bg-[#27272A] hover:text-white transition-colors">
+                                        ?
+                                    </div>
+                                    <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-48 bg-[#27272A] border border-[#3F3F46] rounded-lg p-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10 shadow-xl pointer-events-none">
+                                        <ul className="space-y-1.5 text-xs text-[#A1A1AA] text-left">
+                                            <li className="flex items-start gap-1.5"><span className="text-white">•</span> consumed second</li>
+                                            <li className="flex items-start gap-1.5"><span className="text-white">•</span> Pro credits rollover</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <span className="text-sm font-medium text-white">0 <span className="text-[#A1A1AA]">/ 0</span></span>
+                        </div>
+                        <span className="text-xs text-[#71717A] mb-4">Rollover enabled.</span>
+                        <div className="h-4 w-full bg-[#27272A] rounded-full overflow-hidden mt-auto shadow-inner">
+                            <motion.div initial={{ width: 0 }} animate={{ width: "0%" }} className="h-full bg-purple-500 rounded-full" />
+                        </div>
+                    </div>
+
+                    {/* 3. Top-up Credits */}
+                    <div className="p-5 flex flex-col justify-between h-36 border-t border-transparent hover:bg-[#18181B] transition-colors">
+                        <div className="flex justify-between items-start mb-2">
+                            <span className="text-sm font-semibold text-white">Top-up</span>
+                            <span className="text-sm font-medium text-white">1,401</span>
+                        </div>
+                        <span className="text-xs text-[#71717A] mb-4">Non-expiring standalone.</span>
+                        <div className="h-4 w-full bg-[#27272A] rounded-full overflow-hidden mt-auto shadow-inner">
+                            <motion.div initial={{ width: 0 }} animate={{ width: "100%" }} className="h-full bg-emerald-500 rounded-full" />
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            {/* Transaction History Section (Paginated) */}
+            <div className="pt-4">
+                <div className="flex flex-col gap-4 mb-4">
+                    <h4 className="text-base font-semibold text-white">Transaction log</h4>
+
+                    {/* Full-width Sleek Segmented Control */}
+                    <div className="flex bg-[#18181b] border border-[#27272A] rounded-lg p-1 w-full">
                         {(['all', 'income', 'expense'] as const).map(type => (
                             <button
                                 key={type}
-                                onClick={() => setFilter(type)}
-                                className={`px-5 py-2 text-xs uppercase tracking-wider font-bold rounded-md transition-all ${filter === type
-                                    ? 'bg-[#27272A] text-white shadow-sm ring-1 ring-white/10'
-                                    : 'text-[#71717A] hover:text-[#A1A1AA] hover:bg-[#27272A]/50'
+                                onClick={() => {
+                                    setFilter(type);
+                                    setCurrentPage(1); // Reset to first page on filter change
+                                }}
+                                className={`flex-1 py-2 text-sm capitalize font-medium rounded-md transition-colors border border-solid ${filter === type
+                                    ? 'bg-[#27272A] text-white shadow-sm border-[#3F3F46]'
+                                    : 'text-[#A1A1AA] hover:text-white hover:bg-[#27272A]/50 border-transparent'
                                     }`}
                             >
                                 {type}
@@ -412,35 +461,58 @@ const CreditsAndHistoryContent = ({ navigateTo }: { navigateTo: (tabId: string) 
                     </div>
                 </div>
 
-                <div className="rounded-b-2xl overflow-hidden bg-white/[0.02]">
-                    <div className="grid grid-cols-5 px-6 py-4 border-b border-white/5 text-[11px] font-bold text-[#71717A] tracking-widest uppercase bg-black/20">
-                        <div className="col-span-2">Transaction</div>
+                <div className="bg-[#18181b] border border-[#27272A] rounded-xl overflow-hidden">
+                    <div className="grid grid-cols-4 px-5 py-3 border-b border-[#27272A] text-xs font-medium text-[#71717A] bg-[#121214]">
+                        <div className="col-span-2">Description</div>
                         <div>Date</div>
-                        <div>Expires</div>
                         <div className="text-right">Amount</div>
                     </div>
-                    <div>
-                        {filteredTransactions.map((tr, i) => (
-                            <div key={i} className={`grid grid-cols-5 px-6 py-4 items-center text-sm transition-colors group cursor-default ${i !== filteredTransactions.length - 1 ? 'border-b border-white/5' : ''} hover:bg-white/[0.04]`}>
-                                <div className="col-span-2 flex items-center gap-4">
-                                    <div className={`w-9 h-9 rounded-full flex items-center justify-center transition-colors ${tr.income ? 'bg-emerald-500/10 text-emerald-500 group-hover:bg-emerald-500/20' : 'bg-[#27272A] text-[#A1A1AA] group-hover:bg-[#3F3F46]'}`}>
+                    {/* Fixed height container to prevent scrollbar jumping */}
+                    <div className="divide-y divide-[#27272A] min-h-[310px]">
+                        {currentTransactions.map((tr) => (
+                            <div key={tr.id} className={`grid grid-cols-4 px-5 py-3.5 items-center text-sm hover:bg-[#27272A]/30 transition-colors`}>
+                                <div className="col-span-2 flex items-center gap-3">
+                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center border ${tr.income ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500' : 'bg-[#27272A] border-[#3F3F46] text-[#A1A1AA]'}`}>
                                         {tr.income ? <ArrowDownLeft size={14} strokeWidth={2.5} /> : <Zap size={14} fill="currentColor" />}
                                     </div>
-                                    <span className="text-[#E4E4E7] font-semibold text-sm">{tr.type}</span>
+                                    <div className="flex flex-col">
+                                        <span className="text-[#E4E4E7] font-medium text-sm">{tr.type}</span>
+                                        {tr.expires && <span className="text-[11px] text-[#71717A]">{tr.expires}</span>}
+                                    </div>
                                 </div>
-                                <div className="text-[#71717A] text-xs flex items-center gap-1.5 font-medium"><Clock size={12} className="opacity-70" />{tr.date}</div>
-                                <div className="text-[#71717A] text-xs font-medium">{tr.expires || <span className="text-[#3F3F46] font-normal">-</span>}</div>
-                                <div className={`text-right font-bold text-[15px] ${tr.income ? 'text-emerald-400' : 'text-white'}`}>{tr.amount}</div>
+                                <div className="text-[#A1A1AA] text-xs font-medium">{tr.date}</div>
+                                <div className={`text-right font-medium text-sm ${tr.income ? 'text-emerald-400' : 'text-white'}`}>{tr.amount}</div>
                             </div>
                         ))}
+                        {currentTransactions.length === 0 && (
+                            <div className="px-5 py-8 text-center text-sm text-[#71717A]">
+                                No transactions found.
+                            </div>
+                        )}
                     </div>
-                </div>
 
-                {/* Documentation Link Relocated */}
-                <div className="mt-8 flex justify-center">
-                    <button className="text-[12px] font-bold uppercase tracking-wider text-[#71717A] hover:text-white transition-colors flex items-center gap-1.5 cursor-pointer">
-                        <AlertCircle size={14} strokeWidth={2.5} /> How do credits work?
-                    </button>
+                    {/* Pagination Footer */}
+                    {filteredTransactions.length > 0 && (
+                        <div className="px-5 py-3 border-t border-[#27272A] flex justify-between items-center bg-[#121214]">
+                            <span className="text-xs text-[#71717A]">
+                                Showing {(currentPage - 1) * itemsPerPage + 1}-{Math.min(currentPage * itemsPerPage, filteredTransactions.length)} of {filteredTransactions.length}
+                            </span>
+                            <div className="flex items-center gap-2">
+                                <button
+                                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                                    disabled={currentPage === 1}
+                                    className="px-3 py-1.5 text-xs text-[#A1A1AA] hover:text-white bg-[#18181b] border border-[#27272A] hover:border-[#3F3F46] rounded-md disabled:opacity-50 disabled:pointer-events-none transition-colors">
+                                    Previous
+                                </button>
+                                <button
+                                    onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                                    disabled={currentPage === totalPages}
+                                    className="px-3 py-1.5 text-xs text-[#A1A1AA] hover:text-white bg-[#18181b] border border-[#27272A] hover:border-[#3F3F46] rounded-md disabled:opacity-50 disabled:pointer-events-none transition-colors">
+                                    Next
+                                </button>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
@@ -449,26 +521,21 @@ const CreditsAndHistoryContent = ({ navigateTo }: { navigateTo: (tabId: string) 
 
 // --- V3 Plans & Topup Content ---
 const PlansAndTopupContent = () => (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
-        <div className="mb-6">
-            <h3 className="text-[28px] font-bold text-white mb-1 tracking-tight">Plans & top-up</h3>
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300 pb-10">
+        <div>
+            <h3 className="text-2xl font-semibold text-white mb-2">Plans & top-up</h3>
             <p className="text-[#A1A1AA] text-sm">Upgrade your tier or purchase extra standalone credits.</p>
         </div>
 
-        <div className="bg-[#18181b] border border-[#27272A] rounded-2xl p-6 mb-6 flex justify-between items-center">
+        <div className="bg-[#18181b] border border-[#27272A] rounded-xl p-6 flex justify-between items-center">
             <div>
                 <h4 className="text-xl font-bold text-white tracking-tight mb-1">You're on Free Plan</h4>
                 <p className="text-sm text-[#A1A1AA]">Limited to 10 daily credits with sequential generation speeds.</p>
             </div>
-            <button
-                onClick={() => document.getElementById('pricing-cards')?.scrollIntoView({ behavior: 'smooth' })}
-                className="px-5 py-2 bg-[#4F46E5] hover:bg-[#4338CA] text-white text-xs font-bold rounded-lg transition-colors shadow-sm whitespace-nowrap">
-                Upgrade
-            </button>
         </div>
 
         {/* Bottom Row: Pricing Cards */}
-        <div id="pricing-cards" className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 pt-4">
+        <div id="pricing-cards" className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-2">
             {/* FREE Card */}
             <PricingCard
                 tier="Free"
@@ -509,7 +576,7 @@ const PlansAndTopupContent = () => (
                 <div className="bg-[#121214] border border-[#27272A] rounded-xl p-5 flex flex-col transition-colors">
                     <div className="flex justify-between mb-2 flex-1">
                         <div className="flex flex-col">
-                            <span className="font-bold text-white text-lg">500 Credits</span>
+                            <span className="font-heading font-bold text-white text-lg">500 Credits</span>
                             {/* Empty spacer to align with other cards that have bonus text */}
                             <span className="text-xs text-transparent font-medium select-none" aria-hidden="true">+0% Bonus</span>
                         </div>
@@ -522,7 +589,7 @@ const PlansAndTopupContent = () => (
                     <div className="absolute -top-2.5 right-4 bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] text-white text-[10px] uppercase font-bold px-2 py-0.5 rounded-full shadow-lg">Popular</div>
                     <div className="flex justify-between mb-2 flex-1">
                         <div className="flex flex-col">
-                            <span className="font-bold text-white text-lg">1,100 Credits</span>
+                            <span className="font-heading font-bold text-white text-lg">1,100 Credits</span>
                             <span className="text-xs text-emerald-400 font-medium">+10% Bonus</span>
                         </div>
                         <span className="font-bold text-white">$10</span>
@@ -533,7 +600,7 @@ const PlansAndTopupContent = () => (
                 <div className="bg-[#121214] border border-[#27272A] rounded-xl p-5 flex flex-col transition-colors">
                     <div className="flex justify-between mb-2 flex-1">
                         <div className="flex flex-col">
-                            <span className="font-bold text-white text-lg">2,400 Credits</span>
+                            <span className="font-heading font-bold text-white text-lg">2,400 Credits</span>
                             <span className="text-xs text-emerald-400 font-medium">+20% Bonus</span>
                         </div>
                         <span className="font-bold text-[#A1A1AA]">$20</span>
@@ -569,31 +636,41 @@ const PlansAndTopupContent = () => (
 );
 
 const PricingCard = ({ tier, desc, price, cta, featuresHeader, features, primary = false }: any) => (
-    <div className="bg-[#121214] border border-[#27272A] p-8 rounded-2xl flex flex-col h-full ring-1 ring-inset ring-white/5">
-        <h3 className="text-xl font-bold text-white mb-2">{tier}</h3>
+    <div className={`relative bg-[#18181b] p-8 rounded-xl flex flex-col h-full transition-all ${
+        primary 
+            ? 'border-2 border-[#10B981] shadow-[0_0_25px_-5px_rgba(16,185,129,0.3)] hover:shadow-[0_0_35px_-5px_rgba(16,185,129,0.5)] z-10'
+            : 'border border-[#27272A] ring-1 ring-inset ring-white/5 hover:border-[#3F3F46]'
+    }`}>
+        {primary && (
+             <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#FCD34D] text-[#121214] text-[10px] font-bold px-3 py-1 rounded-md shadow-md whitespace-nowrap uppercase tracking-widest border border-[#F59E0B]">
+                 Most Popular
+             </div>
+        )}
+        <h3 className={`text-xl font-bold text-white mb-2`}>{tier}</h3>
         <p className="text-sm text-[#A1A1AA] mb-8 h-12 leading-relaxed">{desc}</p>
 
         <div className="flex items-baseline gap-2 mb-8">
-            <span className="text-4xl font-extrabold text-white tracking-tight">${price}</span>
-            <span className="text-sm text-[#71717A] font-medium">per month</span>
+            <span className="text-4xl font-heading font-extrabold tracking-tight text-white mb-1">
+                ${price} 
+            </span>
+            <span className="text-sm text-[#71717A] font-medium block">per month</span>
         </div>
 
-        <button className={`w-full py-3 rounded-lg font-bold text-sm transition-colors mb-6 shadow-sm ${primary ? 'bg-[#4F46E5] hover:bg-[#4338CA] text-white' : 'bg-[#27272A] hover:bg-[#3F3F46] text-white'
+        <button className={`w-full py-3 font-bold text-sm transition-all mb-6 shadow-sm ${
+            primary 
+                ? 'bg-[#10B981] hover:bg-[#059669] text-[#121214] rounded-lg active:scale-[0.98]' // Retro green blocky button
+                : 'bg-[#27272A] hover:bg-[#3F3F46] text-white rounded-lg active:scale-[0.98]'
             }`}>
             {cta}
         </button>
 
-        <div className="w-full bg-[#18181b] border border-[#27272A] rounded-lg px-4 py-3 flex justify-between items-center text-sm text-white mb-8 cursor-pointer hover:bg-[#27272A] transition-colors">
-            <span className="font-medium">Credit allocation details</span>
-            <ChevronRight size={16} className="text-[#71717A]" />
-        </div>
-
-        <div className="flex-1">
+        <div className={`flex-1 ${primary ? 'bg-[#10B981]/5 border border-[#10B981]/20 rounded-xl p-5 -mx-3' : ''}`}>
             <h5 className="text-sm font-bold text-white mb-4">{featuresHeader}</h5>
             <ul className="space-y-4">
                 {features.map((f: any, i: any) => (
                     <li key={i} className="flex items-start gap-3 text-sm text-[#D4D4D8]">
-                        <CheckCircle2 size={16} className="text-[#E4E4E7] shrink-0 mt-0.5" /> {f}
+                        <CheckCircle2 size={16} className={`${primary ? 'text-[#10B981]' : 'text-[#E4E4E7]'} shrink-0 mt-0.5`} /> 
+                        <span className={primary && i < 2 ? 'text-white font-medium' : ''}>{f}</span>
                     </li>
                 ))}
             </ul>
@@ -604,67 +681,312 @@ const PricingCard = ({ tier, desc, price, cta, featuresHeader, features, primary
 
 
 
+// ==========================================
+// Referral List Modal Component
+// ==========================================
+const ReferralListModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) => {
+    // Mock data for referrals
+    const referrals = [
+        { id: 1, name: 'Alex M.', email: 'alex.m@abc.com', status: 'converted', date: '2024-03-10' },
+        { id: 2, name: 'Sarah J.', email: 's.jones@xyz.net', status: 'converted', date: '2024-03-08' },
+        { id: 3, name: 'Michael T.', email: 'm.tech@startup.io', status: 'registered', date: '2024-03-05' },
+        { id: 4, name: 'Emma W.', email: 'emma@design.co', status: 'registered', date: '2024-03-01' },
+        { id: 5, name: 'David L.', email: 'david.l@hello.com', status: 'converted', date: '2024-02-28' },
+    ];
 
+    if (!isOpen) return null;
 
-const EarnFreeCreditsContent = () => (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
-        <div>
-            <h3 className="text-[28px] font-bold text-white mb-1 tracking-tight">Earn Free Credits</h3>
-            <p className="text-[#A1A1AA] text-sm">Complete tasks to earn extra generation credits permanently or daily.</p>
-        </div>
+    return (
+        <AnimatePresence>
+            {isOpen && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
+                    {/* Backdrop */}
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                        onClick={onClose}
+                    />
 
-        <div className="grid gap-4 mt-6">
-            <TaskCard
-                icon={Twitter}
-                title="Follow us on Twitter"
-                desc="Follow our official handle to receive a one-time 50 credit bonus."
-                reward="+50 Credits"
-                action="Follow"
-                status="pending"
-            />
-            <TaskCard
-                icon={MessageSquare}
-                title="Join our Discord community"
-                desc="Chat with other creators and get 50 free credits right away."
-                reward="+50 Credits"
-                action="Join"
-                status="pending"
-            />
-            <TaskCard
-                icon={Link}
-                title="Invite a teammate (0/5)"
-                desc="Invite your friends. Once they sign up, you both get +10 permanent daily limit."
-                reward="+10 Daily Limit"
-                action="Copy Link"
-                status="progress"
-                progress={0}
-            />
-        </div>
-    </div>
-);
+                    {/* Modal Content */}
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                        className="relative w-full max-w-2xl bg-[#0a0a0b] border border-[#27272A] rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh]"
+                    >
+                        {/* Header */}
+                        <div className="px-6 py-5 border-b border-[#27272A] flex justify-between items-center bg-[#121214] shrink-0">
+                            <div>
+                                <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                                    <Users className="text-[#A1A1AA]" size={20} />
+                                    Your Referrals
+                                </h3>
+                                <p className="text-sm text-[#A1A1AA] mt-1">Track your invites and successful conversions.</p>
+                            </div>
+                            <button
+                                onClick={onClose}
+                                className="text-[#A1A1AA] hover:text-white transition-colors p-2 rounded-lg hover:bg-[#27272A]"
+                            >
+                                <X size={20} />
+                            </button>
+                        </div>
 
-const TaskCard = ({ icon: Icon, title, desc, reward, action }: any) => (
-    <div className="bg-[#18181b] border border-[#27272A] rounded-2xl p-5 flex items-center justify-between group hover:border-[#3F3F46] transition-colors">
-        <div className="flex gap-4 items-center">
-            <div className="w-12 h-12 rounded-full bg-[#27272A] text-[#A1A1AA] flex items-center justify-center shrink-0">
-                <Icon size={20} />
-            </div>
+                        {/* List */}
+                        <div className="flex-1 overflow-y-auto p-6 scrollbar-thin scrollbar-thumb-[#27272A] scrollbar-track-transparent">
+                            <div className="space-y-3">
+                                {referrals.map((ref) => (
+                                    <div key={ref.id} className="flex flex-wrap items-center justify-between p-4 bg-[#18181b] border border-[#27272A] rounded-xl hover:border-[#3F3F46] transition-colors gap-4">
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-10 h-10 rounded-full bg-[#27272A] flex items-center justify-center text-white font-bold text-sm shrink-0">
+                                                {ref.name.charAt(0)}
+                                            </div>
+                                            <div>
+                                                <h4 className="text-sm font-bold text-white">{ref.name}</h4>
+                                                <p className="text-xs text-[#71717A] mt-0.5">{ref.email}</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div className="flex items-center gap-6 ml-auto">
+                                            <span className="text-xs text-[#71717A] whitespace-nowrap">{ref.date}</span>
+                                            
+                                            <div className="w-[130px] flex justify-end">
+                                                {ref.status === 'converted' ? (
+                                                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-bold text-[#5FA08E] bg-[#5FA08E]/10 rounded-md border border-[#5FA08E]/20">
+                                                        <CreditCard size={12} strokeWidth={2.5} />
+                                                        Pro Subscriber
+                                                    </span>
+                                                ) : (
+                                                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-bold text-[#A1A1AA] bg-[#27272A] rounded-md border border-[#3F3F46]">
+                                                        <User size={12} strokeWidth={2.5} />
+                                                        Registered
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </motion.div>
+                </div>
+            )}
+        </AnimatePresence>
+    );
+};
+
+const EarnFreeCreditsContent = () => {
+    const [checkInDay, setCheckInDay] = useState(3);
+    const [isCheckInClaimed, setIsCheckInClaimed] = useState(true);
+    const totalInvited = 12;
+
+    const [isReferralModalOpen, setIsReferralModalOpen] = useState(false);
+
+    // Muted color palette (Desaturated)
+    const colors = {
+        emerald: 'text-[#5FA08E]', // Muted Emerald
+        emeraldBg: 'bg-[#5FA08E]',
+        emeraldBorder: 'border-[#5FA08E]/20',
+        emeraldGlow: 'shadow-[#5FA08E]/10',
+
+        indigo: 'text-[#6D77B2]', // Muted Indigo
+        indigoBg: 'bg-[#6D77B2]',
+
+        purple: 'text-[#8C76A5]', // Muted Purple
+        purpleBg: 'bg-[#8C76A5]',
+
+        orange: 'text-[#B28A6D]', // Muted Orange
+        orangeBg: 'bg-[#B28A6D]'
+    };
+
+    const handleCheckIn = () => {
+        if (isCheckInClaimed && checkInDay < 7) {
+            setCheckInDay(prev => prev + 1);
+            setIsCheckInClaimed(false);
+        } else if (!isCheckInClaimed) {
+            setIsCheckInClaimed(true);
+        }
+    };
+
+    return (
+        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300 pb-10">
             <div>
-                <h4 className="text-base font-bold text-white mb-0.5">{title}</h4>
-                <p className="text-sm text-[#A1A1AA] max-w-sm">{desc}</p>
+                <h3 className="text-2xl font-semibold text-white mb-2 tracking-tight">Earn Free Credits</h3>
+                <p className="text-[#A1A1AA] text-sm font-sans leading-relaxed">Complete tasks to earn extra generation credits permanently or daily.</p>
             </div>
+
+            {/* 1. Daily Missions */}
+            <div>
+                <div className="flex items-center gap-2 mb-6">
+                    <span className={`w-8 h-8 rounded-lg ${colors.indigoBg}/10 ${colors.indigo} flex items-center justify-center`}>
+                        <Calendar size={18} />
+                    </span>
+                    <h4 className="text-lg font-bold text-white tracking-tight">Daily Missions</h4>
+                    <span className="ml-auto text-xs text-[#A1A1AA] font-sans flex items-center gap-1.5">
+                        <Clock size={14} /> Resets in 5h 22m
+                    </span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Check-in Card (Daily) */}
+                    <div className="bg-[#18181b] border border-[#27272A] rounded-xl p-5 hover:border-[#3F3F46] transition-all group flex flex-col justify-between h-44">
+                        <div className="flex justify-between items-start">
+                            <div>
+                                <h4 className="text-base font-bold text-white mb-1">Daily Check-in</h4>
+                                <p className="text-xs text-[#A1A1AA] font-sans">Claim your daily bonus and build your streak.</p>
+                            </div>
+                            <span className={`text-sm font-heading font-bold ${colors.emerald}`}>+5</span>
+                        </div>
+
+                        <div className="flex gap-2.5 my-4">
+                            {[1, 2, 3, 4, 5, 6, 7].map((day) => (
+                                <div key={day} className="flex-1 flex flex-col items-center gap-1.5">
+                                    <div className={`w-full h-1.5 rounded-full ${day < checkInDay || (day === checkInDay && isCheckInClaimed) ? colors.emeraldBg : 'bg-[#27272A]'}`} />
+                                    <span className={`text-[10px] font-bold font-heading ${day < checkInDay || (day === checkInDay && isCheckInClaimed) ? colors.emerald : 'text-[#71717A]'}`}>D{day}</span>
+                                </div>
+                            ))}
+                        </div>
+
+                        <button
+                            onClick={handleCheckIn}
+                            className={`w-full py-2 text-xs font-bold rounded-lg transition-all shadow-lg active:scale-[0.98] ${isCheckInClaimed
+                                ? 'bg-[#27272A] text-[#71717A] cursor-default border border-[#3F3F46]'
+                                : `${colors.emeraldBg} text-white ${colors.emeraldGlow}`
+                                }`}
+                        >
+                            {isCheckInClaimed ? `Claimed (Day ${checkInDay})` : `Claim Day ${checkInDay}`}
+                        </button>
+                    </div>
+
+                    {/* Public Post Card (Daily) */}
+                    <div className="bg-[#18181b] border border-[#27272A] rounded-xl p-5 hover:border-[#3F3F46] transition-all group flex flex-col h-44">
+                        <div className="flex justify-between items-start mb-2">
+                            <div>
+                                <h4 className="text-base font-bold text-white mb-1">Community First</h4>
+                                <p className="text-xs text-[#A1A1AA] font-sans">Set your first project of the day to "Public".</p>
+                            </div>
+                            <span className={`text-sm font-heading font-bold ${colors.emerald}`}>+10</span>
+                        </div>
+
+                        <div className="mt-auto">
+                            <button className="px-5 py-2 w-full bg-[#27272A] hover:bg-[#3F3F46] text-white text-xs font-bold rounded-lg transition-colors border border-[#3F3F46] active:scale-[0.98]">
+                                Go to Project
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* 2. Growth Success */}
+            <div>
+                <div className="flex items-center gap-2 mb-6 mt-8">
+                    <span className={`w-8 h-8 rounded-lg ${colors.purpleBg}/10 ${colors.purple} flex items-center justify-center`}>
+                        <Zap size={18} />
+                    </span>
+                    <h4 className="text-lg font-bold text-white tracking-tight">Growth Success</h4>
+                </div>
+
+                <div className="space-y-4">
+
+                    {/* Invite Registration */}
+                    <div className="bg-[#18181b] border border-[#27272A] rounded-xl p-5 flex items-center justify-between group hover:border-[#3F3F46] transition-colors relative overflow-hidden">
+                        <div className="flex gap-5 items-center">
+                            <div className={`w-12 h-12 rounded-xl bg-transparent flex items-center justify-center shrink-0 border border-white/10 text-[#A1A1AA] group-hover:text-white group-hover:border-white/20 transition-colors`}>
+                                <Users size={22} strokeWidth={1.5} />
+                            </div>
+                            <div>
+                                <h4 className="text-base font-bold text-white mb-0.5">Invite Teammates</h4>
+                                <p className="text-sm text-[#A1A1AA] font-sans">Points for every friend who signs up.</p>
+                                <div className="mt-2 text-[10px] font-bold text-[#71717A] font-heading uppercase tracking-tighter flex items-center gap-2">
+                                    <span><span className={colors.purple}>{totalInvited}</span> Total Invited</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-5">
+                            <span className={`text-sm font-heading font-bold ${colors.emerald}`}>+10<span className="text-[10px] opacity-60 ml-0.5">/each</span></span>
+                            <div className="w-[100px] flex justify-end">
+                                <button className="px-0 py-2 w-full bg-white/5 hover:bg-white/10 text-white text-sm font-bold rounded-lg transition-all border border-white/10 active:scale-[0.98]">
+                                    Copy Link
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Invite Subscription */}
+                    <div className="bg-[#18181b] border border-[#27272A] rounded-xl p-5 flex items-center justify-between group hover:border-[#3F3F46] transition-colors">
+                        <div className="flex gap-5 items-center">
+                            <div className={`w-12 h-12 rounded-xl bg-transparent flex items-center justify-center shrink-0 border border-white/10 text-[#A1A1AA] group-hover:text-white group-hover:border-white/20 transition-colors`}>
+                                <CreditCard size={22} strokeWidth={1.5} />
+                            </div>
+                            <div>
+                                <h4 className="text-base font-bold text-white mb-0.5">Success Conversion</h4>
+                                <p className="text-sm text-[#A1A1AA] font-sans">Bonus when friends subscribe to Pro.</p>
+                                <div className="mt-2 text-[10px] font-bold text-[#71717A] font-heading uppercase tracking-tighter flex items-center gap-2">
+                                    <span><span className={colors.orange}>5</span> Total Converted</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-5">
+                            <span className={`text-sm font-heading font-bold ${colors.emerald}`}>+500</span>
+                            <div className="w-[100px] flex justify-end">
+                                <button 
+                                    onClick={() => setIsReferralModalOpen(true)}
+                                    className="px-0 py-2 w-full bg-white/5 hover:bg-white/10 text-white text-sm font-bold rounded-lg transition-colors border border-white/10 active:scale-[0.98]"
+                                >
+                                    View
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* 3. One-time / Exploration Tasks */}
+            <div>
+                <div className="flex items-center gap-2 mb-6 mt-8">
+                    <span className={`w-8 h-8 rounded-lg ${colors.orangeBg}/10 ${colors.orange} flex items-center justify-center`}>
+                        <Sparkles size={18} />
+                    </span>
+                    <h4 className="text-lg font-bold text-white tracking-tight">Exploration</h4>
+                </div>
+
+                <div className="space-y-4">
+                    {/* Join Community Task */}
+                    <div className="bg-[#18181b] border border-[#27272A] rounded-xl p-5 flex items-center justify-between group hover:border-[#3F3F46] transition-colors">
+                        <div className="flex gap-5 items-center">
+                            <div className={`w-12 h-12 rounded-xl bg-transparent flex items-center justify-center shrink-0 border border-white/10 text-[#A1A1AA] group-hover:text-white group-hover:border-white/20 transition-colors`}>
+                                <MessageSquare size={22} strokeWidth={1.5} />
+                            </div>
+                            <div>
+                                <h4 className="text-base font-bold text-white mb-0.5">Join Community</h4>
+                                <p className="text-sm text-[#A1A1AA] font-sans">Chat with creators and get 50 credits.</p>
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-5">
+                            <span className={`text-sm font-heading font-bold ${colors.emerald}`}>+50</span>
+                            <div className="w-[100px] flex justify-end">
+                                <button className="px-0 py-2 w-full bg-white/5 hover:bg-white/10 text-white text-sm font-bold rounded-lg transition-colors border border-white/10 active:scale-[0.98]">
+                                    Go
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <ReferralListModal isOpen={isReferralModalOpen} onClose={() => setIsReferralModalOpen(false)} />
         </div>
-        <div className="flex flex-col items-end gap-2">
-            <span className="text-sm font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-md">{reward}</span>
-            <button className="px-5 py-2 min-w-[100px] bg-[#27272A] hover:bg-[#3F3F46] text-white text-sm font-semibold rounded-lg transition-colors shadow-sm">{action}</button>
-        </div>
-    </div>
-);
+    );
+};
+
+
 
 const ProfileContent = () => (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300 pb-10">
         <div>
-            <h3 className="text-[28px] font-bold text-white mb-1 tracking-tight">Profile</h3>
+            <h3 className="text-2xl font-semibold text-white mb-2">Profile</h3>
             <p className="text-[#A1A1AA] text-sm">Manage your personal information and identity.</p>
         </div>
         <div className="flex items-center gap-6">
@@ -689,9 +1011,9 @@ const ProfileContent = () => (
 );
 
 const PreferencesContent = () => (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300 pb-10">
         <div>
-            <h3 className="text-[28px] font-bold text-white mb-1 tracking-tight">Preferences</h3>
+            <h3 className="text-2xl font-semibold text-white mb-2">Preferences</h3>
             <p className="text-[#A1A1AA] text-sm">Customize your application experience.</p>
         </div>
 
@@ -723,12 +1045,12 @@ const PreferencesContent = () => (
 // 3. Inbox and Whats New Content Components
 // ==========================================
 const InboxContent = () => (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300 pb-10">
         <div>
-            <h3 className="text-[28px] font-bold text-white mb-1 tracking-tight">Inbox</h3>
+            <h3 className="text-2xl font-semibold text-white mb-2">Inbox</h3>
             <p className="text-[#A1A1AA] text-sm">Your personal notifications and alerts.</p>
         </div>
-        <div className="bg-[#18181b] border border-[#27272A] rounded-2xl divide-y divide-[#27272A]">
+        <div className="bg-[#18181b] border border-[#27272A] rounded-xl divide-y divide-[#27272A]">
             <div className="p-5 flex gap-4 hover:bg-[#27272A] transition-colors relative">
                 <div className="w-10 h-10 rounded-full bg-emerald-500/10 text-emerald-500 flex items-center justify-center shrink-0">
                     <CheckCircle2 size={18} />
@@ -754,12 +1076,12 @@ const InboxContent = () => (
 );
 
 const WhatsNewContent = () => (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300 pb-10">
         <div>
-            <h3 className="text-[28px] font-bold text-white mb-1 tracking-tight">What's New</h3>
+            <h3 className="text-2xl font-semibold text-white mb-2">What's New</h3>
             <p className="text-[#A1A1AA] text-sm">Platform updates, features, and announcements.</p>
         </div>
-        <div className="bg-[#18181b] border border-[#27272A] rounded-2xl divide-y divide-[#27272A]">
+        <div className="bg-[#18181b] border border-[#27272A] rounded-xl divide-y divide-[#27272A]">
             <div className="p-5 flex gap-4 hover:bg-[#27272A] transition-colors relative cursor-pointer">
                 <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shrink-0">
                     <Sparkles size={24} className="text-white" />
