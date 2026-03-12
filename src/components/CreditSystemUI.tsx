@@ -911,7 +911,7 @@ const EarnFreeCreditsContent = () => {
                                 <Users size={22} strokeWidth={1.5} />
                             </div>
                             <div>
-                                <h4 className="text-base font-bold text-white mb-0.5">Invite Teammates</h4>
+                                <h4 className="text-base font-bold text-white mb-0.5">Invite Teammates <span className="text-[#71717A] text-sm font-normal ml-1">({totalInvited}/10)</span></h4>
                                 <p className="text-sm text-[#A1A1AA] font-sans">Points for every friend who signs up.</p>
                                 <div className="mt-2 text-[10px] font-bold text-[#71717A] font-heading uppercase tracking-tighter flex items-center gap-2">
                                     <span><span className={colors.purple}>{totalInvited}</span> Total Invited</span>
@@ -927,7 +927,7 @@ const EarnFreeCreditsContent = () => {
                         <div className="flex items-center gap-5">
                             <span className={`text-sm font-heading font-bold ${colors.emerald}`}>+10<span className="text-[10px] opacity-60 ml-0.5">/each</span></span>
                             <div className="w-[100px] flex justify-end">
-                                <button 
+                                    <button 
                                     onClick={() => {
                                         if (unclaimedInvites > 0) {
                                             setUnclaimedInvites(0);
@@ -936,9 +936,11 @@ const EarnFreeCreditsContent = () => {
                                     className={`px-0 py-2 w-full text-sm font-bold rounded-lg transition-all border active:scale-[0.98] ${
                                         unclaimedInvites > 0 
                                         ? 'bg-[#5FA08E] hover:bg-[#4d8675] text-white border-[#5FA08E]/20 shadow-lg shadow-[#5FA08E]/10' 
+                                        : totalInvited >= 10
+                                        ? 'bg-[#27272A] text-[#71717A] border-[#3F3F46] cursor-default'
                                         : 'bg-white/5 hover:bg-white/10 text-white border-white/10'
                                     }`}>
-                                    {unclaimedInvites > 0 ? 'Claim' : 'Copy Link'}
+                                    {unclaimedInvites > 0 ? 'Claim' : totalInvited >= 10 ? 'Claimed' : 'Copy Link'}
                                 </button>
                             </div>
                         </div>
