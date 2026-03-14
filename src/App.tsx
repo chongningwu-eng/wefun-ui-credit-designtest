@@ -34,7 +34,7 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0E0E10] text-[#E4E4E7] font-sans selection:bg-[#27272A] flex flex-col pt-14 relative overflow-hidden">
+    <div className="dark min-h-screen bg-background text-foreground font-sans selection:bg-[#27272A] flex flex-col pt-14 relative overflow-hidden">
       <AnimatePresence>
         {toastMessage && <SystemToast message={toastMessage} type="success" onClose={() => setToastMessage(null)} />}
       </AnimatePresence>

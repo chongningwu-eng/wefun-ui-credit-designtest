@@ -1,6 +1,5 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
-@import "@fontsource-variable/geist";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -13,138 +12,130 @@
     @apply font-heading tracking-tight;
   }
   :root {
+    /* Global Palette - Pure HSL Numbers */
+    --base-white: 0 0% 100%;
+    --base-black: 240 10% 4%;
+    --gray-50: 240 10% 98%;
+    --gray-100: 240 10% 96%;
+    --gray-200: 240 10% 92%;
+    --gray-300: 240 10% 85%;
+    --gray-400: 240 10% 69%;
+    --gray-500: 240 10% 51%;
+    --gray-600: 240 10% 33%;
+    --gray-700: 240 10% 22%;
+    --gray-800: 240 10% 11%;
+    --gray-850: 240 10% 7%;
+    --gray-900: 240 10% 4%;
 
-    --background: oklch(1 0 0);
+    --success-50: 120 100% 95%;
+    --success-100: 120 100% 85%;
+    --success-500: 120 100% 40%;
+    --success-600: 120 100% 32%;
+    --success-700: 120 100% 24%;
+    --success-900: 120 100% 10%;
 
-    --foreground: oklch(0.145 0 0);
+    --error-50: 0 100% 95%;
+    --error-100: 0 100% 85%;
+    --error-500: 0 100% 40%;
+    --error-600: 350 60% 47%;
+    --error-700: 0 100% 32%;
+    --error-900: 350 44% 17%;
 
-    --card: oklch(1 0 0);
-
-    --card-foreground: oklch(0.145 0 0);
-
-    --popover: oklch(1 0 0);
-
-    --popover-foreground: oklch(0.145 0 0);
-
-    --primary: oklch(0.205 0 0);
-
-    --primary-foreground: oklch(0.985 0 0);
-
-    --secondary: oklch(0.97 0 0);
-
-    --secondary-foreground: oklch(0.205 0 0);
-
-    --muted: oklch(0.97 0 0);
-
-    --muted-foreground: oklch(0.556 0 0);
-
-    --accent: oklch(0.97 0 0);
-
-    --accent-foreground: oklch(0.205 0 0);
-
-    --destructive: oklch(0.577 0.245 27.325);
-
-    --border: oklch(0.922 0 0);
-
-    --input: oklch(0.922 0 0);
-
-    --ring: oklch(0.708 0 0);
-
-    --chart-1: oklch(0.809 0.105 251.813);
-
-    --chart-2: oklch(0.623 0.214 259.815);
-
-    --chart-3: oklch(0.546 0.245 262.881);
-
-    --chart-4: oklch(0.488 0.243 264.376);
-
-    --chart-5: oklch(0.424 0.199 265.638);
-
-    --radius: 0.625rem;
-
-    --sidebar: oklch(0.985 0 0);
-
-    --sidebar-foreground: oklch(0.145 0 0);
-
-    --sidebar-primary: oklch(0.205 0 0);
-
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-
-    --sidebar-accent: oklch(0.97 0 0);
-
-    --sidebar-accent-foreground: oklch(0.205 0 0);
-
-    --sidebar-border: oklch(0.922 0 0);
-
-    --sidebar-ring: oklch(0.708 0 0)
+    /* Shadcn Semantic Tokens - Root (Light) */
+    --background: 0 0% 100%;
+    --foreground: 240 10% 4%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 4%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 4%;
+    --primary: 120 100% 40%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 5% 96%;
+    --secondary-foreground: 240 6% 10%;
+    --muted: 240 5% 96%;
+    --muted-foreground: 240 4% 46%;
+    --accent: 240 5% 96%;
+    --accent-foreground: 240 6% 10%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 6% 90%;
+    --input: 240 6% 90%;
+    --ring: 120 100% 40%;
+    --radius: 0.75rem; /* radius.xl = 12px for highly rounded style */
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
   }
+
   .dark {
+    --background: 240 10% 4%;
+    --foreground: 0 0% 100%;
+    --card: 240 10% 11%;
+    --card-foreground: 0 0% 100%;
+    --popover: 240 10% 4%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 120 100% 40%;
+    --primary-foreground: 240 10% 4%;
+    --secondary: 240 10% 22%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 240 10% 22%;
+    --muted-foreground: 240 10% 69%;
+    --accent: 240 10% 22%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 10% 69%;
+    --input: 240 10% 69%;
+    --ring: 120 100% 40%;
+    --chart-1: 120 100% 40%;
+    --chart-2: 120 100% 32%;
+    --chart-3: 350 60% 47%;
+    --chart-4: 240 10% 51%;
+    --chart-5: 240 10% 69%;
 
-    --background: oklch(0.145 0 0);
+    /* ===== Credit System — Gray Scale (desaturated, S ≤ 2%) ===== */
+    --gray-950: 220 2% 3%;
+    --gray-925: 220 2% 5%;
+    --gray-900: 220 2% 7%;
+    --gray-850: 220 2% 10%;
+    --gray-825: 0 0% 10%;
+    --gray-800: 220 2% 16%;
+    --gray-700: 220 2% 26%;
+    --gray-500: 220 2% 46%;
+    --gray-400: 220 2% 65%;
+    --gray-300: 220 2% 82%;
+    --gray-200: 220 2% 90%;
 
-    --foreground: oklch(0.985 0 0);
+    /* ===== Credit System — Indigo ===== */
+    --indigo-500: 239 74% 59%;
+    --indigo-600: 243 55% 50%;
+    --indigo-400: 263 83% 58%;
+    --indigo-500-dark: 263 70% 50%;
 
-    --card: oklch(0.205 0 0);
+    /* ===== Credit System — Blue ===== */
+    --blue-600: 217 83% 53%;
+    --blue-700: 224 76% 48%;
 
-    --card-foreground: oklch(0.985 0 0);
+    /* ===== Credit System — Green / Emerald ===== */
+    --green-500: 160 84% 39%;
+    --green-600: 161 94% 30%;
+    --green-muted: 160 24% 50%;
+    --green-muted-dark: 160 27% 41%;
 
-    --popover: oklch(0.205 0 0);
+    /* ===== Credit System — Yellow / Amber ===== */
+    --yellow-400: 46 97% 65%;
+    --yellow-500: 38 92% 50%;
 
-    --popover-foreground: oklch(0.985 0 0);
-
-    --primary: oklch(0.922 0 0);
-
-    --primary-foreground: oklch(0.205 0 0);
-
-    --secondary: oklch(0.269 0 0);
-
-    --secondary-foreground: oklch(0.985 0 0);
-
-    --muted: oklch(0.269 0 0);
-
-    --muted-foreground: oklch(0.708 0 0);
-
-    --accent: oklch(0.269 0 0);
-
-    --accent-foreground: oklch(0.985 0 0);
-
-    --destructive: oklch(0.704 0.191 22.216);
-
-    --border: oklch(1 0 0 / 10%);
-
-    --input: oklch(1 0 0 / 15%);
-
-    --ring: oklch(0.556 0 0);
-
-    --chart-1: oklch(0.809 0.105 251.813);
-
-    --chart-2: oklch(0.623 0.214 259.815);
-
-    --chart-3: oklch(0.546 0.245 262.881);
-
-    --chart-4: oklch(0.488 0.243 264.376);
-
-    --chart-5: oklch(0.424 0.199 265.638);
-
-    --sidebar: oklch(0.205 0 0);
-
-    --sidebar-foreground: oklch(0.985 0 0);
-
-    --sidebar-primary: oklch(0.488 0.243 264.376);
-
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-
-    --sidebar-accent: oklch(0.269 0 0);
-
-    --sidebar-accent-foreground: oklch(0.985 0 0);
-
-    --sidebar-border: oklch(1 0 0 / 10%);
-
-    --sidebar-ring: oklch(0.556 0 0)
+    /* ===== Credit System — Muted Accent (Earn module) ===== */
+    --indigo-muted: 228 28% 56%;
+    --purple-muted: 272 20% 55%;
+    --orange-muted: 26 32% 56%;
   }
   .theme {
 
-    --font-sans: 'Geist Variable', sans-serif
+    --font-sans: 'Plus Jakarta Sans', sans-serif
   }
   * {
     @apply border-border outline-ring/50;
