@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+﻿import { useState, useEffect } from 'react';
 import {
     User,
     Zap,
@@ -21,6 +20,18 @@ import {
     CreditCard,
     Palette
 } from 'lucide-react';
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Input } from '@/components/ui/input';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Separator } from '@/components/ui/separator';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 // ==========================================
 // 0. Nav Credit Balance (Top Bar)
@@ -39,87 +50,76 @@ export const NavCreditBalance = ({ balance, onClick }: any) => {
 // 1. Avatar Dropdown (Lovable Mini-Dashboard)
 // ==========================================
 export const AvatarDropdown = ({ isOpen, onClose, onNavigateToTab }: any) => {
+    if (!isOpen) return null;
     return (
-        <AnimatePresence>
-            {isOpen && (
-                <>
-                    <div className="fixed inset-0 z-[60]" onClick={onClose} />
+        <>
+            <div className="fixed inset-0 z-[60]" onClick={onClose} />
 
-                    <motion.div
-                        initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: -5, scale: 0.95 }}
-                        transition={{ duration: 0.15, ease: "easeOut" }}
-                        className="absolute top-14 right-4 w-80 bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl z-[70] overflow-hidden flex flex-col font-sans"
+            <Card className="absolute top-14 right-4 w-80 bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl z-[70] overflow-hidden flex flex-col font-sans p-0">
+                {/* User Profile Area (Top Block) */}
+                <div className="p-4 flex items-center gap-3 bg-gray-850">
+                    <Avatar className="w-12 h-12 rounded-xl">
+                        <AvatarFallback className="bg-indigo-500 text-white font-bold text-xl rounded-xl">W</AvatarFallback>
+                    </Avatar>
+                    <div className="flex flex-col">
+                        <span className="text-base font-bold text-white tracking-tight">WeFun User</span>
+                        <span className="text-xs font-medium text-gray-400">user@wefun.ai</span>
+                    </div>
+                </div>
+
+                {/* Quick Actions (Settings & Invite) */}
+                <div className="px-4 py-3 flex gap-2 border-b border-gray-800 bg-gray-850">
+                    <Button
+                        variant="ghost"
+                        onClick={() => { onClose(); onNavigateToTab('profile'); }}
+                        className="w-full flex items-center justify-center gap-2 py-2 bg-gray-800 hover:bg-gray-700 text-white text-xs font-semibold rounded-lg transition-colors"
                     >
-                        {/* User Profile Area (Top Block) */}
-                        <div className="p-4 flex items-center gap-3 bg-gray-850">
-                            <div className="w-12 h-12 rounded-xl bg-indigo-500 flex items-center justify-center text-white font-bold text-xl shadow-inner">
-                                W
-                            </div>
-                            <div className="flex flex-col">
-                                <span className="text-base font-bold text-white tracking-tight">WeFun User</span>
-                                <span className="text-xs font-medium text-gray-400">user@wefun.ai</span>
-                            </div>
+                        <Settings size={14} /> Settings
+                    </Button>
+                </div>
+
+                <div className="p-4 flex flex-col gap-3 bg-gray-925">
+                    {/* Pro Upsell Card */}
+                    <Card className="bg-gray-850 border border-gray-800 rounded-xl p-3 flex flex-row items-center justify-between group">
+                        <div className="flex items-center gap-2 text-white font-bold tracking-tight">
+                            <Zap size={16} fill="white" /> Turn Pro
+                        </div>
+                        <Button
+                            variant="ghost"
+                            onClick={() => { onClose(); onNavigateToTab('plans'); }}
+                            className="px-4 py-1.5 bg-indigo-500 hover:bg-indigo-600 text-white text-xs font-bold rounded-lg transition-colors shadow-sm"
+                        >
+                            Upgrade
+                        </Button>
+                    </Card>
+
+                    {/* Credit Summary Card */}
+                    <Card className="bg-gray-850 border border-gray-800 rounded-xl p-4 flex flex-col gap-3">
+                        <div className="flex justify-between items-center cursor-pointer group" onClick={() => { onClose(); onNavigateToTab('plans'); }}>
+                            <span className="text-sm font-bold text-white">Credits</span>
+                            <span className="text-sm font-medium text-amber-500 flex items-center gap-1 group-hover:text-amber-400">
+                                5 left <ChevronRight size={14} />
+                            </span>
                         </div>
 
-                        {/* Quick Actions (Settings & Invite) */}
-                        <div className="px-4 py-3 flex gap-2 border-b border-gray-800 bg-gray-850">
-                            <button
-                                onClick={() => { onClose(); onNavigateToTab('profile'); }}
-                                className="w-full flex items-center justify-center gap-2 py-2 bg-gray-800 hover:bg-gray-700 text-white text-xs font-semibold rounded-lg transition-colors"
-                            >
-                                <Settings size={14} /> Settings
-                            </button>
+                        {/* Slim Blue Progress Bar */}
+                        <Progress value={50} className="h-2 bg-gray-800 rounded-full" indicatorClassName="bg-cs-blue-600 rounded-full" />
+
+                        <div className="flex items-center gap-2 mt-1">
+                            <div className="w-1.5 h-1.5 rounded-full bg-gray-500"></div>
+                            <span className="text-xs text-gray-400">Daily credits reset at midnight UTC</span>
                         </div>
+                    </Card>
+                </div>
 
-                        <div className="p-4 space-y-3 bg-gray-925">
-                            {/* Pro Upsell Card */}
-                            <div className="bg-gray-850 border border-gray-800 rounded-xl p-3 flex items-center justify-between group">
-                                <div className="flex items-center gap-2 text-white font-bold tracking-tight">
-                                    <Zap size={16} fill="white" /> Turn Pro
-                                </div>
-                                <button
-                                    onClick={() => { onClose(); onNavigateToTab('plans'); }}
-                                    className="px-4 py-1.5 bg-indigo-500 hover:bg-indigo-600 text-white text-xs font-bold rounded-lg transition-colors shadow-sm"
-                                >
-                                    Upgrade
-                                </button>
-                            </div>
-
-                            {/* Credit Summary Card */}
-                            <div className="bg-gray-850 border border-gray-800 rounded-xl p-4 flex flex-col gap-3">
-                                <div className="flex justify-between items-center cursor-pointer group" onClick={() => { onClose(); onNavigateToTab('plans'); }}>
-                                    <span className="text-sm font-bold text-white">Credits</span>
-                                    <span className="text-sm font-medium text-amber-500 flex items-center gap-1 group-hover:text-amber-400">
-                                        5 left <ChevronRight size={14} />
-                                    </span>
-                                </div>
-
-                                {/* Slim Blue Progress Bar */}
-                                <div className="h-2 w-full bg-gray-800 rounded-full overflow-hidden">
-                                    <motion.div initial={{ width: 0 }} animate={{ width: "50%" }} className="h-full bg-cs-blue-600 rounded-full" />
-                                </div>
-
-                                <div className="flex items-center gap-2 mt-1">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-gray-500"></div>
-                                    <span className="text-xs text-gray-400">Daily credits reset at midnight UTC</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Extra Links (Fleshing out Dropdown) */}
-                        <div className="p-2 border-t border-gray-800 bg-gray-900 flex flex-col">
-                            <button onClick={() => { onClose(); onNavigateToTab('profile'); }} className="text-left px-3 py-2 text-sm text-gray-400 hover:text-white hover:bg-gray-800 rounded-md transition-colors">Profile</button>
-                            <button onClick={() => { onClose(); onNavigateToTab('preferences'); }} className="text-left px-3 py-2 text-sm text-gray-400 hover:text-white hover:bg-gray-800 rounded-md transition-colors">Preferences</button>
-                            <button className="text-left px-3 py-2 text-sm text-gray-400 hover:text-white hover:bg-gray-800 rounded-md transition-colors mt-1">Log out</button>
-                        </div>
-
-
-                    </motion.div>
-                </>
-            )}
-        </AnimatePresence>
+                {/* Extra Links (Fleshing out Dropdown) */}
+                <div className="p-2 border-t border-gray-800 bg-gray-900 flex flex-col">
+                    <Button variant="ghost" onClick={() => { onClose(); onNavigateToTab('profile'); }} className="justify-start text-left px-3 py-2 text-sm text-gray-400 hover:text-white hover:bg-gray-800 rounded-md transition-colors">Profile</Button>
+                    <Button variant="ghost" onClick={() => { onClose(); onNavigateToTab('preferences'); }} className="justify-start text-left px-3 py-2 text-sm text-gray-400 hover:text-white hover:bg-gray-800 rounded-md transition-colors">Preferences</Button>
+                    <Button variant="ghost" className="justify-start text-left px-3 py-2 text-sm text-gray-400 hover:text-white hover:bg-gray-800 rounded-md transition-colors mt-1">Log out</Button>
+                </div>
+            </Card>
+        </>
     );
 };
 
@@ -127,46 +127,37 @@ export const AvatarDropdown = ({ isOpen, onClose, onNavigateToTab }: any) => {
 // 1b. Inbox Dropdown (Real-time Notifications)
 // ==========================================
 export const InboxDropdown = ({ isOpen, onClose, onNavigateToTab }: any) => {
+    if (!isOpen) return null;
     return (
-        <AnimatePresence>
-            {isOpen && (
-                <>
-                    <div className="fixed inset-0 z-[60]" onClick={onClose} />
+        <>
+            <div className="fixed inset-0 z-[60]" onClick={onClose} />
 
-                    <motion.div
-                        initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: -5, scale: 0.95 }}
-                        transition={{ duration: 0.15, ease: "easeOut" }}
-                        className="absolute top-14 right-20 w-80 bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl z-[70] overflow-hidden flex flex-col font-sans"
-                    >
-                        <div className="px-4 py-3 border-b border-gray-800 bg-gray-850 flex justify-between items-center">
-                            <span className="text-sm font-bold text-white tracking-tight">Notifications</span>
-                            <span className="text-[10px] font-bold text-white bg-blue-600 px-1.5 py-0.5 rounded-full">2 New</span>
-                        </div>
+            <Card className="absolute top-14 right-20 w-80 bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl z-[70] overflow-hidden flex flex-col font-sans p-0">
+                <div className="px-4 py-3 border-b border-gray-800 bg-gray-850 flex justify-between items-center">
+                    <span className="text-sm font-bold text-white tracking-tight">Notifications</span>
+                    <Badge className="bg-blue-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">2 New</Badge>
+                </div>
 
-                        <div className="max-h-[300px] overflow-y-auto">
-                            <button onClick={() => { onClose(); onNavigateToTab('whatsnew'); }} className="w-fulltext-left flex flex-col gap-1 p-3 border-b border-gray-800 hover:bg-gray-800 transition-colors relative text-left">
-                                <span className="absolute left-3 top-4 w-2 h-2 rounded-full bg-blue-500"></span>
-                                <span className="text-xs font-bold text-white pl-4">Canvas mode is here!</span>
-                                <span className="text-xs text-gray-400 pl-4 line-clamp-1">Try the new canvas mode for spatial editing...</span>
-                                <span className="text-[10px] text-gray-500 pl-4 mt-1">2 hours ago</span>
-                            </button>
-                            <button onClick={() => { onClose(); onNavigateToTab('inbox'); }} className="w-full flex-col gap-1 p-3 border-b border-gray-800 hover:bg-gray-800 transition-colors relative text-left">
-                                <span className="absolute left-3 top-4 w-2 h-2 rounded-full bg-blue-500"></span>
-                                <span className="text-xs font-bold text-white pl-4">Your generation completed</span>
-                                <span className="text-xs text-gray-400 pl-4 line-clamp-1">"A red bus driving in the city" is ready.</span>
-                                <span className="text-[10px] text-gray-500 pl-4 mt-1">5 hours ago</span>
-                            </button>
-                        </div>
+                <ScrollArea className="max-h-[300px]">
+                    <Button variant="ghost" onClick={() => { onClose(); onNavigateToTab('whatsnew'); }} className="w-full flex flex-col gap-1 p-3 border-b border-gray-800 hover:bg-gray-800 transition-colors relative text-left items-start rounded-none h-auto">
+                        <span className="absolute left-3 top-4 w-2 h-2 rounded-full bg-blue-500"></span>
+                        <span className="text-xs font-bold text-white pl-4">Canvas mode is here!</span>
+                        <span className="text-xs text-gray-400 pl-4 line-clamp-1">Try the new canvas mode for spatial editing...</span>
+                        <span className="text-[10px] text-gray-500 pl-4 mt-1">2 hours ago</span>
+                    </Button>
+                    <Button variant="ghost" onClick={() => { onClose(); onNavigateToTab('inbox'); }} className="w-full flex flex-col gap-1 p-3 border-b border-gray-800 hover:bg-gray-800 transition-colors relative text-left items-start rounded-none h-auto">
+                        <span className="absolute left-3 top-4 w-2 h-2 rounded-full bg-blue-500"></span>
+                        <span className="text-xs font-bold text-white pl-4">Your generation completed</span>
+                        <span className="text-xs text-gray-400 pl-4 line-clamp-1">"A red bus driving in the city" is ready.</span>
+                        <span className="text-[10px] text-gray-500 pl-4 mt-1">5 hours ago</span>
+                    </Button>
+                </ScrollArea>
 
-                        <button onClick={() => { onClose(); onNavigateToTab('inbox'); }} className="w-full px-4 py-3 text-xs font-semibold text-white bg-gray-850 hover:bg-gray-800 transition-colors text-center border-t border-gray-800">
-                            View all notifications
-                        </button>
-                    </motion.div>
-                </>
-            )}
-        </AnimatePresence>
+                <Button variant="ghost" onClick={() => { onClose(); onNavigateToTab('inbox'); }} className="w-full px-4 py-3 text-xs font-semibold text-white bg-gray-850 hover:bg-gray-800 transition-colors text-center border-t border-gray-800 rounded-none">
+                    View all notifications
+                </Button>
+            </Card>
+        </>
     );
 };
 
@@ -181,90 +172,80 @@ export const UnifiedSettingsModal = ({ isOpen, onClose, initialTab = 'credits' }
         if (isOpen) setActiveTab(initialTab);
     }, [isOpen, initialTab]);
 
+    if (!isOpen) return null;
+
     return (
-        <AnimatePresence>
-            {isOpen && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center">
-                    <motion.div
-                        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-                        onClick={onClose}
-                    />
+        <div className="fixed inset-0 z-[100] flex items-center justify-center">
+            <div
+                className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                onClick={onClose}
+            />
 
-                    <motion.div
-                        initial={{ scale: 0.98, opacity: 0, y: 10 }}
-                        animate={{ scale: 1, opacity: 1, y: 0 }}
-                        exit={{ scale: 0.98, opacity: 0, y: 10 }}
-                        transition={{ type: "spring", damping: 25, stiffness: 300 }}
-                        className="relative w-full h-full bg-gray-925 flex overflow-hidden flex-row"
-                    >
-                        {/* V3 Sidebar Taxonomy */}
-                        <div className="w-64 bg-gray-900 border-r border-gray-800 py-8 px-4 flex flex-col h-full overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-
-                            <div className="space-y-6">
-                                {/* Section 1: Billing & Credits */}
-                                <div>
-                                    <div className="text-xs font-semibold text-gray-500 mb-2 px-2 uppercase tracking-wider">Billing & Credits</div>
-                                    <div className="flex flex-col gap-1">
-                                        <TabButton id="credits" icon={History} label="Credits & history" active={activeTab} onClick={setActiveTab} />
-                                        <TabButton id="plans" icon={Briefcase} label="Plans & top-up" active={activeTab} onClick={setActiveTab} />
-                                        <TabButton id="earn" icon={Gift} label="Earn Free Credits" active={activeTab} onClick={setActiveTab} />
-                                    </div>
-                                </div>
-
-                                {/* Section 2: Account */}
-                                <div>
-                                    <div className="text-xs font-semibold text-gray-500 mb-2 px-2 uppercase tracking-wider">Account</div>
-                                    <div className="flex flex-col gap-1">
-                                        <TabButton id="profile" icon={User} label="Profile" active={activeTab} onClick={setActiveTab} />
-                                        <TabButton id="preferences" icon={Settings} label="Preferences" active={activeTab} onClick={setActiveTab} />
-                                    </div>
-                                </div>
-
-                                {/* Section 3: Notifications */}
-                                <div>
-                                    <div className="text-xs font-semibold text-gray-500 mb-2 px-2 uppercase tracking-wider mt-2">Notifications</div>
-                                    <div className="flex flex-col gap-1">
-                                        <TabButton id="inbox" icon={Bell} label="Inbox" active={activeTab} onClick={setActiveTab} badge={1} />
-                                        <TabButton id="whatsnew" icon={Sparkles} label="What's New" active={activeTab} onClick={setActiveTab} badge={1} />
-                                    </div>
-                                </div>
+            <div className="relative w-full h-full bg-gray-925 flex overflow-hidden flex-row">
+                {/* V3 Sidebar Taxonomy */}
+                <ScrollArea className="w-64 bg-gray-900 border-r border-gray-800 py-8 px-4 flex flex-col h-full">
+                    <div className="flex flex-col gap-6">
+                        {/* Section 1: Billing & Credits */}
+                        <div>
+                            <div className="text-xs font-semibold text-gray-500 mb-2 px-2 uppercase tracking-wider">Billing & Credits</div>
+                            <div className="flex flex-col gap-1">
+                                <TabButton id="credits" icon={History} label="Credits & history" active={activeTab} onClick={setActiveTab} />
+                                <TabButton id="plans" icon={Briefcase} label="Plans & top-up" active={activeTab} onClick={setActiveTab} />
+                                <TabButton id="earn" icon={Gift} label="Earn Free Credits" active={activeTab} onClick={setActiveTab} />
                             </div>
                         </div>
 
-                        {/* Content Area */}
-                        <div className="flex-1 bg-gray-950 overflow-y-auto relative py-10 px-12 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-                            <button onClick={onClose} className="absolute top-8 right-12 px-4 py-2 text-gray-400 hover:text-white bg-gray-850 border border-gray-800 hover:bg-gray-800 hover:border-gray-700 rounded-lg transition-all z-10 shadow-sm flex items-center justify-center gap-2 group text-sm font-semibold">
-                                <ArrowDownLeft size={16} className="rotate-90 group-hover:-translate-x-0.5 transition-transform" /> Go Back
-                            </button>
-
-                            <div className="max-w-4xl mx-auto flex flex-col justify-start w-full">
-                                {activeTab === 'credits' && <CreditsAndHistoryContent navigateTo={setActiveTab} />}
-                                {activeTab === 'plans' && <PlansAndTopupContent />}
-                                {activeTab === 'earn' && <EarnFreeCreditsContent />}
-                                {activeTab === 'profile' && <ProfileContent />}
-                                {activeTab === 'preferences' && <PreferencesContent />}
-                                {activeTab === 'inbox' && <InboxContent />}
-                                {activeTab === 'whatsnew' && <WhatsNewContent />}
-                                {/* Placeholders for others */}
-                                {(activeTab === 'account' || activeTab === 'people') && (
-                                    <div className="text-white">Placeholder for {activeTab} content...</div>
-                                )}
+                        {/* Section 2: Account */}
+                        <div>
+                            <div className="text-xs font-semibold text-gray-500 mb-2 px-2 uppercase tracking-wider">Account</div>
+                            <div className="flex flex-col gap-1">
+                                <TabButton id="profile" icon={User} label="Profile" active={activeTab} onClick={setActiveTab} />
+                                <TabButton id="preferences" icon={Settings} label="Preferences" active={activeTab} onClick={setActiveTab} />
                             </div>
                         </div>
-                    </motion.div>
-                </div>
-            )}
-        </AnimatePresence>
+
+                        {/* Section 3: Notifications */}
+                        <div>
+                            <div className="text-xs font-semibold text-gray-500 mb-2 px-2 uppercase tracking-wider mt-2">Notifications</div>
+                            <div className="flex flex-col gap-1">
+                                <TabButton id="inbox" icon={Bell} label="Inbox" active={activeTab} onClick={setActiveTab} badge={1} />
+                                <TabButton id="whatsnew" icon={Sparkles} label="What's New" active={activeTab} onClick={setActiveTab} badge={1} />
+                            </div>
+                        </div>
+                    </div>
+                </ScrollArea>
+
+                {/* Content Area */}
+                <ScrollArea className="flex-1 bg-gray-950 relative py-10 px-12">
+                    <Button onClick={onClose} variant="ghost" className="absolute top-8 right-12 px-4 py-2 text-gray-400 hover:text-white bg-gray-850 border border-gray-800 hover:bg-gray-800 hover:border-gray-700 rounded-lg transition-all z-10 shadow-sm flex items-center justify-center gap-2 group text-sm font-semibold">
+                        <ArrowDownLeft size={16} className="rotate-90 group-hover:-translate-x-0.5 transition-transform" /> Go Back
+                    </Button>
+
+                    <div className="max-w-4xl mx-auto flex flex-col justify-start w-full">
+                        {activeTab === 'credits' && <CreditsAndHistoryContent navigateTo={setActiveTab} />}
+                        {activeTab === 'plans' && <PlansAndTopupContent />}
+                        {activeTab === 'earn' && <EarnFreeCreditsContent />}
+                        {activeTab === 'profile' && <ProfileContent />}
+                        {activeTab === 'preferences' && <PreferencesContent />}
+                        {activeTab === 'inbox' && <InboxContent />}
+                        {activeTab === 'whatsnew' && <WhatsNewContent />}
+                        {(activeTab === 'account' || activeTab === 'people') && (
+                            <div className="text-white">Placeholder for {activeTab} content...</div>
+                        )}
+                    </div>
+                </ScrollArea>
+            </div>
+        </div>
     );
 };
 
 const TabButton = ({ id, icon: Icon, label, active, onClick, badge }: any) => {
     const isActive = active === id;
     return (
-        <button
+        <Button
+            variant={isActive ? 'secondary' : 'ghost'}
             onClick={() => onClick(id)}
-            className={`flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors ${isActive ? 'bg-gray-800 text-white' : 'text-gray-400 hover:bg-gray-850 hover:text-gray-200'
+            className={`flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors w-full h-auto ${isActive ? 'bg-gray-800 text-white' : 'text-gray-400 hover:bg-gray-850 hover:text-gray-200'
                 }`}
         >
             <div className="flex items-center gap-3">
@@ -272,16 +253,16 @@ const TabButton = ({ id, icon: Icon, label, active, onClick, badge }: any) => {
                 {label}
             </div>
             {badge && (
-                <div className="w-5 h-5 rounded-full bg-blue-600 flex items-center justify-center text-[10px] text-white font-bold">{badge}</div>
+                <Badge className="w-5 h-5 rounded-full bg-blue-600 flex items-center justify-center text-[10px] text-white font-bold p-0">{badge}</Badge>
             )}
-        </button>
+        </Button>
     );
 };
 
 
 // --- V3 Credits & History Content (Round 24) ---
 const CreditsAndHistoryContent = ({ navigateTo }: { navigateTo: (tabId: string) => void }) => {
-    const [filter, setFilter] = useState<'all' | 'income' | 'expense'>('all');
+    const [filter, setFilter] = useState<string>('all');
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
 
@@ -308,7 +289,7 @@ const CreditsAndHistoryContent = ({ navigateTo }: { navigateTo: (tabId: string) 
     );
 
     return (
-        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300 pb-10">
+        <div className="flex flex-col gap-8 animate-in fade-in slide-in-from-bottom-2 duration-300 pb-10">
             {/* Header / Page Title */}
             <div>
                 <h3 className="text-2xl font-semibold text-white mb-2">
@@ -318,7 +299,7 @@ const CreditsAndHistoryContent = ({ navigateTo }: { navigateTo: (tabId: string) 
             </div>
 
             {/* Plan Status Card (Full width) */}
-            <div className="bg-gray-850 border border-gray-800 rounded-xl p-6 flex flex-col justify-center transition-colors shadow-sm">
+            <Card className="bg-gray-850 border border-gray-800 rounded-xl p-6 flex flex-col justify-center transition-colors shadow-sm">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-5">
                     <div className="flex items-center gap-4">
                         <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-400 via-pink-500 to-purple-600 flex-shrink-0 shadow-inner" />
@@ -327,22 +308,24 @@ const CreditsAndHistoryContent = ({ navigateTo }: { navigateTo: (tabId: string) 
                             <p className="text-sm text-gray-400">Upgrade anytime to unlock higher limits.</p>
                         </div>
                     </div>
-                    <button
+                    <Button
+                        variant="ghost"
                         onClick={() => navigateTo('plans')}
                         className="px-6 py-2.5 bg-gradient-to-r from-indigo-500 to-indigo-400 hover:from-indigo-600 hover:to-indigo-500-dark text-white text-sm font-bold rounded-lg transition-all shadow-[0_4px_20px_-4px_rgba(79,70,229,0.4)] hover:shadow-[0_8px_25px_-4px_rgba(79,70,229,0.5)] active:scale-95 whitespace-nowrap w-full md:w-auto mt-2 md:mt-0">
                         Upgrade
-                    </button>
+                    </Button>
                 </div>
-                <div className="mt-6 pt-5 border-t border-gray-800 flex items-center gap-2">
+                <Separator className="bg-gray-800 mt-6" />
+                <div className="pt-5 flex items-center gap-2">
                     <Zap size={16} className="text-amber-500" fill="currentColor" />
                     <p className="text-sm font-medium text-gray-400">
                         You currently receive <span className="text-white font-bold">10 free credits</span> daily.
                     </p>
                 </div>
-            </div>
+            </Card>
 
             {/* Credit Details Layout */}
-            <div className="bg-gray-850 border border-gray-800 rounded-xl p-6 flex flex-col transition-colors shadow-sm">
+            <Card className="bg-gray-850 border border-gray-800 rounded-xl p-6 flex flex-col transition-colors shadow-sm">
                 
                 {/* Header Row */}
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
@@ -355,21 +338,23 @@ const CreditsAndHistoryContent = ({ navigateTo }: { navigateTo: (tabId: string) 
                     </div>
                     
                     <div className="flex gap-2 w-full sm:w-auto">
-                        <button
+                        <Button
+                            variant="ghost"
                             onClick={() => navigateTo('earn')}
                             className="flex-1 sm:flex-none px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white text-sm font-semibold rounded-lg transition-colors border border-gray-700 shadow-sm active:scale-[0.98]">
                             Earn
-                        </button>
-                        <button
+                        </Button>
+                        <Button
+                            variant="ghost"
                             onClick={() => {
                                 navigateTo('plans');
                                 setTimeout(() => {
                                     document.getElementById('top-up-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
                                 }, 50);
                             }}
-                            className="flex-1 sm:flex-none px-4 py-2 bg-gray-200 hover:bg-white text-black text-sm font-semibold rounded-lg transition-colors shadow-sm active:scale-[0.98]">
+                            className="flex-1 sm:flex-none px-4 py-2 bg-gray-200 hover:bg-white text-black hover:text-black text-sm font-semibold rounded-lg transition-colors shadow-sm active:scale-[0.98]">
                             Buy credits
-                        </button>
+                        </Button>
                     </div>
                 </div>
 
@@ -381,24 +366,26 @@ const CreditsAndHistoryContent = ({ navigateTo }: { navigateTo: (tabId: string) 
                         <div className="flex justify-between items-start mb-2">
                             <div className="flex items-center gap-2">
                                 <span className="text-sm font-semibold text-white">Daily</span>
-                                <div className="group relative cursor-help">
-                                    <div className="w-3.5 h-3.5 rounded-full border border-gray-700 text-gray-400 flex items-center justify-center text-[9px] hover:bg-gray-800 hover:text-white transition-colors">
-                                        ?
-                                    </div>
-                                    <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-48 bg-gray-800 border border-gray-700 rounded-lg p-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10 shadow-xl pointer-events-none">
-                                        <ul className="space-y-1.5 text-xs text-gray-400 text-left">
-                                            <li className="flex items-start gap-1.5"><span className="text-white">•</span> consumed first</li>
-                                            <li className="flex items-start gap-1.5"><span className="text-white">•</span> Reset daily (UTC 0)</li>
-                                        </ul>
-                                    </div>
-                                </div>
+                                <TooltipProvider>
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <div className="w-3.5 h-3.5 rounded-full border border-gray-700 text-gray-400 flex items-center justify-center text-[9px] hover:bg-gray-800 hover:text-white transition-colors cursor-help">
+                                                ?
+                                            </div>
+                                        </TooltipTrigger>
+                                        <TooltipContent className="w-48 bg-gray-800 border border-gray-700 rounded-lg p-3 shadow-xl">
+                                            <ul className="flex flex-col gap-1.5 text-xs text-gray-400 text-left">
+                                                <li className="flex items-start gap-1.5"><span className="text-white">&bull;</span> consumed first</li>
+                                                <li className="flex items-start gap-1.5"><span className="text-white">&bull;</span> Reset daily (UTC 0)</li>
+                                            </ul>
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </TooltipProvider>
                             </div>
                             <span className="text-sm font-medium text-white">4 <span className="text-gray-400">/ 10</span></span>
                         </div>
                         <span className="text-xs text-gray-500 mb-4">Resets daily at UTC 0.</span>
-                        <div className="h-4 w-full bg-gray-800 rounded-full overflow-hidden mt-auto shadow-inner">
-                            <motion.div initial={{ width: 0 }} animate={{ width: "40%" }} className="h-full bg-blue-500 rounded-full" />
-                        </div>
+                        <Progress value={40} className="h-4 bg-gray-800 rounded-full mt-auto shadow-inner" indicatorClassName="bg-blue-500 rounded-full" />
                     </div>
 
                     {/* 2. Monthly Credits */}
@@ -406,24 +393,26 @@ const CreditsAndHistoryContent = ({ navigateTo }: { navigateTo: (tabId: string) 
                         <div className="flex justify-between items-start mb-2">
                             <div className="flex items-center gap-2">
                                 <span className="text-sm font-semibold text-white">Monthly</span>
-                                <div className="group relative cursor-help">
-                                    <div className="w-3.5 h-3.5 rounded-full border border-gray-700 text-gray-400 flex items-center justify-center text-[9px] hover:bg-gray-800 hover:text-white transition-colors">
-                                        ?
-                                    </div>
-                                    <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-48 bg-gray-800 border border-gray-700 rounded-lg p-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-10 shadow-xl pointer-events-none">
-                                        <ul className="space-y-1.5 text-xs text-gray-400 text-left">
-                                            <li className="flex items-start gap-1.5"><span className="text-white">•</span> consumed second</li>
-                                            <li className="flex items-start gap-1.5"><span className="text-white">•</span> Pro credits rollover</li>
-                                        </ul>
-                                    </div>
-                                </div>
+                                <TooltipProvider>
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <div className="w-3.5 h-3.5 rounded-full border border-gray-700 text-gray-400 flex items-center justify-center text-[9px] hover:bg-gray-800 hover:text-white transition-colors cursor-help">
+                                                ?
+                                            </div>
+                                        </TooltipTrigger>
+                                        <TooltipContent className="w-48 bg-gray-800 border border-gray-700 rounded-lg p-3 shadow-xl">
+                                            <ul className="flex flex-col gap-1.5 text-xs text-gray-400 text-left">
+                                                <li className="flex items-start gap-1.5"><span className="text-white">&bull;</span> consumed second</li>
+                                                <li className="flex items-start gap-1.5"><span className="text-white">&bull;</span> Pro credits rollover</li>
+                                            </ul>
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </TooltipProvider>
                             </div>
                             <span className="text-sm font-medium text-white">0 <span className="text-gray-400">/ 0</span></span>
                         </div>
                         <span className="text-xs text-gray-500 mb-4">Rollover enabled.</span>
-                        <div className="h-4 w-full bg-gray-800 rounded-full overflow-hidden mt-auto shadow-inner">
-                            <motion.div initial={{ width: 0 }} animate={{ width: "0%" }} className="h-full bg-purple-500 rounded-full" />
-                        </div>
+                        <Progress value={0} className="h-4 bg-gray-800 rounded-full mt-auto shadow-inner" indicatorClassName="bg-purple-500 rounded-full" />
                     </div>
 
                     {/* 3. Top-up Credits */}
@@ -433,42 +422,39 @@ const CreditsAndHistoryContent = ({ navigateTo }: { navigateTo: (tabId: string) 
                             <span className="text-sm font-medium text-white">1,401</span>
                         </div>
                         <span className="text-xs text-gray-500 mb-4">Non-expiring standalone.</span>
-                        <div className="h-4 w-full bg-gray-800 rounded-full overflow-hidden mt-auto shadow-inner">
-                            <motion.div initial={{ width: 0 }} animate={{ width: "100%" }} className="h-full bg-emerald-500 rounded-full" />
-                        </div>
+                        <Progress value={100} className="h-4 bg-gray-800 rounded-full mt-auto shadow-inner" indicatorClassName="bg-emerald-500 rounded-full" />
                     </div>
 
                 </div>
-            </div>
+            </Card>
 
             {/* Transaction History Section (Paginated) */}
             <div className="pt-4">
                 <div className="flex flex-col gap-4 mb-4">
                     <h4 className="text-base font-semibold text-white">Transaction log</h4>
 
-                    {/* Full-width Sleek Segmented Control */}
-                    <div className="flex bg-gray-850 border border-gray-800 rounded-lg p-1 w-full">
-                        {(['all', 'income', 'expense'] as const).map(type => (
-                            <button
-                                key={type}
-                                onClick={() => {
-                                    setFilter(type);
-                                    setCurrentPage(1); // Reset to first page on filter change
-                                }}
-                                className={`flex-1 py-2 text-sm capitalize font-medium rounded-md transition-colors border border-solid ${filter === type
-                                    ? 'bg-gray-800 text-white shadow-sm border-gray-700'
-                                    : 'text-gray-400 hover:text-white hover:bg-gray-800/50 border-transparent'
-                                    }`}
-                            >
-                                {type}
-                            </button>
-                        ))}
-                    </div>
+                    {/* Segmented Control via Tabs */}
+                    <Tabs value={filter} onValueChange={(v) => { setFilter(v); setCurrentPage(1); }} className="w-full">
+                        <TabsList variant="default" className="w-full bg-gray-850 border border-gray-800 rounded-lg p-1 h-auto">
+                            {(['all', 'income', 'expense'] as const).map(type => (
+                                <TabsTrigger
+                                    key={type}
+                                    value={type}
+                                    className={`flex-1 py-2 text-sm capitalize font-medium rounded-md transition-colors border border-solid ${filter === type
+                                        ? 'bg-gray-800 text-white shadow-sm border-gray-700'
+                                        : 'text-gray-400 hover:text-white hover:bg-gray-800/50 border-transparent'
+                                        }`}
+                                >
+                                    {type}
+                                </TabsTrigger>
+                            ))}
+                        </TabsList>
+                    </Tabs>
                 </div>
 
-                <div className="bg-gray-850 border border-gray-800 rounded-xl overflow-hidden">
+                <Card className="bg-gray-850 border border-gray-800 rounded-xl overflow-hidden p-0">
                     <div className="grid grid-cols-4 px-5 py-3 border-b border-gray-800 text-xs font-medium text-gray-500 bg-gray-900">
-                        <div className="col-span-2">Description</div>
+                        <div className="col-span-2">Transaction</div>
                         <div>Date</div>
                         <div className="text-right">Amount</div>
                     </div>
@@ -503,22 +489,26 @@ const CreditsAndHistoryContent = ({ navigateTo }: { navigateTo: (tabId: string) 
                                 Showing {(currentPage - 1) * itemsPerPage + 1}-{Math.min(currentPage * itemsPerPage, filteredTransactions.length)} of {filteredTransactions.length}
                             </span>
                             <div className="flex items-center gap-2">
-                                <button
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
                                     onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                                     disabled={currentPage === 1}
                                     className="px-3 py-1.5 text-xs text-gray-400 hover:text-white bg-gray-850 border border-gray-800 hover:border-gray-700 rounded-md disabled:opacity-50 disabled:pointer-events-none transition-colors">
                                     Previous
-                                </button>
-                                <button
+                                </Button>
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
                                     onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                                     disabled={currentPage === totalPages}
                                     className="px-3 py-1.5 text-xs text-gray-400 hover:text-white bg-gray-850 border border-gray-800 hover:border-gray-700 rounded-md disabled:opacity-50 disabled:pointer-events-none transition-colors">
                                     Next
-                                </button>
+                                </Button>
                             </div>
                         </div>
                     )}
-                </div>
+                </Card>
             </div>
         </div>
     );
@@ -526,22 +516,21 @@ const CreditsAndHistoryContent = ({ navigateTo }: { navigateTo: (tabId: string) 
 
 // --- V3 Plans & Topup Content ---
 const PlansAndTopupContent = () => (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300 pb-10">
+    <div className="flex flex-col gap-8 animate-in fade-in slide-in-from-bottom-2 duration-300 pb-10">
         <div>
             <h3 className="text-2xl font-semibold text-white mb-2">Plans & top-up</h3>
             <p className="text-gray-400 text-sm">Upgrade your tier or purchase extra standalone credits.</p>
         </div>
 
-        <div className="bg-gray-850 border border-gray-800 rounded-xl p-6 flex justify-between items-center">
+        <Card className="bg-gray-850 border border-gray-800 rounded-xl p-6 flex flex-row justify-between items-center">
             <div>
                 <h4 className="text-xl font-bold text-white tracking-tight mb-1">You're on Free Plan</h4>
                 <p className="text-sm text-gray-400">Limited to 10 daily credits with sequential generation speeds.</p>
             </div>
-        </div>
+        </Card>
 
         {/* Bottom Row: Pricing Cards */}
         <div id="pricing-cards" className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-2">
-            {/* FREE Card */}
             <PricingCard
                 tier="Free"
                 desc="A generous starting plan to explore core features."
@@ -554,8 +543,6 @@ const PlansAndTopupContent = () => (
                     "Community support"
                 ]}
             />
-
-            {/* PRO Card */}
             <PricingCard
                 tier="Pro"
                 desc="Designed for fast-moving creators building together."
@@ -572,25 +559,25 @@ const PlansAndTopupContent = () => (
             />
         </div>
 
-        {/* Top-Up Section (Non-Subscription Credit Packs) */}
-        <div id="top-up-section" className="border-t border-gray-800 pt-8 pb-4 scroll-mt-6">
+        {/* Top-Up Section */}
+        <div id="top-up-section" className="pb-4 scroll-mt-6">
+            <Separator className="bg-gray-800 mb-6" />
             <h4 className="text-base font-bold text-white mb-2">Buy extra credits (Top-up)</h4>
             <p className="text-sm text-gray-400 mb-6">Extra credits never expire. Used only when Daily and Monthly allowances are depleted. (100 credits = $1)</p>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-stretch">
-                <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 flex flex-col transition-colors">
+                <Card className="bg-gray-900 border border-gray-800 rounded-xl p-5 flex flex-col transition-colors">
                     <div className="flex justify-between mb-2 flex-1">
                         <div className="flex flex-col">
                             <span className="font-heading font-bold text-white text-lg">500 Credits</span>
-                            {/* Empty spacer to align with other cards that have bonus text */}
                             <span className="text-xs text-transparent font-medium select-none" aria-hidden="true">+0% Bonus</span>
                         </div>
                         <span className="font-bold text-gray-400">$5</span>
                     </div>
-                    <button className="w-full py-2 bg-gray-800 hover:bg-gray-700 text-white text-xs font-semibold rounded-lg transition-colors mt-auto">Purchase</button>
-                </div>
+                    <Button variant="ghost" className="w-full py-2.5 bg-gray-800 hover:bg-gray-700 text-white text-xs font-semibold rounded-lg transition-colors mt-auto">Purchase</Button>
+                </Card>
 
-                <div className="bg-gray-900 border border-indigo-500/30 rounded-xl p-5 relative flex flex-col transition-colors">
+                <Card className="bg-gray-900 border border-indigo-500/30 rounded-xl p-5 relative flex flex-col transition-colors overflow-visible">
                     <div className="absolute -top-2.5 right-4 bg-gradient-to-r from-indigo-500 to-indigo-400 text-white text-[10px] uppercase font-bold px-2 py-0.5 rounded-full shadow-lg">Popular</div>
                     <div className="flex justify-between mb-2 flex-1">
                         <div className="flex flex-col">
@@ -599,10 +586,10 @@ const PlansAndTopupContent = () => (
                         </div>
                         <span className="font-bold text-white">$10</span>
                     </div>
-                    <button className="w-full py-2 bg-indigo-500 hover:bg-indigo-600 text-white text-xs font-semibold rounded-lg transition-colors shadow-sm mt-auto">Purchase</button>
-                </div>
+                    <Button variant="ghost" className="w-full py-2.5 bg-indigo-500 hover:bg-indigo-600 text-white text-xs font-semibold rounded-lg transition-colors shadow-sm mt-auto">Purchase</Button>
+                </Card>
 
-                <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 flex flex-col transition-colors">
+                <Card className="bg-gray-900 border border-gray-800 rounded-xl p-5 flex flex-col transition-colors">
                     <div className="flex justify-between mb-2 flex-1">
                         <div className="flex flex-col">
                             <span className="font-heading font-bold text-white text-lg">2,400 Credits</span>
@@ -610,38 +597,35 @@ const PlansAndTopupContent = () => (
                         </div>
                         <span className="font-bold text-gray-400">$20</span>
                     </div>
-                    <button className="w-full py-2 bg-gray-800 hover:bg-gray-700 text-white text-xs font-semibold rounded-lg transition-colors mt-auto">Purchase</button>
-                </div>
+                    <Button variant="ghost" className="w-full py-2.5 bg-gray-800 hover:bg-gray-700 text-white text-xs font-semibold rounded-lg transition-colors mt-auto">Purchase</Button>
+                </Card>
             </div>
 
             {/* Custom Amount */}
-            <div className="mt-4 bg-gray-900 border border-gray-800 rounded-xl p-5 flex flex-col md:flex-row items-center justify-between gap-4">
+            <Card className="mt-4 bg-gray-900 border border-gray-800 rounded-xl p-5 flex flex-col md:flex-row items-center justify-between gap-4">
                 <div className="flex flex-col">
                     <span className="font-bold text-white text-sm">Custom Amount</span>
                     <span className="text-xs text-gray-400">Need a specific amount? (100 credits = $1.00)</span>
                 </div>
-                <div className="flex gap-2 w-full md:w-auto">
-                    <div className="relative flex-1 md:w-40">
-                        <input
-                            type="number"
-                            placeholder="e.g. 5000"
-                            className="w-full bg-gray-850 border border-gray-700 focus:border-indigo-500 outline-none text-white text-sm rounded-lg pl-3 pr-4 py-2 transition-colors"
-                            min="100"
-                            step="100"
-                        />
-                    </div>
-                    <button className="px-5 py-2 bg-gray-800 hover:bg-gray-700 text-white text-xs font-bold rounded-lg transition-colors shadow-sm whitespace-nowrap">
+                <div className="flex gap-2 w-full md:w-auto items-stretch">
+                    <Input
+                        type="number"
+                        placeholder="e.g. 5000"
+                        className="flex-1 md:w-40 h-auto py-2 bg-gray-850 border border-gray-700 focus:border-indigo-500 text-white text-sm rounded-lg pl-3 pr-4"
+                        min={100}
+                        step={100}
+                    />
+                    <Button variant="ghost" className="px-5 py-2 bg-gray-800 hover:bg-gray-700 text-white text-xs font-bold rounded-lg transition-colors shadow-sm whitespace-nowrap">
                         Purchase
-                    </button>
+                    </Button>
                 </div>
-            </div>
-
+            </Card>
         </div>
     </div>
 );
 
 const PricingCard = ({ tier, desc, price, cta, featuresHeader, features, primary = false }: any) => (
-    <div className={`relative bg-gray-850 p-8 rounded-xl flex flex-col h-[540px] justify-between transition-all ${
+    <Card className={`relative bg-gray-850 p-8 rounded-xl flex flex-col h-[540px] justify-between transition-all overflow-visible ${
         primary 
             ? 'border-2 border-cs-green-500 shadow-[0_0_25px_-5px_rgba(16,185,129,0.3)] hover:shadow-[0_0_25px_-5px_rgba(16,185,129,0.3)] z-10'
             : 'border-2 border-gray-800'
@@ -661,18 +645,20 @@ const PricingCard = ({ tier, desc, price, cta, featuresHeader, features, primary
         </div>
 
         <div className="shrink-0 mb-6">
-            <button className={`w-full h-12 font-bold text-sm transition-all shadow-sm flex items-center justify-center ${
+            <Button variant="ghost" className={`w-full h-12 font-bold text-sm transition-all shadow-sm flex items-center justify-center ${
                 primary 
-                    ? 'bg-cs-green-500 hover:bg-cs-green-600 text-gray-900 rounded-lg active:scale-[0.98]' 
-                    : 'bg-gray-800 hover:bg-gray-700 text-white rounded-lg active:scale-[0.98]'
+                    ? 'bg-cs-green-500 hover:bg-cs-green-600 text-gray-900 hover:text-gray-900 rounded-lg active:scale-[0.98]' 
+                    : cta === 'Current Plan'
+                    ? 'bg-gray-800 text-gray-400 rounded-lg pointer-events-none'
+                    : 'bg-gray-800 hover:bg-gray-700 text-white hover:text-white rounded-lg active:scale-[0.98]'
                 }`}>
                 {cta}
-            </button>
+            </Button>
         </div>
 
-        <div className={`flex-1 min-h-0 overflow-hidden ${primary ? 'bg-cs-green-500/5 border border-cs-green-500/20 rounded-xl p-5 -mx-3' : ''}`}>
+        <div className={`flex-1 min-h-0 overflow-hidden ${primary ? 'bg-cs-green-500/5 border border-cs-green-500/20 rounded-xl p-5' : ''}`}>
             <h5 className="text-sm font-bold text-white mb-4">{featuresHeader}</h5>
-            <ul className="space-y-4">
+            <ul className="flex flex-col gap-4">
                 {features.map((f: any, i: any) => (
                     <li key={i} className="flex items-start gap-3 text-sm text-gray-300">
                         <CheckCircle2 size={16} className={`${primary ? 'text-cs-green-500' : 'text-gray-200'} shrink-0 mt-0.5`} /> 
@@ -681,17 +667,14 @@ const PricingCard = ({ tier, desc, price, cta, featuresHeader, features, primary
                 ))}
             </ul>
         </div>
-    </div>
+    </Card>
 );
-
-
 
 
 // ==========================================
 // Referral List Modal Component
 // ==========================================
 const ReferralListModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) => {
-    // Mock data for referrals
     const referrals = [
         { id: 1, name: 'Alex M.', email: 'alex.m@abc.com', status: 'converted', date: '2024-03-10' },
         { id: 2, name: 'Sarah J.', email: 's.jones@xyz.net', status: 'converted', date: '2024-03-08' },
@@ -703,82 +686,68 @@ const ReferralListModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () =
     if (!isOpen) return null;
 
     return (
-        <AnimatePresence>
-            {isOpen && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
-                    {/* Backdrop */}
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
+            {/* Backdrop */}
+            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+
+            {/* Modal Content */}
+            <Card className="relative w-full max-w-2xl bg-gray-950 border border-gray-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh] p-0">
+                {/* Header */}
+                <div className="px-6 py-5 border-b border-gray-800 flex justify-between items-center bg-gray-900 shrink-0">
+                    <div>
+                        <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                            <Users className="text-gray-400" size={20} />
+                            Your Referrals
+                        </h3>
+                        <p className="text-sm text-gray-400 mt-1">Track your invites and successful conversions.</p>
+                    </div>
+                    <Button
+                        variant="ghost"
+                        size="icon"
                         onClick={onClose}
-                    />
-
-                    {/* Modal Content */}
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.95, y: 10 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                        className="relative w-full max-w-2xl bg-gray-950 border border-gray-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh]"
+                        className="text-gray-400 hover:text-white transition-colors p-2 rounded-lg hover:bg-gray-800"
                     >
-                        {/* Header */}
-                        <div className="px-6 py-5 border-b border-gray-800 flex justify-between items-center bg-gray-900 shrink-0">
-                            <div>
-                                <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                                    <Users className="text-gray-400" size={20} />
-                                    Your Referrals
-                                </h3>
-                                <p className="text-sm text-gray-400 mt-1">Track your invites and successful conversions.</p>
-                            </div>
-                            <button
-                                onClick={onClose}
-                                className="text-gray-400 hover:text-white transition-colors p-2 rounded-lg hover:bg-gray-800"
-                            >
-                                <X size={20} />
-                            </button>
-                        </div>
-
-                        {/* List */}
-                        <div className="flex-1 overflow-y-auto p-6 scrollbar-thin scrollbar-thumb-gray-800 scrollbar-track-transparent">
-                            <div className="space-y-3">
-                                {referrals.map((ref) => (
-                                    <div key={ref.id} className="flex flex-wrap items-center justify-between p-4 bg-gray-850 border border-gray-800 rounded-xl hover:border-gray-700 transition-colors gap-4">
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-white font-bold text-sm shrink-0">
-                                                {ref.name.charAt(0)}
-                                            </div>
-                                            <div>
-                                                <h4 className="text-sm font-bold text-white">{ref.name}</h4>
-                                            </div>
-                                        </div>
-                                        
-                                        <div className="flex items-center gap-6 ml-auto">
-                                            <span className="text-xs text-gray-500 whitespace-nowrap">{ref.date}</span>
-                                            
-                                            <div className="w-[130px] flex justify-end">
-                                                {ref.status === 'converted' ? (
-                                                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-bold text-cs-green-muted bg-cs-green-muted/10 rounded-md border border-cs-green-muted/20">
-                                                        <CreditCard size={12} strokeWidth={2.5} />
-                                                        Pro Subscriber
-                                                    </span>
-                                                ) : (
-                                                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-bold text-gray-400 bg-gray-800 rounded-md border border-gray-700">
-                                                        <User size={12} strokeWidth={2.5} />
-                                                        Registered
-                                                    </span>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </motion.div>
+                        <X size={20} />
+                    </Button>
                 </div>
-            )}
-        </AnimatePresence>
+
+                {/* List */}
+                <ScrollArea className="flex-1 p-6">
+                    <div className="flex flex-col gap-3">
+                        {referrals.map((ref) => (
+                            <Card key={ref.id} className="flex flex-row flex-wrap items-center justify-between p-4 bg-gray-850 border border-gray-800 rounded-xl hover:border-gray-700 transition-colors gap-4">
+                                <div className="flex items-center gap-4">
+                                    <Avatar className="w-10 h-10">
+                                        <AvatarFallback className="bg-gray-800 text-white font-bold text-sm">{ref.name.charAt(0)}</AvatarFallback>
+                                    </Avatar>
+                                    <div>
+                                        <h4 className="text-sm font-bold text-white">{ref.name}</h4>
+                                    </div>
+                                </div>
+                                
+                                <div className="flex items-center gap-6 ml-auto">
+                                    <span className="text-xs text-gray-500 whitespace-nowrap">{ref.date}</span>
+                                    
+                                    <div className="w-[130px] flex justify-end">
+                                        {ref.status === 'converted' ? (
+                                            <Badge className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-bold text-cs-green-muted bg-cs-green-muted/10 rounded-md border border-cs-green-muted/20 h-auto">
+                                                <CreditCard size={12} strokeWidth={2.5} />
+                                                Pro Subscriber
+                                            </Badge>
+                                        ) : (
+                                            <Badge variant="secondary" className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-bold text-gray-400 bg-gray-800 rounded-md border border-gray-700 h-auto">
+                                                <User size={12} strokeWidth={2.5} />
+                                                Registered
+                                            </Badge>
+                                        )}
+                                    </div>
+                                </div>
+                            </Card>
+                        ))}
+                    </div>
+                </ScrollArea>
+            </Card>
+        </div>
     );
 };
 
@@ -786,33 +755,26 @@ const EarnFreeCreditsContent = () => {
     const [checkInDay, setCheckInDay] = useState(3);
     const [isCheckInClaimed, setIsCheckInClaimed] = useState(true);
     
-    // Growth Task Stats
     const totalInvited = 12;
     const [unclaimedInvites, setUnclaimedInvites] = useState(3);
     
-    // Conversion Task Stats
     const totalConverted = 5;
     const [unclaimedConversions, setUnclaimedConversions] = useState(1);
     
-    // Exploration Task States
     const [communityState, setCommunityState] = useState<'join' | 'claim' | 'claimed'>('join');
 
     const [isReferralModalOpen, setIsReferralModalOpen] = useState(false);
 
-    // Muted color palette (Desaturated)
     const colors = {
-        emerald: 'text-cs-green-muted', // Muted Emerald
+        emerald: 'text-cs-green-muted',
         emeraldBg: 'bg-cs-green-muted',
         emeraldBorder: 'border-cs-green-muted/20',
         emeraldGlow: 'shadow-cs-green-muted/10',
-
-        indigo: 'text-indigo-muted', // Muted Indigo
+        indigo: 'text-indigo-muted',
         indigoBg: 'bg-indigo-muted',
-
-        purple: 'text-purple-muted', // Muted Purple
+        purple: 'text-purple-muted',
         purpleBg: 'bg-purple-muted',
-
-        orange: 'text-orange-muted', // Muted Orange
+        orange: 'text-orange-muted',
         orangeBg: 'bg-orange-muted'
     };
 
@@ -826,7 +788,7 @@ const EarnFreeCreditsContent = () => {
     };
 
     return (
-        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300 pb-10">
+        <div className="flex flex-col gap-8 animate-in fade-in slide-in-from-bottom-2 duration-300 pb-10">
             <div>
                 <h3 className="text-2xl font-semibold text-white mb-2 tracking-tight">Earn Free Credits</h3>
                 <p className="text-gray-400 text-sm font-sans leading-relaxed">Complete tasks to earn extra generation credits permanently or daily.</p>
@@ -846,7 +808,7 @@ const EarnFreeCreditsContent = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {/* Check-in Card (Daily) */}
-                    <div className="bg-gray-850 border-2 border-gray-800 rounded-xl p-3.5 transition-all group flex flex-col justify-between h-[215px]">
+                    <Card className="bg-gray-850 border-2 border-gray-800 rounded-xl p-3.5 transition-all group flex flex-col justify-between h-[215px]">
                         <div className="shrink-0">
                             <div className="flex justify-between items-start">
                                 <div>
@@ -869,20 +831,21 @@ const EarnFreeCreditsContent = () => {
                         </div>
 
                         <div className="shrink-0 mt-1">
-                            <button
+                            <Button
+                                variant="ghost"
                                 onClick={handleCheckIn}
                                 className={`w-full h-9 text-xs font-bold rounded-lg transition-all shadow-lg active:scale-[0.98] flex items-center justify-center ${isCheckInClaimed
-                                    ? 'bg-gray-800 text-gray-500 cursor-default border border-gray-700'
-                                    : `${colors.emeraldBg} text-white ${colors.emeraldGlow}`
+                                    ? 'bg-gray-800 text-gray-500 cursor-default border border-gray-700 pointer-events-none'
+                                    : `${colors.emeraldBg} text-white hover:text-white ${colors.emeraldGlow}`
                                     }`}
                             >
                                 {isCheckInClaimed ? `Claimed (Day ${checkInDay})` : `Claim Day ${checkInDay}`}
-                            </button>
+                            </Button>
                         </div>
-                    </div>
+                    </Card>
 
                     {/* Public Post Card (Daily) */}
-                    <div className="bg-gray-850 border-2 border-gray-800 rounded-xl p-3.5 transition-all group flex flex-col justify-between h-[215px]">
+                    <Card className="bg-gray-850 border-2 border-gray-800 rounded-xl p-3.5 transition-all group flex flex-col justify-between h-[215px]">
                         <div className="shrink-0">
                             <div className="flex justify-between items-start">
                                 <div>
@@ -896,11 +859,11 @@ const EarnFreeCreditsContent = () => {
                         <div className="flex-1" />
 
                         <div className="shrink-0 mt-1">
-                            <button className="px-5 h-9 w-full bg-gray-800 hover:bg-gray-700 text-white text-xs font-bold rounded-lg transition-colors border border-gray-700 active:scale-[0.98] flex items-center justify-center">
+                            <Button variant="ghost" className="px-5 h-9 w-full bg-gray-800 hover:bg-gray-700 text-white text-xs font-bold rounded-lg transition-colors border border-gray-700 active:scale-[0.98] flex items-center justify-center">
                                 Go to Project
-                            </button>
+                            </Button>
                         </div>
-                    </div>
+                    </Card>
                 </div>
             </div>
 
@@ -913,10 +876,9 @@ const EarnFreeCreditsContent = () => {
                     <h4 className="text-lg font-bold text-white tracking-tight">Growth Success</h4>
                 </div>
 
-                <div className="space-y-4">
-
+                <div className="flex flex-col gap-4">
                     {/* Invite Registration */}
-                    <div className="bg-gray-850 border border-gray-800 rounded-xl p-5 flex items-center justify-between group transition-colors relative overflow-hidden">
+                    <Card className="bg-gray-850 border border-gray-800 rounded-xl p-5 flex flex-row items-center justify-between group transition-colors relative overflow-hidden">
                         <div className="flex gap-5 items-center">
                             <div className={`w-12 h-12 rounded-xl bg-transparent flex items-center justify-center shrink-0 border border-white/10 text-gray-400 group-hover:text-white group-hover:border-white/20 transition-colors`}>
                                 <Users size={22} strokeWidth={1.5} />
@@ -938,27 +900,24 @@ const EarnFreeCreditsContent = () => {
                         <div className="flex items-center gap-5">
                             <span className={`text-sm font-heading font-bold ${colors.emerald}`}>+10<span className="text-[10px] opacity-60 ml-0.5">/each</span></span>
                             <div className="w-[100px] flex justify-end">
-                                    <button 
-                                    onClick={() => {
-                                        if (unclaimedInvites > 0) {
-                                            setUnclaimedInvites(0);
-                                        }
-                                    }}
+                                <Button 
+                                    variant="ghost"
+                                    onClick={() => { if (unclaimedInvites > 0) { setUnclaimedInvites(0); } }}
                                     className={`px-0 py-2 w-full text-sm font-bold rounded-lg transition-all border active:scale-[0.98] ${
                                         unclaimedInvites > 0 
-                                        ? 'bg-cs-green-muted hover:bg-cs-green-muted-dark text-white border-cs-green-muted/20 shadow-lg shadow-cs-green-muted/10' 
+                                        ? 'bg-cs-green-muted hover:bg-cs-green-muted-dark text-white hover:text-white border-cs-green-muted/20 shadow-lg shadow-cs-green-muted/10' 
                                         : totalInvited >= 10
-                                        ? 'bg-gray-800 text-gray-500 border-gray-700 cursor-default'
-                                        : 'bg-white/5 hover:bg-white/10 text-white border-white/10'
+                                        ? 'bg-gray-800 text-gray-500 border-gray-700 cursor-default pointer-events-none'
+                                        : 'bg-white/5 hover:bg-white/10 text-white hover:text-white border-white/10'
                                     }`}>
                                     {unclaimedInvites > 0 ? 'Claim' : totalInvited >= 10 ? 'Claimed' : 'Copy Link'}
-                                </button>
+                                </Button>
                             </div>
                         </div>
-                    </div>
+                    </Card>
 
                     {/* Invite Subscription */}
-                    <div className="bg-gray-850 border border-gray-800 rounded-xl p-5 flex items-center justify-between group transition-colors">
+                    <Card className="bg-gray-850 border border-gray-800 rounded-xl p-5 flex flex-row items-center justify-between group transition-colors">
                         <div className="flex gap-5 items-center">
                             <div className={`w-12 h-12 rounded-xl bg-transparent flex items-center justify-center shrink-0 border border-white/10 text-gray-400 group-hover:text-white group-hover:border-white/20 transition-colors`}>
                                 <CreditCard size={22} strokeWidth={1.5} />
@@ -980,25 +939,23 @@ const EarnFreeCreditsContent = () => {
                         <div className="flex items-center gap-5">
                             <span className={`text-sm font-heading font-bold ${colors.emerald}`}>+500</span>
                             <div className="w-[100px] flex justify-end">
-                                <button 
+                                <Button 
+                                    variant="ghost"
                                     onClick={() => {
-                                        if (unclaimedConversions > 0) {
-                                            setUnclaimedConversions(0);
-                                        } else {
-                                            setIsReferralModalOpen(true);
-                                        }
+                                        if (unclaimedConversions > 0) { setUnclaimedConversions(0); }
+                                        else { setIsReferralModalOpen(true); }
                                     }}
                                     className={`px-0 py-2 w-full text-sm font-bold rounded-lg transition-all border active:scale-[0.98] ${
                                         unclaimedConversions > 0 
-                                        ? 'bg-cs-green-muted hover:bg-cs-green-muted-dark text-white border-cs-green-muted/20 shadow-lg shadow-cs-green-muted/10' 
-                                        : 'bg-white/5 hover:bg-white/10 text-white border-white/10'
+                                        ? 'bg-cs-green-muted hover:bg-cs-green-muted-dark text-white hover:text-white border-cs-green-muted/20 shadow-lg shadow-cs-green-muted/10' 
+                                        : 'bg-white/5 hover:bg-white/10 text-white hover:text-white border-white/10'
                                     }`}
                                 >
                                     {unclaimedConversions > 0 ? 'Claim' : 'View'}
-                                </button>
+                                </Button>
                             </div>
                         </div>
-                    </div>
+                    </Card>
                 </div>
             </div>
 
@@ -1011,9 +968,9 @@ const EarnFreeCreditsContent = () => {
                     <h4 className="text-lg font-bold text-white tracking-tight">Exploration</h4>
                 </div>
 
-                <div className="space-y-4">
+                <div className="flex flex-col gap-4">
                     {/* Join Community Task */}
-                    <div className="bg-gray-850 border border-gray-800 rounded-xl p-5 flex items-center justify-between group transition-colors">
+                    <Card className="bg-gray-850 border border-gray-800 rounded-xl p-5 flex flex-row items-center justify-between group transition-colors">
                         <div className="flex gap-5 items-center">
                             <div className={`w-12 h-12 rounded-xl bg-transparent flex items-center justify-center shrink-0 border border-white/10 text-gray-400 group-hover:text-white group-hover:border-white/20 transition-colors`}>
                                 <MessageSquare size={22} strokeWidth={1.5} />
@@ -1026,23 +983,24 @@ const EarnFreeCreditsContent = () => {
                         <div className="flex items-center gap-5">
                             <span className={`text-sm font-heading font-bold ${colors.emerald}`}>+50</span>
                             <div className="w-[100px] flex justify-end">
-                                <button 
+                                <Button 
+                                    variant="ghost"
                                     onClick={() => {
                                         if (communityState === 'join') setCommunityState('claim');
                                         else if (communityState === 'claim') setCommunityState('claimed');
                                     }}
                                     className={`px-0 py-2 w-full text-sm font-bold rounded-lg transition-all border active:scale-[0.98] ${
                                         communityState === 'claim' 
-                                        ? 'bg-cs-green-muted hover:bg-cs-green-muted-dark text-white border-cs-green-muted/20 shadow-lg shadow-cs-green-muted/10' 
+                                        ? 'bg-cs-green-muted hover:bg-cs-green-muted-dark text-white hover:text-white border-cs-green-muted/20 shadow-lg shadow-cs-green-muted/10' 
                                         : communityState === 'claimed'
-                                        ? 'bg-gray-800 text-gray-500 border-gray-700'
-                                        : 'bg-white/5 hover:bg-white/10 text-white border-white/10'
+                                        ? 'bg-gray-800 text-gray-500 border-gray-700 pointer-events-none'
+                                        : 'bg-white/5 hover:bg-white/10 text-white hover:text-white border-white/10'
                                     }`}>
                                     {communityState === 'join' ? 'Join' : communityState === 'claim' ? 'Claim' : 'Claimed'}
-                                </button>
+                                </Button>
                             </div>
                         </div>
-                    </div>
+                    </Card>
                 </div>
             </div>
 
@@ -1052,61 +1010,60 @@ const EarnFreeCreditsContent = () => {
 };
 
 
-
 const ProfileContent = () => (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300 pb-10">
+    <div className="flex flex-col gap-8 animate-in fade-in slide-in-from-bottom-2 duration-300 pb-10">
         <div>
             <h3 className="text-2xl font-semibold text-white mb-2">Profile</h3>
             <p className="text-gray-400 text-sm">Manage your personal information and identity.</p>
         </div>
         <div className="flex items-center gap-6">
-            <div className="w-24 h-24 rounded-full bg-indigo-500 text-white flex items-center justify-center text-4xl font-bold shadow-xl border-4 border-gray-900 ring-1 ring-gray-800">W</div>
+            <Avatar className="w-24 h-24 rounded-full border-4 border-gray-900 ring-1 ring-gray-800">
+                <AvatarFallback className="bg-indigo-500 text-white text-4xl font-bold">W</AvatarFallback>
+            </Avatar>
             <div className="flex gap-3">
-                <button className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white text-sm font-semibold rounded-lg transition-colors">Upload Avatar</button>
-                <button className="px-4 py-2 text-[#rose-500] hover:bg-rose-500/10 text-rose-500 text-sm font-semibold rounded-lg transition-colors">Remove</button>
+                <Button variant="ghost" className="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white text-sm font-semibold rounded-lg transition-colors">Upload Avatar</Button>
+                <Button variant="ghost" className="px-4 py-2 text-rose-500 hover:bg-rose-500/10 text-sm font-semibold rounded-lg transition-colors">Remove</Button>
             </div>
         </div>
         <div className="grid gap-4 max-w-md">
             <div>
-                <label className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 block">Display Name</label>
-                <input type="text" defaultValue="WeFun User" className="w-full bg-gray-900 border border-gray-800 rounded-lg p-3 text-sm text-white focus:outline-none focus:border-indigo-500" />
+                <Label className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Display Name</Label>
+                <Input type="text" defaultValue="WeFun User" className="w-full bg-gray-900 border border-gray-800 rounded-lg p-3 text-sm text-white" />
             </div>
             <div>
-                <label className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 block">Email Address</label>
-                <input type="email" defaultValue="user@wefun.ai" disabled className="w-full bg-gray-900 border border-gray-800 rounded-lg p-3 text-sm text-gray-500 cursor-not-allowed opacity-50" />
+                <Label className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Email Address</Label>
+                <Input type="email" defaultValue="user@wefun.ai" disabled className="w-full bg-gray-900 border border-gray-800 rounded-lg p-3 text-sm text-gray-500 cursor-not-allowed opacity-50" />
             </div>
         </div>
-        <button className="px-6 py-2 bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-bold rounded-lg transition-colors shadow-sm">Save Changes</button>
+        <Button variant="ghost" className="px-6 py-2 bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-bold rounded-lg transition-colors shadow-sm">Save Changes</Button>
     </div>
 );
 
 const PreferencesContent = () => (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300 pb-10">
+    <div className="flex flex-col gap-8 animate-in fade-in slide-in-from-bottom-2 duration-300 pb-10">
         <div>
             <h3 className="text-2xl font-semibold text-white mb-2">Preferences</h3>
             <p className="text-gray-400 text-sm">Customize your application experience.</p>
         </div>
 
-        <div className="max-w-xl space-y-6">
-            <div className="flex items-center justify-between bg-gray-850 border border-gray-800 p-5 rounded-xl">
+        <div className="max-w-xl flex flex-col gap-6">
+            <Card className="flex flex-row items-center justify-between bg-gray-850 border border-gray-800 p-5 rounded-xl">
                 <div>
                     <h4 className="text-base font-bold text-white mb-1">Theme</h4>
                     <p className="text-sm text-gray-400">Select your preferred color scheme.</p>
                 </div>
                 <div className="flex gap-2">
-                    <button className="w-10 h-10 rounded-lg bg-gray-800 border-2 border-indigo-500 flex items-center justify-center text-white"><Palette size={16} /></button>
+                    <Button variant="ghost" size="icon" className="w-10 h-10 rounded-lg bg-gray-800 border-2 border-indigo-500 flex items-center justify-center text-white"><Palette size={16} /></Button>
                 </div>
-            </div>
+            </Card>
 
-            <div className="flex items-center justify-between bg-gray-850 border border-gray-800 p-5 rounded-xl">
+            <Card className="flex flex-row items-center justify-between bg-gray-850 border border-gray-800 p-5 rounded-xl">
                 <div>
                     <h4 className="text-base font-bold text-white mb-1">Email Notifications</h4>
                     <p className="text-sm text-gray-400">Receive updates on new features and credit usage.</p>
                 </div>
-                <div className="w-10 h-6 bg-indigo-500 rounded-full relative cursor-pointer">
-                    <div className="absolute right-1 top-1 w-4 h-4 rounded-full bg-white shadow-sm"></div>
-                </div>
-            </div>
+                <Switch defaultChecked className="data-[state=checked]:bg-indigo-500" />
+            </Card>
         </div>
     </div>
 );
@@ -1115,18 +1072,18 @@ const PreferencesContent = () => (
 // 3. Inbox and Whats New Content Components
 // ==========================================
 const InboxContent = () => (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300 pb-10">
+    <div className="flex flex-col gap-8 animate-in fade-in slide-in-from-bottom-2 duration-300 pb-10">
         <div>
             <h3 className="text-2xl font-semibold text-white mb-2">Inbox</h3>
             <p className="text-gray-400 text-sm">Your personal notifications and alerts.</p>
         </div>
-        <div className="bg-gray-850 border border-gray-800 rounded-xl divide-y divide-gray-800">
+        <Card className="bg-gray-850 border border-gray-800 rounded-xl divide-y divide-gray-800 p-0">
             <div className="p-5 flex gap-4 hover:bg-gray-800 transition-colors relative">
                 <div className="w-10 h-10 rounded-full bg-emerald-500/10 text-emerald-500 flex items-center justify-center shrink-0">
                     <CheckCircle2 size={18} />
                 </div>
                 <div>
-                    <h4 className="text-sm font-bold text-white mb-0.5">Your generation completed <span className="ml-2 px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 text-[10px] uppercase font-bold tracking-wider">New</span></h4>
+                    <h4 className="text-sm font-bold text-white mb-0.5">Your generation completed <Badge variant="secondary" className="ml-2 px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 text-[10px] uppercase font-bold tracking-wider h-auto">New</Badge></h4>
                     <p className="text-sm text-gray-400 mb-2">"A red bus driving in the city" has successfully finished generating. Check your gallery.</p>
                     <span className="text-xs text-gray-500">5 hours ago</span>
                 </div>
@@ -1141,28 +1098,28 @@ const InboxContent = () => (
                     <span className="text-xs text-gray-500">1 day ago</span>
                 </div>
             </div>
-        </div>
+        </Card>
     </div>
 );
 
 const WhatsNewContent = () => (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300 pb-10">
+    <div className="flex flex-col gap-8 animate-in fade-in slide-in-from-bottom-2 duration-300 pb-10">
         <div>
             <h3 className="text-2xl font-semibold text-white mb-2">What's New</h3>
             <p className="text-gray-400 text-sm">Platform updates, features, and announcements.</p>
         </div>
-        <div className="bg-gray-850 border border-gray-800 rounded-xl divide-y divide-gray-800">
+        <Card className="bg-gray-850 border border-gray-800 rounded-xl divide-y divide-gray-800 p-0">
             <div className="p-5 flex gap-4 hover:bg-gray-800 transition-colors relative cursor-pointer">
                 <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shrink-0">
                     <Sparkles size={24} className="text-white" />
                 </div>
                 <div className="flex-1">
-                    <h4 className="text-lg font-bold text-white mb-1">Canvas mode is here! <span className="ml-2 px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 text-[10px] uppercase font-bold tracking-wider">New</span></h4>
+                    <h4 className="text-lg font-bold text-white mb-1">Canvas mode is here! <Badge variant="secondary" className="ml-2 px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 text-[10px] uppercase font-bold tracking-wider h-auto">New</Badge></h4>
                     <p className="text-sm text-gray-400 mb-3">Try the new canvas mode for spatial editing. Drag, drop, and link AI generations seamlessly onto an infinite workspace.</p>
-                    <button className="text-sm font-bold text-indigo-500 hover:text-indigo-600">Read full release notes &rarr;</button>
+                    <Button variant="link" className="text-sm font-bold text-indigo-500 hover:text-indigo-600 p-0 h-auto">Read full release notes &rarr;</Button>
                 </div>
             </div>
-        </div>
+        </Card>
     </div>
 );
 
@@ -1177,10 +1134,10 @@ export const InlineChatWarning = ({ onUpgrade, onClose, text, buttonText }: any)
                 {text || "0 free credits remaining"}
             </span>
             <div className="flex items-center gap-2">
-                <button onClick={onUpgrade} className="px-3 py-1.5 bg-cs-blue-600 hover:bg-cs-blue-700 text-white text-[13px] font-bold rounded-lg transition-colors shadow-sm flex items-center justify-center">
+                <Button variant="ghost" onClick={onUpgrade} className="px-3 py-1.5 bg-cs-blue-600 hover:bg-cs-blue-700 text-white text-[13px] font-bold rounded-lg transition-colors shadow-sm flex items-center justify-center">
                     {buttonText || "Add credits"}
-                </button>
-                <button onClick={onClose} className="p-1 text-gray-400 hover:bg-gray-800 hover:text-white rounded-md transition-colors"><X size={16} /></button>
+                </Button>
+                <Button variant="ghost" size="icon-xs" onClick={onClose} className="p-1 text-gray-400 hover:bg-gray-800 hover:text-white rounded-md transition-colors"><X size={16} /></Button>
             </div>
         </div>
     );
@@ -1190,45 +1147,32 @@ export const InlineChatWarning = ({ onUpgrade, onClose, text, buttonText }: any)
 // 4. Mini Upgrade Modal (Triggered by Chat Warning)
 // ==========================================
 export const MiniUpgradeModal = ({ isOpen, onClose, onNavigateToPlans }: any) => {
+    if (!isOpen) return null;
     return (
-        <AnimatePresence>
-            {isOpen && (
-                <div className="fixed inset-0 z-[150] flex items-center justify-center px-4">
-                    <motion.div
-                        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-                        onClick={onClose}
-                    />
-                    <motion.div
-                        initial={{ scale: 0.95, opacity: 0, y: 10 }}
-                        animate={{ scale: 1, opacity: 1, y: 0 }}
-                        exit={{ scale: 0.95, opacity: 0, y: 10 }}
-                        transition={{ type: "spring", damping: 25, stiffness: 300 }}
-                        className="relative w-full max-w-sm bg-gray-850 border border-gray-800 rounded-2xl shadow-2xl overflow-hidden p-6 text-center flex flex-col items-center"
-                    >
-                        <button onClick={onClose} className="absolute top-4 right-4 p-1.5 text-gray-500 hover:bg-gray-800 hover:text-white rounded-md transition-colors">
-                            <X size={16} />
-                        </button>
+        <div className="fixed inset-0 z-[150] flex items-center justify-center px-4">
+            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+            <Card className="relative w-full max-w-sm bg-gray-850 border border-gray-800 rounded-2xl shadow-2xl overflow-hidden p-6 text-center flex flex-col items-center">
+                <Button variant="ghost" size="icon-xs" onClick={onClose} className="absolute top-4 right-4 p-1.5 text-gray-500 hover:bg-gray-800 hover:text-white rounded-md transition-colors">
+                    <X size={16} />
+                </Button>
 
-                        <div className="w-12 h-12 bg-indigo-500/20 text-indigo-400 rounded-full flex items-center justify-center mb-4 border border-indigo-500/30">
-                            <Zap size={24} fill="currentColor" />
-                        </div>
-
-                        <h3 className="text-xl font-bold text-white mb-2">Out of Credits</h3>
-                        <p className="text-sm text-gray-400 mb-6">You've reached your daily limit for generations. Upgrade to a Pro plan for more credits and faster speeds.</p>
-
-                        <div className="flex w-full gap-3">
-                            <button onClick={onClose} className="flex-1 py-2 bg-gray-800 hover:bg-gray-700 text-white text-sm font-semibold rounded-lg transition-colors shadow-sm">
-                                Dismiss
-                            </button>
-                            <button onClick={() => { onClose(); onNavigateToPlans(); }} className="flex-1 py-2 bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-semibold rounded-lg transition-colors shadow-sm">
-                                View Plans
-                            </button>
-                        </div>
-                    </motion.div>
+                <div className="w-12 h-12 bg-indigo-500/20 text-indigo-400 rounded-full flex items-center justify-center mb-4 border border-indigo-500/30">
+                    <Zap size={24} fill="currentColor" />
                 </div>
-            )}
-        </AnimatePresence>
+
+                <h3 className="text-xl font-bold text-white mb-2">Out of Credits</h3>
+                <p className="text-sm text-gray-400 mb-6">You've reached your daily limit for generations. Upgrade to a Pro plan for more credits and faster speeds.</p>
+
+                <div className="flex w-full gap-3">
+                    <Button variant="ghost" onClick={onClose} className="flex-1 py-2 bg-gray-800 hover:bg-gray-700 text-white text-sm font-semibold rounded-lg transition-colors shadow-sm">
+                        Dismiss
+                    </Button>
+                    <Button variant="ghost" onClick={() => { onClose(); onNavigateToPlans(); }} className="flex-1 py-2 bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-semibold rounded-lg transition-colors shadow-sm">
+                        View Plans
+                    </Button>
+                </div>
+            </Card>
+        </div>
     );
 };
 
@@ -1240,16 +1184,10 @@ export const SystemToast = ({ message, type = "success", onClose }: any) => {
     }, [onClose]);
 
     return (
-        <motion.div
-            initial={{ y: -50, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -20, opacity: 0 }}
-            className={`fixed top-6 left-1/2 -translate-x-1/2 flex items-center gap-3 px-4 py-3 rounded-xl shadow-2xl z-[200] border ${type === "success" ? "bg-gray-925 border-emerald-500/30" : "bg-gray-925 border-rose-500/30"
-                }`}
-        >
+        <div className={`fixed top-6 left-1/2 -translate-x-1/2 flex items-center gap-3 px-4 py-3 rounded-xl shadow-2xl z-[200] border ${type === "success" ? "bg-gray-925 border-emerald-500/30" : "bg-gray-925 border-rose-500/30"}`}>
             {type === "success" ? <CheckCircle2 className="text-emerald-500" size={18} /> : <AlertCircle className="text-rose-500" size={18} />}
             <span className="text-sm font-medium text-white">{message}</span>
-            <button onClick={onClose} className="ml-4 text-gray-500 hover:text-white"><X size={14} /></button>
-        </motion.div>
+            <Button variant="ghost" size="icon-xs" onClick={onClose} className="ml-4 text-gray-500 hover:text-white"><X size={14} /></Button>
+        </div>
     );
 };
