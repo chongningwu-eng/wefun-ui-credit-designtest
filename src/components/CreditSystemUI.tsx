@@ -359,10 +359,10 @@ const CreditsAndHistoryContent = ({ navigateTo }: { navigateTo: (tabId: string) 
                 </div>
 
                 {/* Sub-cards Grid */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-0 lg:divide-x divide-y lg:divide-y-0 divide-gray-800 border border-gray-800 rounded-lg bg-gray-900">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-0 border border-gray-800 rounded-lg bg-gray-900">
                     
                     {/* 1. Daily Credits */}
-                    <div className="p-5 flex flex-col justify-between h-36 border-t border-transparent transition-colors">
+                    <div className="p-5 flex flex-col justify-between h-36 transition-colors">
                         <div className="flex justify-between items-start mb-2">
                             <div className="flex items-center gap-2">
                                 <span className="text-sm font-semibold text-white">Daily</span>
@@ -389,7 +389,7 @@ const CreditsAndHistoryContent = ({ navigateTo }: { navigateTo: (tabId: string) 
                     </div>
 
                     {/* 2. Monthly Credits */}
-                    <div className="p-5 flex flex-col justify-between h-36 border-t border-transparent transition-colors">
+                    <div className="p-5 flex flex-col justify-between h-36 border-t border-gray-800 lg:border-t-0 lg:border-l border-gray-800 transition-colors">
                         <div className="flex justify-between items-start mb-2">
                             <div className="flex items-center gap-2">
                                 <span className="text-sm font-semibold text-white">Monthly</span>
@@ -416,7 +416,7 @@ const CreditsAndHistoryContent = ({ navigateTo }: { navigateTo: (tabId: string) 
                     </div>
 
                     {/* 3. Top-up Credits */}
-                    <div className="p-5 flex flex-col justify-between h-36 border-t border-transparent transition-colors">
+                    <div className="p-5 flex flex-col justify-between h-36 border-t border-gray-800 lg:border-t-0 lg:border-l border-gray-800 transition-colors">
                         <div className="flex justify-between items-start mb-2">
                             <span className="text-sm font-semibold text-white">Top-up</span>
                             <span className="text-sm font-medium text-white">1,401</span>
@@ -459,9 +459,9 @@ const CreditsAndHistoryContent = ({ navigateTo }: { navigateTo: (tabId: string) 
                         <div className="text-right">Amount</div>
                     </div>
                     {/* Fixed height container to prevent scrollbar jumping */}
-                    <div className="divide-y divide-gray-800 min-h-[310px]">
-                        {currentTransactions.map((tr) => (
-                            <div key={tr.id} className={`grid grid-cols-4 px-5 py-3.5 items-center text-sm hover:bg-gray-800/30 transition-colors`}>
+                    <div className="min-h-[310px]">
+                        {currentTransactions.map((tr, idx) => (
+                            <div key={tr.id} className={`grid grid-cols-4 px-5 py-3.5 items-center text-sm hover:bg-gray-800/30 transition-colors ${idx > 0 ? 'border-t border-gray-800' : ''}`}>
                                 <div className="col-span-2 flex items-center gap-3">
                                     <div className={`w-8 h-8 rounded-full flex items-center justify-center border ${tr.income ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500' : 'bg-gray-800 border-gray-700 text-gray-400'}`}>
                                         {tr.income ? <ArrowDownLeft size={14} strokeWidth={2.5} /> : <Zap size={14} fill="currentColor" />}
@@ -1077,7 +1077,7 @@ const InboxContent = () => (
             <h3 className="text-2xl font-semibold text-white mb-2">Inbox</h3>
             <p className="text-gray-400 text-sm">Your personal notifications and alerts.</p>
         </div>
-        <Card className="bg-gray-850 border border-gray-800 rounded-xl divide-y divide-gray-800 p-0">
+        <Card className="bg-gray-850 border border-gray-800 rounded-xl p-0">
             <div className="p-5 flex gap-4 hover:bg-gray-800 transition-colors relative">
                 <div className="w-10 h-10 rounded-full bg-emerald-500/10 text-emerald-500 flex items-center justify-center shrink-0">
                     <CheckCircle2 size={18} />
@@ -1088,7 +1088,7 @@ const InboxContent = () => (
                     <span className="text-xs text-gray-500">5 hours ago</span>
                 </div>
             </div>
-            <div className="p-5 flex gap-4 hover:bg-gray-800 transition-colors relative">
+            <div className="p-5 flex gap-4 hover:bg-gray-800 transition-colors relative border-t border-gray-800">
                 <div className="w-10 h-10 rounded-full bg-indigo-500/10 text-indigo-500 flex items-center justify-center shrink-0">
                     <Zap size={18} fill="currentColor" />
                 </div>
@@ -1108,7 +1108,7 @@ const WhatsNewContent = () => (
             <h3 className="text-2xl font-semibold text-white mb-2">What's New</h3>
             <p className="text-gray-400 text-sm">Platform updates, features, and announcements.</p>
         </div>
-        <Card className="bg-gray-850 border border-gray-800 rounded-xl divide-y divide-gray-800 p-0">
+        <Card className="bg-gray-850 border border-gray-800 rounded-xl p-0">
             <div className="p-5 flex gap-4 hover:bg-gray-800 transition-colors relative cursor-pointer">
                 <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shrink-0">
                     <Sparkles size={24} className="text-white" />
