@@ -171,9 +171,6 @@ function App() {
         <div className={`flex-1 min-w-0 transition-all duration-300 ${isTreeExpanded ? 'opacity-30 blur-sm pointer-events-none scale-[0.98]' : ''}`}>
           <LeftPanel 
             isAgentMode={isAgentMode}
-            setBalance={setBalance}
-            setIsWarningVisible={setIsWarningVisible}
-            setHasChatError={setHasChatError}
             onPushToChat={handlePushToChat}
             onSaveToAsset={handleSaveToAsset}
           />

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { Sparkles, Bell, FolderOpen } from 'lucide-react';
 import { AvatarDropdown, NavCreditBalance, InboxDropdown } from '../CreditSystemUI';
 
