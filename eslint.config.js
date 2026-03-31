@@ -6,7 +6,7 @@ import tseslint from 'typescript-eslint'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist']),
+  globalIgnores(['dist', 'Vibma', 'old_ui.tsx', 'src/components/CreditSystemUI.backup.tsx', 'src/components/CreditSystemUI.tsx', 'src/components/credit-system/*']),
   {
     files: ['**/*.{ts,tsx}'],
     extends: [
