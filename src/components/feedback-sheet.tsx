@@ -18,7 +18,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
-import { FileImage, Maximize2, Trash2, X, CheckCircle2, Loader2 } from "lucide-react";
+import { Maximize2, Trash2, X, CheckCircle2, Loader2, ImagePlus, UploadCloud } from "lucide-react";
 
 interface FeedbackSheetProps {
   open: boolean;
@@ -30,20 +30,33 @@ export function FeedbackSheet({ open, onOpenChange }: FeedbackSheetProps) {
   const [images, setImages] = useState<{file: File, url: string}[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const processFiles = (files: FileList | File[]) => {
+    const newFiles = Array.from(files);
+    const remainingSlots = 3 - images.length;
+    const allowedFiles = newFiles.slice(0, remainingSlots); 
+    
+    const newImages = allowedFiles.map(file => ({
+      file,
+      url: URL.createObjectURL(file)
+    }));
+    setImages(prev => [...prev, ...newImages]);
+  };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      const newFiles = Array.from(e.target.files);
-      const remainingSlots = 3 - images.length;
-      const allowedFiles = newFiles.slice(0, remainingSlots); 
-      
-      const newImages = allowedFiles.map(file => ({
-        file,
-        url: URL.createObjectURL(file)
-      }));
-      setImages(prev => [...prev, ...newImages]);
+      processFiles(e.target.files);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragging(false);
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      processFiles(e.dataTransfer.files);
     }
   };
 
@@ -154,67 +167,85 @@ export function FeedbackSheet({ open, onOpenChange }: FeedbackSheetProps) {
               </div>
 
               {/* Attachments Section */}
-              <div className="flex flex-col gap-4 mt-2">
-                <div className="flex items-center justify-between">
-                  <Label className="text-[14px] font-semibold text-[#f3f3f5]">
-                    Attachment section
-                  </Label>
-                  <button type="button" className="text-[12px] text-[#a9a9b8] hover:text-white flex items-center gap-1.5 transition-colors">
-                    <Maximize2 size={12} />
-                    Capture Current Screen
-                  </button>
-                </div>
-
-                {/* Standard Dropzone */}
-                <label className={`border border-[#4d4d5c] rounded-lg bg-[#1a1a1f] p-6 flex flex-col items-center justify-center gap-2 transition-colors ${images.length >= 3 ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-[#1a1a1f]/80 group'}`}>
-                  <input 
-                    type="file" 
-                    accept="image/*" 
-                    multiple 
-                    className="hidden" 
-                    ref={fileInputRef}
-                    onChange={handleFileChange}
-                    disabled={images.length >= 3}
-                  />
-                  <div className={`w-10 h-10 rounded-full bg-[#33333d] flex items-center justify-center mb-1 transition-colors ${images.length < 3 && 'group-hover:bg-[#4d4d5c]'}`}>
-                    <FileImage className={`w-4 h-4 text-[#a9a9b8] transition-colors ${images.length < 3 && 'group-hover:text-white'}`} />
-                  </div>
-                  <div className="text-center space-y-1">
-                    <p className="text-[14px] font-semibold text-white">
-                      {images.length >= 3 ? "Maximum images reached" : "Click or drag images to upload"}
-                    </p>
-                    <p className="text-[10px] text-[#a9a9b8]">Supports 1-3 screenshots, max 5MB each</p>
-                  </div>
-                </label>
-              </div>
-
-              {/* Uploaded Images Preview */}
-              <div className="flex flex-col gap-3 mt-4">
-                <Label className="text-[12px] text-[#a9a9b8] uppercase">
-                  UPLOADED IMAGES ({images.length}/3)
+              <div className="flex flex-col gap-3 mt-2">
+                <Label className="text-[14px] font-semibold text-[#f3f3f5]">
+                  Attachments
                 </Label>
-                <div className="flex gap-3">
-                  {[0, 1, 2].map((i) => {
-                    const img = images[i];
-                    return img ? (
-                      <div key={i} className="h-[80px] w-[100px] rounded-[6px] bg-[#33333d] border border-[#4d4d5c] flex items-center justify-center overflow-hidden relative group cursor-pointer transition-colors hover:border-[#a9a9b8]">
-                        <img src={img.url} alt={`preview ${i}`} className="w-full h-full object-cover" />
-                        <div 
-                          onClick={(e) => {
-                            e.preventDefault();
-                            removeImage(i);
-                          }}
-                          className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity"
-                        >
-                          <Trash2 className="w-4 h-4 text-red-500" />
+
+                <div 
+                  className={`flex flex-col gap-4 transition-all duration-200 rounded-lg ${
+                    isDragging ? 'ring-2 ring-[#3B82F6] bg-[#3B82F6]/5 p-2 -m-2' : ''
+                  }`}
+                  onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+                  onDragLeave={() => setIsDragging(false)}
+                  onDrop={handleDrop}
+                >
+                  {/* Primary Action */}
+                  <div className="w-full">
+                    <button 
+                      type="button" 
+                      disabled={images.length >= 3}
+                      className="w-full flex items-center justify-center gap-2 h-9 bg-white text-black hover:bg-zinc-200 text-[12px] font-semibold rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <Maximize2 size={14} />
+                      Capture Screen
+                    </button>
+                    {/* Hidden global file input triggered by placeholders */}
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      multiple 
+                      className="hidden" 
+                      ref={fileInputRef}
+                      onChange={handleFileChange}
+                      disabled={images.length >= 3}
+                    />
+                  </div>
+
+                  {/* Always Visible Previews & Upload Slots */}
+                  <div className="flex flex-col gap-2 mt-1">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-[11px] font-semibold text-[#a9a9b8] uppercase flex items-center gap-2">
+                        Attachments ({images.length}/3)
+                      </Label>
+                      {/* Drag & Drop Reminder (Minimalist) */}
+                      <span className="text-[10px] text-[#a9a9b8] opacity-70 hover:opacity-100 transition-opacity flex items-center gap-1 font-normal select-none">
+                        <UploadCloud size={12} />
+                        Drag & drop images anywhere
+                      </span>
+                    </div>
+                    
+                    <div className="flex gap-3">
+                      {/* Render uploaded images */}
+                      {images.map((img, i) => (
+                        <div key={i} className="h-[72px] w-[90px] rounded-md bg-[#33333d] border border-[#4d4d5c] flex items-center justify-center overflow-hidden relative group cursor-pointer transition-colors hover:border-[#a9a9b8]">
+                          <img src={img.url} alt={`preview ${i}`} className="w-full h-full object-cover" />
+                          <div 
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              removeImage(i);
+                            }}
+                            className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity"
+                          >
+                            <Trash2 className="w-4 h-4 text-red-500" />
+                          </div>
                         </div>
-                      </div>
-                    ) : (
-                      <div key={i} className="h-[80px] w-[100px] rounded-[6px] bg-[#1a1a1f]/50 border border-[#4d4d5c] border-dashed flex items-center justify-center">
-                           <FileImage className="w-4 h-4 text-[#4d4d5c]/50" />
-                      </div>
-                    );
-                  })}
+                      ))}
+
+                      {/* Render empty placeholders as native upload buttons */}
+                      {images.length < 3 && Array.from({ length: 3 - images.length }).map((_, i) => (
+                        <div 
+                          key={`placeholder-${i}`} 
+                          onClick={() => fileInputRef.current?.click()}
+                          className="h-[72px] w-[90px] rounded-md bg-[#1a1a1f]/30 border border-dashed flex flex-col items-center justify-center gap-1.5 transition-colors cursor-pointer group border-[#a9a9b8]/40 hover:border-[#a9a9b8] hover:bg-[#1a1a1f]/60"
+                          title="Click to upload image"
+                        >
+                          <ImagePlus className="w-4 h-4 transition-colors text-[#a9a9b8] group-hover:text-white" />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
             </form>
