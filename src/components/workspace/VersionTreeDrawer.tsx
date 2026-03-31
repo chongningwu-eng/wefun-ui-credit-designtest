@@ -1,12 +1,10 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, GitBranch, Check } from 'lucide-react';
 
-interface Version {
-  id: string;
-  name: string;
-  prompt: string;
-  time: number;
-  parentId: string | null;
+import { Version } from '../../App';
+
+interface TreeNodeVersion extends Version {
+  children?: TreeNodeVersion[];
 }
 
 interface VersionTreeDrawerProps {
@@ -19,7 +17,7 @@ interface VersionTreeDrawerProps {
 
 export function VersionTreeDrawer({ isOpen, onClose, versions, activeVersionId, onSelectVersion }: VersionTreeDrawerProps) {
   // Build traditional tree structure
-  const buildTree = (parentId: string | null): any[] => {
+  const buildTree = (parentId: string | null): TreeNodeVersion[] => {
     return versions
       .filter(v => v.parentId === parentId)
       .map(v => ({
@@ -75,7 +73,7 @@ export function VersionTreeDrawer({ isOpen, onClose, versions, activeVersionId, 
   `;
 
   // Recursive component to render li > node > ul > li
-  const TreeNode = ({ node }: { node: any }) => {
+  const TreeNode = ({ node }: { node: TreeNodeVersion }) => {
     const isActive = node.id === activeVersionId;
     
     return (
@@ -122,7 +120,7 @@ export function VersionTreeDrawer({ isOpen, onClose, versions, activeVersionId, 
         
         {node.children && node.children.length > 0 && (
           <ul>
-            {node.children.map((child: any) => (
+            {node.children.map((child: TreeNodeVersion) => (
               <TreeNode key={child.id} node={child} />
             ))}
           </ul>

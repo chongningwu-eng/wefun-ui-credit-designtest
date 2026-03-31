@@ -1,8 +1,9 @@
 import { X, Search, FileImage, LayoutGrid, List } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
+import { Asset } from '../../App';
 
-export function ProjectAssetLibrary({ isOpen, onClose, assets }: { isOpen: boolean, onClose: () => void, assets: any[] }) {
+export function ProjectAssetLibrary({ isOpen, onClose, assets }: { isOpen: boolean, onClose: () => void, assets: Asset[] }) {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
   return (

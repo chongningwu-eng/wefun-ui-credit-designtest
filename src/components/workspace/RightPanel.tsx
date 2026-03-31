@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { GitBranch } from 'lucide-react';
 import { CreateMode } from './CreateMode';
+import { Version, StagedFile } from '../../App';
 
 interface RightPanelProps {
   balance: number;
@@ -8,11 +9,11 @@ interface RightPanelProps {
   setHasChatError: (err: boolean) => void;
   isWarningVisible: boolean;
   setIsWarningVisible: (val: boolean) => void;
-  versions: any[];
+  versions: Version[];
   activeVersionId: string;
   setActiveVersionId: (id: string) => void;
-  stagedFiles: any[];
-  setStagedFiles: (files: any[]) => void;
+  stagedFiles: StagedFile[];
+  setStagedFiles: (files: StagedFile[] | ((prev: StagedFile[]) => StagedFile[])) => void;
   onSendPrompt: (prompt: string) => void;
   isTreeExpanded: boolean;
   setIsTreeExpanded: (val: boolean) => void;

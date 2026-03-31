@@ -1,6 +1,18 @@
 import { useState } from 'react';
 import { Plus, Box, Mic, ArrowUp, ChevronDown, Check, X, AlertCircle, Image as ImageIcon, Loader2 } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { StagedFile } from '../../App';
+
+interface ChatInputAreaProps {
+  balance: number;
+  hasChatError: boolean;
+  setHasChatError: (err: boolean) => void;
+  isWarningVisible: boolean;
+  setIsWarningVisible: (val: boolean) => void;
+  stagedFiles: StagedFile[];
+  setStagedFiles: (files: StagedFile[] | ((prev: StagedFile[]) => StagedFile[])) => void;
+  onSendPrompt: (prompt: string) => void;
+}
 
 export function ChatInputArea({
   balance,
@@ -11,7 +23,7 @@ export function ChatInputArea({
   stagedFiles,
   setStagedFiles,
   onSendPrompt
-}: any) {
+}: ChatInputAreaProps) {
   const [isModelSelectorOpen, setIsModelSelectorOpen] = useState(false);
   const [selectedModel, setSelectedModel] = useState("Claude Sonnet 3.5");
   const [prompt, setPrompt] = useState("");
@@ -20,7 +32,7 @@ export function ChatInputArea({
 
   const handleUploadClick = () => {
     setIsUploading(true);
-    const newFile = { 
+    const newFile: StagedFile = { 
       id: Math.random().toString(), 
       name: `image_${Math.floor(Math.random()*100)}.png`, 
       status: 'uploading',
@@ -29,13 +41,13 @@ export function ChatInputArea({
     setStagedFiles([...stagedFiles, newFile]);
     
     setTimeout(() => {
-      setStagedFiles((prev: any) => prev.map((f: any) => f.id === newFile.id ? { ...f, status: 'ready' } : f));
+      setStagedFiles((prev: StagedFile[]) => prev.map((f: StagedFile) => f.id === newFile.id ? { ...f, status: 'ready' } : f));
       setIsUploading(false);
     }, 1500); 
   };
 
   const handleRemoveStagedFile = (id: string) => {
-    setStagedFiles(stagedFiles.filter((f: any) => f.id !== id));
+    setStagedFiles(stagedFiles.filter((f: StagedFile) => f.id !== id));
   };
 
   return (
@@ -82,7 +94,7 @@ export function ChatInputArea({
             exit={{ opacity: 0, height: 0 }} 
             className="flex items-center gap-2 overflow-x-auto pb-2 px-1 scrollbar-thin"
           >
-            {stagedFiles.map((file: any) => (
+            {stagedFiles.map((file: StagedFile) => (
               <div key={file.id} className="relative group shrink-0 w-16 h-16 rounded-md bg-[#27272A] border border-[#3F3F46] flex items-center justify-center overflow-hidden">
                 {file.url && file.url !== 'staged' ? (
                   <img src={file.url} alt={file.name} className="w-full h-full object-cover" />

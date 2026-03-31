@@ -3,9 +3,31 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { AlertCircle, GitBranch } from 'lucide-react';
 import { ChatInputArea } from './ChatInputArea';
 import { VersionCard } from './VersionCard';
+import { Version, StagedFile } from '../../App';
+
+interface CreateModeProps {
+  balance: number;
+  hasChatError: boolean;
+  setHasChatError: (err: boolean) => void;
+  isWarningVisible: boolean;
+  setIsWarningVisible: (val: boolean) => void;
+  versions: Version[];
+  activeVersionId: string;
+  setActiveVersionId: (id: string) => void;
+  stagedFiles: StagedFile[];
+  setStagedFiles: (files: StagedFile[] | ((prev: StagedFile[]) => StagedFile[])) => void;
+  onSendPrompt: (prompt: string) => void;
+  isTreeExpanded: boolean;
+  setIsTreeExpanded: (val: boolean) => void;
+}
+
+// Extended Version type for the tree which includes children
+interface TreeNodeVersion extends Version {
+  children?: TreeNodeVersion[];
+}
 
 // Compute tree-path labels
-function computeTreeLabels(versions: any[]): Record<string, string> {
+function computeTreeLabels(versions: Version[]): Record<string, string> {
   const labels: Record<string, string> = {};
   const getChildren = (parentId: string | null) =>
     versions.filter(v => v.parentId === parentId);
@@ -21,7 +43,7 @@ function computeTreeLabels(versions: any[]): Record<string, string> {
   return labels;
 }
 
-function buildTree(versions: any[], parentId: string | null): any[] {
+function buildTree(versions: Version[], parentId: string | null): TreeNodeVersion[] {
   return versions
     .filter(v => v.parentId === parentId)
     .map(v => ({ ...v, children: buildTree(versions, v.id) }));
@@ -40,7 +62,7 @@ export function CreateMode({
   setStagedFiles,
   onSendPrompt,
   isTreeExpanded
-}: any) {
+}: CreateModeProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const treeLabels = computeTreeLabels(versions);
 
@@ -51,7 +73,7 @@ export function CreateMode({
   }, [versions.length, isTreeExpanded]);
 
   // Tree node component
-  const TreeNode = ({ node }: { node: any }) => {
+  const TreeNode = ({ node }: { node: TreeNodeVersion }) => {
     const isActive = node.id === activeVersionId;
     const isLineage = activeLineage.some(v => v.id === node.id);
     const label = treeLabels[node.id] || node.id;
@@ -72,7 +94,7 @@ export function CreateMode({
         </div>
         {node.children && node.children.length > 0 && (
           <ul>
-            {node.children.map((child: any) => (
+            {node.children.map((child: TreeNodeVersion) => (
               <TreeNode key={child.id} node={child} />
             ))}
           </ul>
@@ -100,14 +122,14 @@ export function CreateMode({
   const [currentBranchLeafId, setCurrentBranchLeafId] = useState<string>(activeVersionId);
 
   useEffect(() => {
-    let curr = versions.find((v: any) => v.id === currentBranchLeafId);
+    let curr = versions.find((v: Version) => v.id === currentBranchLeafId);
     let isAncestor = false;
     while (curr) {
       if (curr.id === activeVersionId) {
         isAncestor = true;
         break;
       }
-      curr = versions.find((v: any) => v.id === curr.parentId);
+      curr = versions.find((v: Version) => v.id === curr?.parentId);
     }
     // If the active version is NOT an ancestor of our current leaf (e.g. we switched branch or generated a new one)
     // we set the new active version as the leaf
@@ -117,11 +139,11 @@ export function CreateMode({
   }, [activeVersionId, versions, currentBranchLeafId]);
 
   // Calculate the active branch containing the path from root to the currentBranchLeafId
-  const activeLineage: any[] = [];
-  let currLineage = versions.find((v: any) => v.id === currentBranchLeafId);
+  const activeLineage: Version[] = [];
+  let currLineage = versions.find((v: Version) => v.id === currentBranchLeafId);
   while (currLineage) {
     activeLineage.unshift(currLineage);
-    currLineage = versions.find((v: any) => v.id === currLineage.parentId);
+    currLineage = versions.find((v: Version) => v.id === currLineage?.parentId);
   }
 
   return (
@@ -142,7 +164,7 @@ export function CreateMode({
               transition={{ duration: 0.15 }}
               className="flex flex-col gap-3 py-2 w-full px-4"
             >
-              {activeLineage.map((v: any) => (
+              {activeLineage.map((v: Version) => (
                 <div key={v.id} className="w-full">
                   <VersionCard
                     version={v}

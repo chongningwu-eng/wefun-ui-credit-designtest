@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { PackageOpen, Clock, Zap, Cpu, Sparkles, ChevronDown, ChevronRight } from 'lucide-react';
 
-export function VersionCard({ version, isActive, onClick, onSelectSuggestion, treeLabel }: any) {
+import { Version, Asset } from '../../App';
+
+export function VersionCard({ version, isActive, onClick, onSelectSuggestion, treeLabel }: { version: Version, isActive: boolean, onClick?: () => void, onSelectSuggestion?: (s: string) => void, treeLabel?: string }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [tab, setTab] = useState<'chat'|'asset'>('chat');
 
@@ -79,7 +81,7 @@ export function VersionCard({ version, isActive, onClick, onSelectSuggestion, tr
             <div className="animate-in fade-in slide-in-from-top-1 duration-200">
               {version.assets && version.assets.length > 0 ? (
                 <div className="grid grid-cols-2 gap-2">
-                  {version.assets.map((asset: any) => (
+                  {version.assets.map((asset: Asset) => (
                     <div key={asset.id} className="aspect-square bg-[#27272A] rounded-md border border-[#3F3F46] flex flex-col items-center justify-center p-2 group relative overflow-hidden">
                        <div className="w-full h-full bg-[#27272A] rounded flex items-center justify-center mb-1 relative overflow-hidden group-hover:scale-[1.02] transition-transform duration-300">
                          {asset.url && asset.url !== 'staged' ? (

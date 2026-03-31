@@ -66,13 +66,13 @@ export function CanvasMode({ onPushToChat, onSaveToAsset }: CanvasModeProps) {
                     <div className="w-full h-px bg-[#3F3F46] my-0.5" />
                     
                     <ActionButton 
-                      onClick={(e: any) => { e.stopPropagation(); onPushToChat('ocean_coral_remix.png'); setIsSelected(false); }}
+                      onClick={(e: React.MouseEvent) => { e.stopPropagation(); onPushToChat('ocean_coral_remix.png'); setIsSelected(false); }}
                       icon={<MessageSquare size={16} />} 
                       title="Push to Chat" 
                       colorClass="hover:text-[#3B82F6]"
                     />
                     <ActionButton 
-                      onClick={(e: any) => { e.stopPropagation(); onSaveToAsset('ocean_coral_remix.png'); setIsSelected(false); }}
+                      onClick={(e: React.MouseEvent) => { e.stopPropagation(); onSaveToAsset('ocean_coral_remix.png'); setIsSelected(false); }}
                       icon={<PackagePlus size={16} />} 
                       title="Save to Asset" 
                       colorClass="hover:text-emerald-400"
@@ -87,7 +87,7 @@ export function CanvasMode({ onPushToChat, onSaveToAsset }: CanvasModeProps) {
   );
 }
 
-function ActionButton({ icon, title, onClick, highlight = false, colorClass = "hover:text-white" }: any) {
+function ActionButton({ icon, title, onClick, highlight = false, colorClass = "hover:text-white" }: { icon: React.ReactNode, title: string, onClick?: (e: React.MouseEvent) => void, highlight?: boolean, colorClass?: string }) {
   return (
     <button 
       onClick={onClick}

@@ -8,6 +8,35 @@ import { LeftPanel } from './components/workspace/LeftPanel';
 import { RightPanel } from './components/workspace/RightPanel';
 import { ProjectAssetLibrary } from './components/workspace/ProjectAssetLibrary';
 
+export interface Asset {
+  id: string;
+  name: string;
+  type?: string;
+  size: string;
+  url: string;
+}
+
+export interface StagedFile {
+  id: string;
+  name: string;
+  status: string;
+  url?: string;
+  type?: string;
+  size?: string;
+}
+
+export interface Version {
+  id: string;
+  name: string;
+  prompt: string;
+  assets: Asset[];
+  cost: number;
+  time: number;
+  model: string;
+  suggestions: string[];
+  parentId: string | null;
+}
+
 function App() {
   const [balance, setBalance] = useState(18);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -17,14 +46,14 @@ function App() {
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const [isTreeExpanded, setIsTreeExpanded] = useState(false);
   const [isProjectAssetLibraryOpen, setIsProjectAssetLibraryOpen] = useState(false);
-  const [projectAssets, setProjectAssets] = useState<any[]>([]);
+  const [projectAssets, setProjectAssets] = useState<Asset[]>([]);
 
   // Generation Mode State
   const [isAgentMode, setIsAgentMode] = useState(true); // Agent preview mode Default
   const costPerAction = isAgentMode ? 12 : 3;
 
   // Workspace Data
-  const [versions, setVersions] = useState<any[]>([
+  const [versions, setVersions] = useState<Version[]>([
     { 
       id: 'v1', 
       name: 'Initial Layout',
@@ -100,7 +129,7 @@ function App() {
     }
   ]);
   const [activeVersionId, setActiveVersionId] = useState('v3');
-  const [stagedFiles, setStagedFiles] = useState<any[]>([]);
+  const [stagedFiles, setStagedFiles] = useState<StagedFile[]>([]);
 
   // Error/Toast
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -117,7 +146,7 @@ function App() {
     setBalance(prev => Math.max(0, prev - costPerAction));
 
     const newVersionId = `v${versions.length + 1}`;
-    const newAssets = stagedFiles.filter(f => f.status === 'ready').map(f => ({ ...f, url: 'staged' }));
+    const newAssets: Asset[] = stagedFiles.filter(f => f.status === 'ready').map(f => ({ ...f, url: 'staged', size: f.size || 'Unknown', type: f.type || 'unknown' }));
 
     const newVersion = {
       id: newVersionId,
